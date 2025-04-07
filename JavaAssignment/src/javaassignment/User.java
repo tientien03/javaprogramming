@@ -4,10 +4,6 @@
  */
 package javaassignment;
 
-/**
- *
- * @author User
- */
 public class User {
     
 }
