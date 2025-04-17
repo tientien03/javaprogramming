@@ -1,0 +1,7 @@
+I01,Apple,S01,3.50,100
+I02,Banana,S02,2.00,50
+I03,Orange,S03,4.00,75
+I04,Watermelon,S04,7.50,20
+I05,Melon,S05,7.50,20
+I06,Banana,S01,4.00,50
+I07,Lecture,S01,5.00,50

@@ -1,0 +1,8 @@
+S01,Fresh Farm Sdn Bhd,012-3456789,freshfarm@suppliers.com,
+S02,GreenMarket Traders,013-8765432,greenmarket@suppliers.com,
+S03,Tropical Foods,017-2233445,tropicalfoods@suppliers.com,
+S04,Happy Fruits Supplier,011-9988776,happyfruits@suppliers.com,
+S05,Daily Grocery Depot,dailygrocery@suppliers.com,dailygrocery@suppliers.com,
+S06,Organic Harvest,018-6677889,organicharvest@suppliers.com,
+S07,VegeExpress Delivery,014-1122334,vegeexpress@suppliers.com,
+S08,Sen Kee Trading,erhhwehuwejr,erhhwehuwejr,
