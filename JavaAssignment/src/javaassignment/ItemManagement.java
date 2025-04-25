@@ -3,13 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package javaassignment;
-import java.io.BufferedReader;
+import java.awt.Color;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,12 +17,25 @@ import javax.swing.table.DefaultTableModel;
  * @author User
  */
 public class ItemManagement extends javax.swing.JFrame {
-    ArrayList<Item>items = new ArrayList<Item>();
+    ArrayList<Item> itemList = new ArrayList<Item>();
+    ArrayList<Supplier> supplierList = new ArrayList<Supplier>();
     public ItemManagement() {
         initComponents();
         setLocationRelativeTo(null);
+        
+        supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+        itemList = Item.loadItemFromFile("item.txt",supplierList);
+        
+        comboSupplierId.setEditable(true);
+        comboSupplierId.removeAllItems();
+        comboSupplierId.addItem("-- Select Supplier --");
+        
+        for(Supplier supplier : supplierList){
+            comboSupplierId.addItem(supplier.getSupplierId() + " - " + supplier.getSupplierName());
+        }
+        
         makeTableReadOnly();
-        loaditemfile();
+        loadItemtoTable();
     }
 
     /**
@@ -43,12 +54,7 @@ public class ItemManagement extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtItemName = new java.awt.TextField();
-        txtItemId = new java.awt.TextField();
-        txtItemQuantity = new java.awt.TextField();
         FindBtn = new java.awt.Button();
-        txtSupplierId = new java.awt.TextField();
-        txtItemPrice = new java.awt.TextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         EditBtn = new java.awt.Button();
@@ -57,10 +63,15 @@ public class ItemManagement extends javax.swing.JFrame {
         DeleteBtn = new java.awt.Button();
         BackToMenuBtn = new java.awt.Button();
         ResetBtn = new java.awt.Button();
+        comboSupplierId = new javax.swing.JComboBox<>();
+        txtItemQuantity = new javax.swing.JTextField();
+        txtItemPrice = new javax.swing.JTextField();
+        txtItemName = new javax.swing.JTextField();
+        txtItemId = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jDesktopPane1.setBackground(new java.awt.Color(255, 255, 204));
+        jDesktopPane1.setBackground(new java.awt.Color(242, 242, 242));
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -77,6 +88,7 @@ public class ItemManagement extends javax.swing.JFrame {
                 "Item ID", "Item Name", "Supplier ID", "Price", "Quantity"
             }
         ));
+        ItemTable.setShowGrid(true);
         ItemTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ItemTableMouseClicked(evt);
@@ -141,7 +153,7 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
-        BackToMenuBtn.setBackground(new java.awt.Color(204, 255, 255));
+        BackToMenuBtn.setBackground(new java.awt.Color(255, 255, 255));
         BackToMenuBtn.setLabel("MENU");
         BackToMenuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,17 +170,18 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
+        comboSupplierId.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        comboSupplierId.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        txtItemQuantity.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtItemQuantity.setDisabledTextColor(new java.awt.Color(255, 255, 255));
+
         jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemName, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemId, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemQuantity, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(FindBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtSupplierId, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(EditBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -177,6 +190,11 @@ public class ItemManagement extends javax.swing.JFrame {
         jDesktopPane1.setLayer(DeleteBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(BackToMenuBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(ResetBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(comboSupplierId, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(txtItemQuantity, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(txtItemPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(txtItemName, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(txtItemId, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -187,12 +205,11 @@ public class ItemManagement extends javax.swing.JFrame {
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(233, 233, 233))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 728, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -202,11 +219,11 @@ public class ItemManagement extends javax.swing.JFrame {
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, 0)
                                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(comboSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(20, 20, 20)
                                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -217,8 +234,9 @@ public class ItemManagement extends javax.swing.JFrame {
                                     .addComponent(FindBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                                         .addGap(2, 2, 2)
-                                        .addComponent(ResetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addContainerGap())))
+                                        .addComponent(ResetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,26 +262,28 @@ public class ItemManagement extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(ResetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(3, 3, 3)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(22, 22, 22)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(20, 20, 20)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(22, 22, 22)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(17, 17, 17)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(txtSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(23, 23, 23)
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(24, 24, 24)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(63, Short.MAX_VALUE))
+                            .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -274,7 +294,9 @@ public class ItemManagement extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         pack();
@@ -282,35 +304,55 @@ public class ItemManagement extends javax.swing.JFrame {
 
    
     private void SaveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveBtnActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = ItemTable.getSelectedRow();
-        if(selectedRow == -1){
-            JOptionPane.showMessageDialog(this, "Please select or find an item to update");
-        }
-        String supplierId = txtSupplierId.getText();
-        Supplier selectedSupplier = null;
-        List<Supplier> supplierList = loadSupplierFromFile();
-        for (Supplier s: supplierList){
-            if(s.getSupplierId().equalsIgnoreCase(supplierId)){
-                selectedSupplier = s;
-                break;
-            }
-        }
-        if(selectedSupplier == null){
-            JOptionPane.showMessageDialog(this, "Supplier ID not found.");
-            return;
-        }
+        // make sure all fill is filled before save
         try{
-            DefaultTableModel model = (DefaultTableModel)ItemTable.getModel();
-            model.setValueAt(txtItemId.getText(),selectedRow,0);
-            model.setValueAt(txtItemName.getText(),selectedRow,1);
-            model.setValueAt(txtSupplierId.getText(),selectedRow,2);
-            model.setValueAt(String.format("%.2f", Double.parseDouble(txtItemPrice.getText())),selectedRow,3);
-            model.setValueAt(Integer.parseInt(txtItemQuantity.getText()),selectedRow,4);
-            saveItemToFile();
-            txtItemId.setText("");txtItemName.setText("");txtSupplierId.setText("");txtItemPrice.setText("");txtItemQuantity.setText("");
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this,"Error updating item:" + e.getMessage());
+            String itemId = txtItemId.getText().trim();
+            if (itemId.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Item ID is missing.");
+                return;
+            }
+            if (txtItemName.getText().isEmpty() ||
+                comboSupplierId.getSelectedItem().toString().equalsIgnoreCase("-- Select Supplier --") ||
+                txtItemPrice.getText().isEmpty() ||txtItemQuantity.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                return;
+            }
+            String supplierId = comboSupplierId.getSelectedItem().toString().split("-")[0].trim();
+            Supplier selectedSupplier = null;
+            for (Supplier s : supplierList) {
+                if (s.getSupplierId().equalsIgnoreCase(supplierId)) {
+                    selectedSupplier = s;
+                    break;
+                }
+            }
+            if (selectedSupplier == null) {
+                JOptionPane.showMessageDialog(this, "Supplier ID not found.");
+                return;
+            }
+            boolean found = false;
+            for (Item item : itemList) {
+                if (item.getItemID().equalsIgnoreCase(itemId)) {
+                    item.setItemName(txtItemName.getText().trim());
+                    item.setSupplier(selectedSupplier);
+                    item.setPrice(Double.parseDouble(txtItemPrice.getText().trim()));
+                    item.setStock(Integer.parseInt(txtItemQuantity.getText().trim()));
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(this, "Item not found in the list.");
+                return;
+            }
+
+            // Save updated list to file
+            Item.saveItemToFile(itemList);
+            JOptionPane.showMessageDialog(this, "Item updated successfully.");
+            clearInput();
+            loadItemtoTable();
+        }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Price and Quantity must be numeric.");
         }
     }//GEN-LAST:event_SaveBtnActionPerformed
 
@@ -322,12 +364,12 @@ public class ItemManagement extends javax.swing.JFrame {
         for(int i=0; i<model.getRowCount();i++){
             if(model.getValueAt(i,0).toString().equalsIgnoreCase(editID)){
                 txtItemName.setText(model.getValueAt(i, 1).toString());
-                txtSupplierId.setText(model.getValueAt(i, 2).toString());
+                comboSupplierId.setSelectedItem(model.getValueAt(i, 2).toString());
                 txtItemPrice.setText(model.getValueAt(i, 3).toString());
                 txtItemQuantity.setText(model.getValueAt(i, 4).toString());
                 ItemTable.setRowSelectionInterval(i,i);
                 found = true;
-                txtItemName.setEditable(true);txtSupplierId.setEditable(true);
+                txtItemName.setEditable(true);comboSupplierId.setEnabled(true);
                 txtItemPrice.setEditable(true);txtItemQuantity.setEditable(true);
                 break; 
             }
@@ -336,58 +378,57 @@ public class ItemManagement extends javax.swing.JFrame {
 
     private void AddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBtnActionPerformed
         try{
-            if (txtItemId.getText().isEmpty() ||txtItemName.getText().isEmpty() ||txtSupplierId.getText().isEmpty() ||txtItemPrice.getText().isEmpty() ||txtItemQuantity.getText().isEmpty()) {
+            if (txtItemName.getText().isEmpty() ||comboSupplierId.getSelectedItem().toString().equalsIgnoreCase("-- Select Supplier --") 
+                ||txtItemPrice.getText().isEmpty() ||txtItemQuantity.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return; // stop the method here
             }
             //check item id
-            String newItemId= txtItemId.getText().trim();
+            String newItemId = generateNextItemID();
             boolean isDuplicate = false;
-            //check id, no duplication on id
-            try(Scanner sc = new Scanner(new File("item.txt"))){
-                while(sc.hasNextLine()){
-                    String[] parts = sc.nextLine().split(",");
-                    if(parts.length >= 1 && parts[0].equalsIgnoreCase(newItemId)){
-                        isDuplicate = true;
-                        break;
-                    }
+            for (Item item : itemList){
+                if (item.getItemName().equalsIgnoreCase(txtItemName.getText())) {
+                    isDuplicate = true;
+                    break;
                 }
-            }catch (Exception e){
-                JOptionPane.showMessageDialog(this, "Error Loading items:" + e.getMessage());
-            }           
-            if (isDuplicate){
-                JOptionPane.showMessageDialog(this,"Item ID already exists. Please use a different ID.");
+            }
+            if(isDuplicate){
+                JOptionPane.showMessageDialog(this, "Item already exists. Please use a different ID.");
                 return;
             }
+            
             //check supplierid
-            String supplierId = txtSupplierId.getText();
+            String supplierId = comboSupplierId.getSelectedItem().toString().split("-")[0].trim();
             Supplier selectedSupplier = null;
-            List<Supplier> supplierList = loadSupplierFromFile();
             for (Supplier s: supplierList){
                 if(s.getSupplierId().equalsIgnoreCase(supplierId)){
                     selectedSupplier = s;
+                    s.addItemId(newItemId);
                     break;
-                }else{
-                    
                 }
             }
+            Supplier.saveSupplierToFile(supplierList);
+            
             if(selectedSupplier == null){
                 JOptionPane.showMessageDialog(this, "Supplier ID not found.");
                 return;
             }
+            
             //add new item to file
             Item newItem = new Item(
-                txtItemId.getText(),
+                newItemId,
                 txtItemName.getText(),
                 selectedSupplier,
                 Double.parseDouble(txtItemPrice.getText()),
                 Integer.parseInt(txtItemQuantity.getText())
             );
-            saveItemToFile(newItem);
+            itemList.add(newItem);
+            Item.saveItemToFile(itemList);
+            JOptionPane.showMessageDialog(this, "New Item added successfully");
             System.out.println("New item added.");
             //clear input
-            txtItemId.setText("");txtItemName.setText("");txtSupplierId.setText("");txtItemPrice.setText("");txtItemQuantity.setText("");
-            loaditemfile();
+            clearInput();
+            loadItemtoTable();
         }catch (NumberFormatException e){
             JOptionPane.showMessageDialog(this, "Price and Quantity must be numeric.");
         }
@@ -395,45 +436,30 @@ public class ItemManagement extends javax.swing.JFrame {
 
     private void DeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteBtnActionPerformed
         // TODO add your handling code here:
-        int selectedRow=ItemTable.getSelectedRow();
-        if(selectedRow == -1){
-            String findID = txtItemId.getText().trim();
-            if(findID.isEmpty()){
-                JOptionPane.showMessageDialog(this,"Please select a item to delete.");
-                return;
-            }          
-            DefaultTableModel model = (DefaultTableModel)ItemTable.getModel();
-            for(int i=0; i<model.getRowCount();i++){
-                if(model.getValueAt(i,0).toString().equalsIgnoreCase(findID)){
-                    txtItemName.setText(model.getValueAt(i, 1).toString());
-                    txtSupplierId.setText(model.getValueAt(i, 2).toString());
-                    txtItemPrice.setText(model.getValueAt(i, 3).toString());
-                    txtItemQuantity.setText(model.getValueAt(i, 4).toString());
-                    ItemTable.setRowSelectionInterval(i,i);
-                    txtItemName.setEditable(true);txtSupplierId.setEditable(true);
-                    txtItemPrice.setEditable(true);txtItemQuantity.setEditable(true);
-                    selectedRow = i;
-                    break; 
+        String itemNameToDelete = txtItemName.getText();
+        int comfirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to delete this item?","Confirm Delete", JOptionPane.YES_NO_OPTION);
+        if(comfirm == JOptionPane.YES_OPTION){
+            boolean removed = false;
+            for (int j = 0; j<itemList.size(); j++){
+                Item i = itemList.get(j); 
+                if(i.getItemName().equalsIgnoreCase(itemNameToDelete)){
+                    itemList.remove(j);
+                    removed = true;
+                    break;
                 }
             }
+            if(removed){
+                Item.saveItemToFile(itemList);
+                loadItemtoTable();
+                JOptionPane.showMessageDialog(this, "Item deleted successfully.");
+            }else{
+                JOptionPane.showMessageDialog(this, "Item not found in list.");
+            }
         }
-        
-        if(selectedRow == -1){
-            JOptionPane.showMessageDialog(this,"Item ID not found.");
-            return;
-        }
-        
-        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?","Confrim Delete",JOptionPane.YES_NO_OPTION);
-        if(confirm == JOptionPane.YES_OPTION){
-            DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
-            model.removeRow(selectedRow);
-            saveItemToFile();
-            //clear input
-            txtItemId.setText("");txtItemName.setText("");txtSupplierId.setText("");txtItemPrice.setText("");txtItemQuantity.setText("");
-            JOptionPane.showMessageDialog(this, "Item deleted successfully.");
-        }
+        clearInput();
+        setEnabled();
     }//GEN-LAST:event_DeleteBtnActionPerformed
-    //maybe delete this one
+    
     private void FindBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FindBtnActionPerformed
         // TODO add your handling code here:
         String findID = txtItemId.getText().trim();
@@ -446,19 +472,18 @@ public class ItemManagement extends javax.swing.JFrame {
         for(int i=0; i<model.getRowCount();i++){
             if(model.getValueAt(i,0).toString().equalsIgnoreCase(findID)){
                 txtItemName.setText(model.getValueAt(i, 1).toString());
-                txtSupplierId.setText(model.getValueAt(i, 2).toString());
+                comboSupplierId.setSelectedItem(model.getValueAt(i, 2).toString());
                 txtItemPrice.setText(model.getValueAt(i, 3).toString());
                 txtItemQuantity.setText(model.getValueAt(i, 4).toString());
                 ItemTable.setRowSelectionInterval(i,i);
                 found = true;
-                txtItemName.setEditable(false);txtSupplierId.setEditable(false);
-                txtItemPrice.setEditable(false);txtItemQuantity.setEditable(false);
+                setUnenabled();
                 break; 
             }
         }
         if (!found) {
             JOptionPane.showMessageDialog(this, "❌ Item ID not found.");
-            txtItemId.setText("");txtItemName.setText("");txtSupplierId.setText("");txtItemPrice.setText("");txtItemQuantity.setText("");
+            clearInput();
         }
     }//GEN-LAST:event_FindBtnActionPerformed
 
@@ -472,79 +497,25 @@ public class ItemManagement extends javax.swing.JFrame {
 
     private void ResetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetBtnActionPerformed
         // TODO add your handling code here:
-        txtItemId.setText("");txtItemName.setText("");txtSupplierId.setText("");txtItemPrice.setText("");txtItemQuantity.setText("");
-        txtItemName.setEditable(true);txtSupplierId.setEditable(true);
+        clearInput();
+        txtItemName.setEditable(true);comboSupplierId.setEditable(true);
         txtItemPrice.setEditable(true);txtItemQuantity.setEditable(true); 
     }//GEN-LAST:event_ResetBtnActionPerformed
 
     private void ItemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemTableMouseClicked
-        // TODO add your handling code here:
+        //TODO add your handling code here:
         int selectedRow = ItemTable.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
         if(selectedRow != -1){
             txtItemId.setText(model.getValueAt(selectedRow, 0).toString());
             txtItemName.setText(model.getValueAt(selectedRow, 1).toString());
-            txtSupplierId.setText(model.getValueAt(selectedRow, 2).toString());
+            comboSupplierId.setSelectedItem(model.getValueAt(selectedRow, 2).toString());
             txtItemPrice.setText(model.getValueAt(selectedRow, 3).toString());
             txtItemQuantity.setText(model.getValueAt(selectedRow, 4).toString());
-            txtItemName.setEditable(false);txtSupplierId.setEditable(false);
-            txtItemPrice.setEditable(false);txtItemQuantity.setEditable(false);    
+            setUnenabled();  
         }   
     }//GEN-LAST:event_ItemTableMouseClicked
-    
-    private void loaditemfile(){
-        try{
-            File file = new File("item.txt");
-            Scanner scan = new Scanner(file);
-            DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
-            model.setRowCount(0);
-            while(scan.hasNextLine()){
-                String[] parts = scan.nextLine().split(",");
-                if(parts.length == 5){
-                    Object[] row = {
-                        parts[0], parts[1],parts[2],
-                        String.format("%.2f",Double.parseDouble(parts[3])),
-                        Integer.parseInt(parts[4])
-                    };
-                    model.addRow(row);
-                }             
-            }
-            scan.close();
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(this, "Error Loading items:" + e.getMessage());
-        }
-    }
-    
-    private void saveItemToFile(Item item){
-        try{
-            FileWriter writer = new FileWriter("item.txt", true); //true = append mode
-            writer.write(item.toFileString() + "\n");
-            writer.close();
-            JOptionPane.showMessageDialog(null, "Item saved to file");
-        }catch (IOException e){
-            JOptionPane.showMessageDialog(null, "Error saving item:" + e.getMessage());
-        }
-    }
-    
-    private void saveItemToFile(){
-        try{
-            FileWriter writer = new FileWriter("item.txt"); //true = append mode
-            DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
-            for(int i=0; i<model.getRowCount(); i++){
-                String line = model.getValueAt(i,0)+","+
-                              model.getValueAt(i,1)+","+
-                              model.getValueAt(i,2)+","+
-                              model.getValueAt(i,3)+","+
-                              model.getValueAt(i,4);
-                writer.write(line + "\n");
-            }
-            writer.close();
-            JOptionPane.showMessageDialog(null, "Item saved to file");
-        }catch (IOException e){
-            JOptionPane.showMessageDialog(null, "Error saving item:" + e.getMessage());
-        }
-    }
-    
+ 
     private void makeTableReadOnly(){
         DefaultTableModel model = new DefaultTableModel(
         new String[]{"Item ID","Item Name", "Supplier ID", "Price", "Quantity"},0
@@ -557,25 +528,59 @@ public class ItemManagement extends javax.swing.JFrame {
         ItemTable.setModel(model);
     }
     
-    public List<Supplier> loadSupplierFromFile(){
-        List<Supplier> supplierList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("supplier.txt"))){
-            String line;
-            while((line=reader.readLine())!=null){
-                String[] parts = line.split(",");
-                if(parts.length==4){
-                    supplierList.add(new Supplier(
-                            parts[0].trim(),
-                            parts[1].trim(),
-                            parts[2].trim(),
-                            parts[3].trim()
-                    ));
+    private String generateNextItemID(){
+        int maxId = 0;
+        for (Item item : itemList) {
+            String id = item.getItemID();
+            if (id.matches("I\\d+")) {
+                int num = Integer.parseInt(id.substring(1));
+                if (num > maxId) {
+                    maxId = num;
                 }
             }
-        }catch (IOException e){
-            e.printStackTrace();
         }
-        return supplierList;
+        return String.format("I%03d", maxId + 1);
+    }
+    
+    private void clearInput(){
+        txtItemId.setText("");
+        txtItemName.setText("");
+        comboSupplierId.setSelectedIndex(0);
+        txtItemPrice.setText("");
+        txtItemQuantity.setText("");
+    }
+    
+    private void setEnabled(){
+        comboSupplierId.setBackground(Color.WHITE);
+        txtItemName.setEditable(true);
+        comboSupplierId.setEnabled(true);
+        txtItemPrice.setEditable(true);
+        txtItemQuantity.setEditable(true);
+    }
+    
+     private void setUnenabled(){
+        comboSupplierId.setBackground(Color.WHITE);
+        txtItemName.setEditable(false);
+        comboSupplierId.setEnabled(false);
+        txtItemPrice.setEditable(false);
+        txtItemQuantity.setEditable(false);
+    }
+    
+    
+    private void loadItemtoTable(){
+        DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
+        model.setRowCount(0);
+
+        for (Item item : itemList) {
+            Object[] row = {
+                item.getItemID(),
+                item.getItemName(),
+                item.getSupplier().getSupplierName(),
+                item.getPrice(),
+                item.getStock(),
+            };
+            model.addRow(row);
+        }
     }
     
     public static void main(String args[]) {
@@ -619,6 +624,7 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JTable ItemTable;
     private java.awt.Button ResetBtn;
     private java.awt.Button SaveBtn;
+    private javax.swing.JComboBox<String> comboSupplierId;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -627,10 +633,9 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private java.awt.TextField txtItemId;
-    private java.awt.TextField txtItemName;
-    private java.awt.TextField txtItemPrice;
-    private java.awt.TextField txtItemQuantity;
-    private java.awt.TextField txtSupplierId;
+    private javax.swing.JTextField txtItemId;
+    private javax.swing.JTextField txtItemName;
+    private javax.swing.JTextField txtItemPrice;
+    private javax.swing.JTextField txtItemQuantity;
     // End of variables declaration//GEN-END:variables
 }
