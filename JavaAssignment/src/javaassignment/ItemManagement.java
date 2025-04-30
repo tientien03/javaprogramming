@@ -336,13 +336,22 @@ public class ItemManagement extends javax.swing.JFrame {
         Supplierpanel.setLayout(new BoxLayout(Supplierpanel, BoxLayout.Y_AXIS));
 
         ArrayList<JCheckBox> checkBoxes = new ArrayList<>();
-
+        String[] selectedIds = txtSupplierid.getText().split(" | ");
         for (Supplier supplier : supplierList) {
-            String label = supplier.getSupplierId() + " - " + supplier.getSupplierName();
+            String supplierId = supplier.getSupplierId();
+            String label = supplierId + " - " + supplier.getSupplierName();
             JCheckBox checkBox = new JCheckBox(label);
+            // Pre-select if supplier ID exists
+            for (String id : selectedIds) {
+                if (supplierId.equalsIgnoreCase(id.trim())) {
+                    checkBox.setSelected(true);
+                    break;
+                }
+            }
             Supplierpanel.add(checkBox);
             checkBoxes.add(checkBox);
         }
+
         
         JScrollPane scrollPane = new JScrollPane(Supplierpanel);
         scrollPane.setPreferredSize(new Dimension(250,200));
