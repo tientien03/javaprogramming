@@ -416,7 +416,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             for(int i = 0; i < model.getRowCount(); i++){
                 String itemId = model.getValueAt(i, 0).toString();
                 int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
-
                 for (Item item : itemList) {
                     if (item.getItemID().equalsIgnoreCase(itemId)) {
                         int currentStock = item.getStock();
@@ -430,16 +429,21 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             int rowCount = model.getRowCount();
             if(rowCount == 0){
                 JOptionPane.showMessageDialog(this, "No sales to save","Warning",JOptionPane.WARNING_MESSAGE);
+                return;
             }
             for(int i = 0; i<rowCount ;i++){
                 String itemId = model.getValueAt(i, 0).toString();
-                String itemName = model.getValueAt(i, 1).toString();
-                double price = Double.parseDouble(model.getValueAt(i, 2).toString());
                 int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
-                double total = Double.parseDouble(model.getValueAt(i, 4).toString());
-                Item item = new Item(itemId, itemName, null, price, 0.0,0);
-                SalesEntry newEntry = new SalesEntry(salesId, formattedDate,item,quantity,total);
-                salesEntryList.add(newEntry);
+                Item selectedItem = itemList.stream()
+                        .filter(it -> it.getItemID().equalsIgnoreCase(itemId))
+                        .findFirst()
+                        .orElse(null);
+                if(selectedItem != null){
+                    double salesPrice = selectedItem.getSalesPrice();
+                    double total = salesPrice * quantity;
+                    SalesEntry newEntry = new SalesEntry(salesId, formattedDate,selectedItem,quantity,total);
+                    salesEntryList.add(newEntry);
+                }
             }
             FileWriterUtil.writeFile("sales_entry.txt",SalesEntry.convertToStringArrayList(salesEntryList));
             model.setRowCount(0);
