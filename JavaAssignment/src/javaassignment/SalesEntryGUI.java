@@ -373,7 +373,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                 return;
             }
    
-            double unitPrice = selectedItem.getPrice();
+            double unitPrice = selectedItem.getSalesPrice();
             double total = unitPrice*quantity;
             
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();      
