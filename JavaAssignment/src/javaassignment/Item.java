@@ -4,11 +4,7 @@
  */
 package javaassignment;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -18,14 +14,13 @@ import java.util.ArrayList;
 public class Item{
     private String ItemID;
     private String ItemName;
-    private Supplier supplier;
     private double price;
     private int stock;
+    private ArrayList<String> supplierIds = new ArrayList<>();
 
-    public Item(String ItemID, String ItemName, Supplier supplier, double price, int stock) {
+    public Item(String ItemID, String ItemName, double price, int stock) {
         this.ItemID = ItemID;
         this.ItemName = ItemName;
-        this.supplier = supplier;
         this.price = price;
         this.stock = stock;
     }
@@ -36,17 +31,23 @@ public class Item{
     public String getItemName() {return ItemName;}
     public void setItemName(String ItemName) {this.ItemName = ItemName;}
 
-    public Supplier getSupplier() {return supplier;}
-    public void setSupplier(Supplier supplier) {this.supplier = supplier;}
-        
     public double getPrice() {return price;}
     public void setPrice(double price) {this.price = price;}
 
     public int getStock() {return stock;}
     public void setStock(int stock) {this.stock = stock;}
+    
+    public void addSupplierId(String supplierId){
+        if(!supplierIds.contains(supplierId)){
+            supplierIds.add(supplierId);
+        }
+    }
+    
+    public ArrayList<String> getSupplierIds(){ return supplierIds;}
 
     public String toFileString() {
-        return ItemID + "," + ItemName + "," + supplier.getSupplierId() + "," + String.format("%.2f", price) + "," + stock;
+        String supplierJoined = String.join(";", supplierIds);
+        return ItemID + "," + ItemName + "," + String.format("%.2f", price) + "," + stock + "," + supplierJoined;
     }
     
     public static ArrayList<Item> loadItemFromFile(String filename, ArrayList<Supplier> supplierList) {
@@ -58,22 +59,25 @@ public class Item{
                 if (parts.length == 5) {
                     String itemId = parts[0].trim();
                     String itemName = parts[1].trim();
-                    String supplierId = parts[2].trim();
-                    double price = Double.parseDouble(parts[3].trim());
-                    int stock = Integer.parseInt(parts[4].trim());
+                    double price = Double.parseDouble(parts[2].trim());
+                    int stock = Integer.parseInt(parts[3].trim());
                     
-                    Supplier matchedSupplier = null;
-                    for (Supplier s : supplierList) {
-                        if (s.getSupplierId().equalsIgnoreCase(supplierId)) {
-                            matchedSupplier = s;
-                            break;
+                    Item item = new Item (itemId,itemName, price, stock);
+                    
+                    if(!parts[4].isEmpty()){
+                        String[] supplierIds = parts[4].split(";");
+                        for (String id:supplierIds){
+                            String trimmedId = id.trim();
+                            item.addSupplierId(trimmedId);
+                            for (Supplier s: supplierList){
+                                if(s.getSupplierId().equalsIgnoreCase(trimmedId)){
+                                    break;
+                                }
+                            }
                         }
+                        itemList.add(item);
                     }
-                    if (matchedSupplier == null) {
-                        matchedSupplier = new Supplier("Unknown", "Unknown", "-", "-");
-                    }
-                    itemList.add(new Item(itemId, itemName, matchedSupplier, price, stock));
-                }
+                }    
             }
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
@@ -84,7 +88,8 @@ public class Item{
     public static void saveItemToFile(ArrayList<Item> itemList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("item.txt"))) {
             for (Item item : itemList) {
-                String line = item.getItemID() + "," +item.getItemName() + "," +item.getSupplier().getSupplierId() + "," +String.format("%.2f", item.getPrice()) + "," +item.getStock();
+                String supplierJoined = String.join(";", item.getSupplierIds());
+                String line = item.getItemID() + "," +item.getItemName() + "," +String.format("%.2f", item.getPrice()) + "," +item.getStock() + "," + supplierJoined;
             writer.write(line);
             writer.newLine();
         }

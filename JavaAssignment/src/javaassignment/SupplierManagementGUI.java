@@ -1,8 +1,6 @@
 package javaassignment;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -22,6 +20,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     ArrayList<Item> itemList =  new ArrayList<Item>();
         public SupplierManagementGUI() {
             initComponents();
+            
             SupplierTable.getColumnModel().getColumn(4).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
                 JTextArea textArea = new JTextArea(value != null ? value.toString() : "");
                 textArea.setLineWrap(true);
@@ -392,12 +391,10 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     
     private String getFormattedItemDetails(Supplier supplier,ArrayList<Item> itemList){
         StringBuilder sb = new StringBuilder();
-        for (String itemId : supplier.getSuppliedItems()){
-            for (Item item : itemList){
-                if(item.getItemID().equalsIgnoreCase(itemId)){
-                    sb.append(item.getItemID()).append(" - ").append(item.getItemName()).append("\n");
-                    break;
-                }
+        String supplierid = supplier.getSupplierId();
+        for (Item item : itemList){
+            if(item.getSupplierIds().contains(supplierid)){
+                sb.append(item.getItemID()).append(" - ").append(item.getItemName()).append("\n");
             }
         }
         return sb.toString().trim();

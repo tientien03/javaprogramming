@@ -1,5 +1,5 @@
 S001,Fresh Farm Sdn Bhd,012-3456789,freshfarm@suppliers.com
-S002,GreenMarket Traders,013-8765432,greenmarket@suppliers.com,I008;I009
+S002,GreenMarket Traders,013-8765432,greenmarket@suppliers.com
 S003,Tropical Foods,017-2233445,tropicalfoods@suppliers.com
 S004,Happy Fruits Supplier,011-9988776,happyfruits@suppliers.com
 S005,Daily Grocery Depot,016-5566778,dailygrocery@suppliers.com

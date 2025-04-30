@@ -3,36 +3,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package javaassignment;
-import java.awt.Color;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 /**
  *
  * @author User
  */
 public class ItemManagement extends javax.swing.JFrame {
-    ArrayList<Item> itemList = new ArrayList<Item>();
-    ArrayList<Supplier> supplierList = new ArrayList<Supplier>();
+    ArrayList<Item> itemList = new ArrayList<>();
+    ArrayList<Supplier> supplierList = new ArrayList<>();
     public ItemManagement() {
         initComponents();
         setLocationRelativeTo(null);
         
         supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
-        
-        comboSupplierId.setEditable(true);
-        comboSupplierId.removeAllItems();
-        comboSupplierId.addItem("-- Select Supplier --");
-        
-        for(Supplier supplier : supplierList){
-            comboSupplierId.addItem(supplier.getSupplierId() + " - " + supplier.getSupplierName());
-        }
         
         makeTableReadOnly();
         loadItemtoTable();
@@ -63,11 +51,12 @@ public class ItemManagement extends javax.swing.JFrame {
         DeleteBtn = new java.awt.Button();
         BackToMenuBtn = new java.awt.Button();
         ResetBtn = new java.awt.Button();
-        comboSupplierId = new javax.swing.JComboBox<>();
         txtItemQuantity = new javax.swing.JTextField();
         txtItemPrice = new javax.swing.JTextField();
         txtItemName = new javax.swing.JTextField();
         txtItemId = new javax.swing.JTextField();
+        selectSupplierbtn = new javax.swing.JButton();
+        txtSupplierid = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,6 +66,7 @@ public class ItemManagement extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("ITEM MANAGEMENT");
 
+        ItemTable.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         ItemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -96,16 +86,17 @@ public class ItemManagement extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(ItemTable);
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         jLabel2.setText("Item Name");
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         jLabel3.setText("Item ID");
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         jLabel4.setText("Supplier ID");
 
         FindBtn.setBackground(new java.awt.Color(255, 255, 255));
+        FindBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         FindBtn.setLabel("FIND");
         FindBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -113,13 +104,14 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         jLabel5.setText("Price");
 
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         jLabel6.setText("Quantity");
 
         EditBtn.setBackground(new java.awt.Color(255, 255, 255));
+        EditBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         EditBtn.setLabel("EDIT");
         EditBtn.setName(""); // NOI18N
         EditBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -129,6 +121,7 @@ public class ItemManagement extends javax.swing.JFrame {
         });
 
         SaveBtn.setBackground(new java.awt.Color(255, 255, 255));
+        SaveBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         SaveBtn.setLabel("SAVE");
         SaveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -137,6 +130,7 @@ public class ItemManagement extends javax.swing.JFrame {
         });
 
         AddBtn.setBackground(new java.awt.Color(255, 255, 255));
+        AddBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         AddBtn.setLabel("ADD");
         AddBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,6 +139,7 @@ public class ItemManagement extends javax.swing.JFrame {
         });
 
         DeleteBtn.setBackground(new java.awt.Color(255, 255, 255));
+        DeleteBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         DeleteBtn.setLabel("DELETE");
         DeleteBtn.setName(""); // NOI18N
         DeleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -162,6 +157,7 @@ public class ItemManagement extends javax.swing.JFrame {
         });
 
         ResetBtn.setBackground(new java.awt.Color(255, 255, 255));
+        ResetBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         ResetBtn.setLabel("RESET");
         ResetBtn.setName(""); // NOI18N
         ResetBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -170,11 +166,24 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
-        comboSupplierId.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        comboSupplierId.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        txtItemQuantity.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtItemQuantity.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         txtItemQuantity.setDisabledTextColor(new java.awt.Color(255, 255, 255));
+
+        txtItemPrice.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+
+        txtItemName.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+
+        txtItemId.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+
+        selectSupplierbtn.setText("Select Suppliers");
+        selectSupplierbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectSupplierbtnActionPerformed(evt);
+            }
+        });
+
+        txtSupplierid.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+        txtSupplierid.setEnabled(false);
 
         jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -190,11 +199,12 @@ public class ItemManagement extends javax.swing.JFrame {
         jDesktopPane1.setLayer(DeleteBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(BackToMenuBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(ResetBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(comboSupplierId, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtItemQuantity, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtItemPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtItemName, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtItemId, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(selectSupplierbtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(txtSupplierid, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -205,38 +215,39 @@ public class ItemManagement extends javax.swing.JFrame {
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(233, 233, 233))
+                        .addGap(183, 183, 183)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 758, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(11, 11, 11)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, 0)
-                                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(comboSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(20, 20, 20)
-                                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(AddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(SaveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(DeleteBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(EditBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(FindBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                        .addGap(2, 2, 2)
-                                        .addComponent(ResetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(txtSupplierid)
+                                .addGap(18, 18, 18)
+                                .addComponent(selectSupplierbtn)))
+                        .addGap(20, 20, 20)
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(AddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(SaveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(DeleteBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(EditBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(FindBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(ResetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,8 +257,8 @@ public class ItemManagement extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jDesktopPane1Layout.createSequentialGroup()
                         .addComponent(FindBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -270,11 +281,12 @@ public class ItemManagement extends javax.swing.JFrame {
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(17, 17, 17)
+                        .addGap(18, 18, 18)
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(comboSupplierId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(24, 24, 24)
+                            .addComponent(selectSupplierbtn)
+                            .addComponent(txtSupplierid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
                         .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -283,7 +295,7 @@ public class ItemManagement extends javax.swing.JFrame {
                             .addComponent(jLabel6)
                             .addComponent(txtItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(2, 2, 2)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -294,9 +306,7 @@ public class ItemManagement extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(34, Short.MAX_VALUE))
+            .addComponent(jDesktopPane1)
         );
 
         pack();
@@ -312,48 +322,53 @@ public class ItemManagement extends javax.swing.JFrame {
                 return;
             }
             if (txtItemName.getText().isEmpty() ||
-                comboSupplierId.getSelectedItem().toString().equalsIgnoreCase("-- Select Supplier --") ||
+                txtSupplierid.getText().isEmpty() ||
                 txtItemPrice.getText().isEmpty() ||txtItemQuantity.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return;
             }
-            String supplierId = comboSupplierId.getSelectedItem().toString().split("-")[0].trim();
-            Supplier selectedSupplier = null;
-            for (Supplier s : supplierList) {
-                if (s.getSupplierId().equalsIgnoreCase(supplierId)) {
-                    selectedSupplier = s;
-                    break;
+            String[] supplierId = txtSupplierid.getText().split(",");
+            ArrayList<Supplier> matchedSupplierIds = new ArrayList<>();
+            for(String id : supplierId){
+                String trimmedId = id.trim();
+                for (Supplier s : supplierList) {
+                    if (s.getSupplierId().equalsIgnoreCase(trimmedId)) {
+                        matchedSupplierIds.add(s);
+                        break;
+                    }
                 }
             }
-            if (selectedSupplier == null) {
-                JOptionPane.showMessageDialog(this, "Supplier ID not found.");
+            if(matchedSupplierIds.isEmpty()){
+                JOptionPane.showMessageDialog(this,"Supplier ID(s) not found.");
                 return;
             }
             boolean found = false;
-            for (Item item : itemList) {
-                if (item.getItemID().equalsIgnoreCase(itemId)) {
+            for(Item item : itemList){
+                if(item.getItemID().equalsIgnoreCase(itemId)){
                     item.setItemName(txtItemName.getText().trim());
-                    item.setSupplier(selectedSupplier);
                     item.setPrice(Double.parseDouble(txtItemPrice.getText().trim()));
                     item.setStock(Integer.parseInt(txtItemQuantity.getText().trim()));
+                    
+                    item.getSupplierIds().clear();
+                    for(Supplier s : matchedSupplierIds){
+                        item.addSupplierId(s.getSupplierId());
+                    }
                     found = true;
                     break;
                 }
             }
-
-            if (!found) {
+            if(!found){
                 JOptionPane.showMessageDialog(this, "Item not found in the list.");
                 return;
             }
-
-            // Save updated list to file
             Item.saveItemToFile(itemList);
-            JOptionPane.showMessageDialog(this, "Item updated successfully.");
+            JOptionPane.showMessageDialog(this, "Item updated Successfully");
             clearInput();
             loadItemtoTable();
-        }catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Price and Quantity must be numeric.");
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Price and Quantity must be numeric");
         }
+        
     }//GEN-LAST:event_SaveBtnActionPerformed
 
     private void EditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditBtnActionPerformed
@@ -364,22 +379,23 @@ public class ItemManagement extends javax.swing.JFrame {
         for(int i=0; i<model.getRowCount();i++){
             if(model.getValueAt(i,0).toString().equalsIgnoreCase(editID)){
                 txtItemName.setText(model.getValueAt(i, 1).toString());
-                comboSupplierId.setSelectedItem(model.getValueAt(i, 2).toString());
+                txtSupplierid.setText(model.getValueAt(i, 2).toString());
                 txtItemPrice.setText(model.getValueAt(i, 3).toString());
                 txtItemQuantity.setText(model.getValueAt(i, 4).toString());
                 ItemTable.setRowSelectionInterval(i,i);
                 found = true;
-                txtItemName.setEditable(true);comboSupplierId.setEnabled(true);
-                txtItemPrice.setEditable(true);txtItemQuantity.setEditable(true);
                 break; 
             }
         }
+        setEnabled(); 
     }//GEN-LAST:event_EditBtnActionPerformed
 
     private void AddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBtnActionPerformed
         try{
-            if (txtItemName.getText().isEmpty() ||comboSupplierId.getSelectedItem().toString().equalsIgnoreCase("-- Select Supplier --") 
-                ||txtItemPrice.getText().isEmpty() ||txtItemQuantity.getText().isEmpty()) {
+            if (txtItemName.getText().isEmpty() ||
+                txtSupplierid.getText().isEmpty()||
+                txtItemPrice.getText().isEmpty() ||
+                txtItemQuantity.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return; // stop the method here
             }
@@ -397,31 +413,15 @@ public class ItemManagement extends javax.swing.JFrame {
                 return;
             }
             
-            //check supplierid
-            String supplierId = comboSupplierId.getSelectedItem().toString().split("-")[0].trim();
-            Supplier selectedSupplier = null;
-            for (Supplier s: supplierList){
-                if(s.getSupplierId().equalsIgnoreCase(supplierId)){
-                    selectedSupplier = s;
-                    s.addItemId(newItemId);
-                    break;
-                }
-            }
-            Supplier.saveSupplierToFile(supplierList);
+            String itemName = txtItemName.getText().trim();
+            double price = Double.parseDouble(txtItemPrice.getText().trim());
+            int quantity = Integer.parseInt(txtItemQuantity.getText().trim());
+            String[] supplierIds = txtSupplierid.getText().split(",");
             
-            if(selectedSupplier == null){
-                JOptionPane.showMessageDialog(this, "Supplier ID not found.");
-                return;
+            Item newItem = new Item(newItemId, itemName, price, quantity);
+            for (String id : supplierIds) {
+                newItem.addSupplierId(id.trim());
             }
-            
-            //add new item to file
-            Item newItem = new Item(
-                newItemId,
-                txtItemName.getText(),
-                selectedSupplier,
-                Double.parseDouble(txtItemPrice.getText()),
-                Integer.parseInt(txtItemQuantity.getText())
-            );
             itemList.add(newItem);
             Item.saveItemToFile(itemList);
             JOptionPane.showMessageDialog(this, "New Item added successfully");
@@ -472,9 +472,9 @@ public class ItemManagement extends javax.swing.JFrame {
         for(int i=0; i<model.getRowCount();i++){
             if(model.getValueAt(i,0).toString().equalsIgnoreCase(findID)){
                 txtItemName.setText(model.getValueAt(i, 1).toString());
-                comboSupplierId.setSelectedItem(model.getValueAt(i, 2).toString());
-                txtItemPrice.setText(model.getValueAt(i, 3).toString());
-                txtItemQuantity.setText(model.getValueAt(i, 4).toString());
+                txtSupplierid.setText(model.getValueAt(i, 4).toString());
+                txtItemPrice.setText(model.getValueAt(i, 2).toString());
+                txtItemQuantity.setText(model.getValueAt(i, 3).toString());
                 ItemTable.setRowSelectionInterval(i,i);
                 found = true;
                 setUnenabled();
@@ -498,7 +498,7 @@ public class ItemManagement extends javax.swing.JFrame {
     private void ResetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetBtnActionPerformed
         // TODO add your handling code here:
         clearInput();
-        txtItemName.setEditable(true);comboSupplierId.setEditable(true);
+        txtItemName.setEditable(true);txtSupplierid.setEditable(true);
         txtItemPrice.setEditable(true);txtItemQuantity.setEditable(true); 
     }//GEN-LAST:event_ResetBtnActionPerformed
 
@@ -509,12 +509,53 @@ public class ItemManagement extends javax.swing.JFrame {
         if(selectedRow != -1){
             txtItemId.setText(model.getValueAt(selectedRow, 0).toString());
             txtItemName.setText(model.getValueAt(selectedRow, 1).toString());
-            comboSupplierId.setSelectedItem(model.getValueAt(selectedRow, 2).toString());
+            txtSupplierid.setText(model.getValueAt(selectedRow, 2).toString());
             txtItemPrice.setText(model.getValueAt(selectedRow, 3).toString());
             txtItemQuantity.setText(model.getValueAt(selectedRow, 4).toString());
             setUnenabled();  
         }   
     }//GEN-LAST:event_ItemTableMouseClicked
+
+    private void selectSupplierbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectSupplierbtnActionPerformed
+        // TODO add your handling code here:
+        JPanel Supplierpanel = new JPanel();
+        Supplierpanel.setLayout(new BoxLayout(Supplierpanel, BoxLayout.Y_AXIS));
+
+        ArrayList<JCheckBox> checkBoxes = new ArrayList<>();
+
+        for (Supplier supplier : supplierList) {
+            String label = supplier.getSupplierId() + " - " + supplier.getSupplierName();
+            JCheckBox checkBox = new JCheckBox(label);
+            Supplierpanel.add(checkBox);
+            checkBoxes.add(checkBox);
+        }
+        
+        JScrollPane scrollPane = new JScrollPane(Supplierpanel);
+        scrollPane.setPreferredSize(new Dimension(250,200));
+        
+        int result = JOptionPane.showConfirmDialog(
+            null, 
+            scrollPane, 
+            "Select Suppliers",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+        
+        if (result == JOptionPane.OK_OPTION){
+            ArrayList<String> selectedSupplierIds = new ArrayList<>();
+            for(JCheckBox cb : checkBoxes){
+                if(cb.isSelected()){
+                    String supplierId = cb.getText().split(" - ")[0].trim();
+                    selectedSupplierIds.add(supplierId);
+                }
+            }
+            if (!selectedSupplierIds.isEmpty()) {
+                txtSupplierid.setText(String.join(", ", selectedSupplierIds));
+            } else {
+                txtSupplierid.setText("");
+                JOptionPane.showMessageDialog(null, "No suppliers selected.");
+            }   
+        }
+    }//GEN-LAST:event_selectSupplierbtnActionPerformed
  
     private void makeTableReadOnly(){
         DefaultTableModel model = new DefaultTableModel(
@@ -544,24 +585,21 @@ public class ItemManagement extends javax.swing.JFrame {
     
     private void clearInput(){
         txtItemId.setText("");
+        txtSupplierid.setText("");
         txtItemName.setText("");
-        comboSupplierId.setSelectedIndex(0);
         txtItemPrice.setText("");
         txtItemQuantity.setText("");
     }
     
     private void setEnabled(){
-        comboSupplierId.setBackground(Color.WHITE);
         txtItemName.setEditable(true);
-        comboSupplierId.setEnabled(true);
+        txtSupplierid.setEditable(true);
         txtItemPrice.setEditable(true);
         txtItemQuantity.setEditable(true);
     }
     
      private void setUnenabled(){
-        comboSupplierId.setBackground(Color.WHITE);
         txtItemName.setEditable(false);
-        comboSupplierId.setEnabled(false);
         txtItemPrice.setEditable(false);
         txtItemQuantity.setEditable(false);
     }
@@ -575,7 +613,7 @@ public class ItemManagement extends javax.swing.JFrame {
             Object[] row = {
                 item.getItemID(),
                 item.getItemName(),
-                item.getSupplier().getSupplierName(),
+                item.getSupplierIds(),
                 item.getPrice(),
                 item.getStock(),
             };
@@ -624,7 +662,6 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JTable ItemTable;
     private java.awt.Button ResetBtn;
     private java.awt.Button SaveBtn;
-    private javax.swing.JComboBox<String> comboSupplierId;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -633,9 +670,11 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton selectSupplierbtn;
     private javax.swing.JTextField txtItemId;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemPrice;
     private javax.swing.JTextField txtItemQuantity;
+    private javax.swing.JTextField txtSupplierid;
     // End of variables declaration//GEN-END:variables
 }

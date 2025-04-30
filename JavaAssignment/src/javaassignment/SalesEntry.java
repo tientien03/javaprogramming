@@ -84,7 +84,7 @@ public class SalesEntry {
                     int quantity = Integer.parseInt(parts[5].trim());
                     double total = Double.parseDouble(parts[6].trim());
                     
-                    Item item = new Item (itemId, itemName, null, price, 0);
+                    Item item = new Item (itemId, itemName,price,0);
                     
                     SalesEntry entry = new SalesEntry(salesId,date,item,quantity,total);
                     salesList.add(entry);
