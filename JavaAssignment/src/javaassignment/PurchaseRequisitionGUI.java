@@ -272,15 +272,17 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
         model.setRowCount(0);
         for (PurchaseRequisition pr : PRList) {
-            Object[] row = {
-                pr.getPrId(),
-                pr.getItem().getItemID(),
-                pr.getQuantity(),
-                pr.getRequiredDate(),
-                String.join(" | ", pr.getSupplierIds()),
-                pr.getRaisedBy()
-            };
-            model.addRow(row);
+            if(pr.getStatus().equalsIgnoreCase("Pending")){
+                Object[] row = {
+                    pr.getPrId(),
+                    pr.getItem().getItemID(),
+                    pr.getQuantity(),
+                    pr.getRequiredDate(),
+                    String.join(" | ", pr.getSupplierIds()),
+                    pr.getRaisedBy()
+                };
+                model.addRow(row);
+            }   
         }
     }//GEN-LAST:event_viewAllBtnActionPerformed
 
