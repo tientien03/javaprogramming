@@ -5,7 +5,7 @@
 package javaassignment;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  *
@@ -15,16 +15,21 @@ public class Item{
     private String ItemID;
     private String ItemName;
     private double price;
+    private double salesPrice;
     private int stock;
-    private ArrayList<String> supplierIds = new ArrayList<>();
+    private List<Supplier> supplier;
 
-    public Item(String ItemID, String ItemName, double price, int stock) {
+    public Item(String ItemID, String ItemName, List<Supplier> supplier ,double price, double salesPrice, int stock) {
         this.ItemID = ItemID;
         this.ItemName = ItemName;
+        this.supplier = supplier;
         this.price = price;
+        this.salesPrice = salesPrice;
         this.stock = stock;
     }
 
+   
+    
     public String getItemID() {return ItemID;}
     public void setItemID(String ItemID) {this.ItemID = ItemID;}
 
@@ -36,66 +41,70 @@ public class Item{
 
     public int getStock() {return stock;}
     public void setStock(int stock) {this.stock = stock;}
-    
-    public void addSupplierId(String supplierId){
-        if(!supplierIds.contains(supplierId)){
-            supplierIds.add(supplierId);
-        }
+
+    public double getSalesPrice() { return salesPrice;}
+    public void setSalesPrice(double salesPrice) { this.salesPrice = salesPrice;}
+
+    public List<Supplier> getSupplier() {return supplier;}
+
+    public void setSupplier(List<Supplier> supplier) {
+        this.supplier = supplier;
     }
     
-    public ArrayList<String> getSupplierIds(){ return supplierIds;}
+    public List<String> getSupplierids(){
+        List<String> ids = new ArrayList<>();
+        for (Supplier s : supplier){
+            ids.add(s.getSupplierId());
+        }
+        return ids;
+    }
 
     public String toFileString() {
-        String supplierJoined = String.join(";", supplierIds);
-        return ItemID + "," + ItemName + "," + String.format("%.2f", price) + "," + stock + "," + supplierJoined;
+        String supplierJoined = String.join(";", getSupplierids());
+        return ItemID + "," + ItemName + "," + supplierJoined + "," + String.format("%.2f", price) + "," + stock;
     }
     
-    public static ArrayList<Item> loadItemFromFile(String filename, ArrayList<Supplier> supplierList) {
-        ArrayList<Item> itemList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("item.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 5) {
-                    String itemId = parts[0].trim();
-                    String itemName = parts[1].trim();
-                    double price = Double.parseDouble(parts[2].trim());
-                    int stock = Integer.parseInt(parts[3].trim());
-                    
-                    Item item = new Item (itemId,itemName, price, stock);
-                    
-                    if(!parts[4].isEmpty()){
-                        String[] supplierIds = parts[4].split(";");
-                        for (String id:supplierIds){
-                            String trimmedId = id.trim();
-                            item.addSupplierId(trimmedId);
-                            for (Supplier s: supplierList){
-                                if(s.getSupplierId().equalsIgnoreCase(trimmedId)){
-                                    break;
-                                }
-                            }
+    public static List<Item> loadItemFromFile(String filename, List<Supplier> supplierList) {
+        List<Item> itemList = new ArrayList<>();
+        List<String[]> itemData = FileReaderUtil.readFile(filename);
+        for (String[] parts : itemData) {
+            if (parts.length == 6) {
+                String itemId = parts[0].trim();
+                String itemName = parts[1].trim();
+                String[] supplierIds = parts[2].split(";");
+                List<Supplier> matchedSuppliers = new ArrayList<>();
+                for (String sid : supplierIds) {
+                    for (Supplier s : supplierList) {
+                        if (s.getSupplierId().equalsIgnoreCase(sid.trim())) {
+                            matchedSuppliers.add(s);
+                            break;
                         }
-                        itemList.add(item);
                     }
-                }    
+                }
+                double price = Double.parseDouble(parts[3].trim());
+                double salesPrice = Double.parseDouble(parts[4].trim());
+                int stock = Integer.parseInt(parts[5].trim());
+                Item item = new Item(itemId, itemName, matchedSuppliers,price, salesPrice,stock);
+                itemList.add(item);
             }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
         }
         return itemList;
     }
     
-    public static void saveItemToFile(ArrayList<Item> itemList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("item.txt"))) {
-            for (Item item : itemList) {
-                String supplierJoined = String.join(";", item.getSupplierIds());
-                String line = item.getItemID() + "," +item.getItemName() + "," +String.format("%.2f", item.getPrice()) + "," +item.getStock() + "," + supplierJoined;
-            writer.write(line);
-            writer.newLine();
+    public static List<String[]> convertToStringArrayList(List<Item> itemList) {
+        List<String[]> data = new ArrayList<>();
+        for (Item item : itemList) {
+            String[] parts = {
+                item.getItemID(),
+                item.getItemName(),
+                String.join(";", item.getSupplierids()),
+                String.format("%.2f", item.getPrice()),
+                String.format("%.2f", item.getSalesPrice()),
+                String.valueOf(item.getStock())
+            };
+            data.add(parts);
         }
-            System.out.println("Item stock updated and saved to item.txt");
-        } catch (IOException e) {
-            System.out.println("Error saving item file: " + e.getMessage());
-        }
+        return data;
     }
+    
 }

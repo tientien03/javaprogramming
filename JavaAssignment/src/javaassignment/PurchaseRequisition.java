@@ -4,9 +4,7 @@
  */
 package javaassignment;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  *
@@ -15,13 +13,13 @@ import java.util.ArrayList;
 public class PurchaseRequisition {
     private String prId;
     private Item item;
-    private Supplier supplier;
+    private List<Supplier> supplier;
     private int quantity;
     private String requiredDate;
     private String raisedBy;
     private String status;
 
-    public PurchaseRequisition(String prId, Item item, Supplier supplier, int quantity, String requiredDate, String raisedBy, String status) {
+    public PurchaseRequisition(String prId, Item item, List<Supplier> supplier, int quantity, String requiredDate, String raisedBy, String status) {
         this.prId = prId;
         this.item = item;
         this.supplier = supplier;
@@ -31,33 +29,24 @@ public class PurchaseRequisition {
         this.status = status;
     }
 
-    public String getPrId() {
-        return prId;
-    }
+    public String getPrId() {return prId;}
+    public void setPrId(String prId) {this.prId = prId;}
 
-    public void setPrId(String prId) {
-        this.prId = prId;
-    }
+    public Item getItem() {return item;}
+    public void setItem(Item item) {this.item = item;}
 
-    public Item getItem() {
-        return item;
+    public List<Supplier> getSupplier() {return supplier;}
+    public void setSupplier(List<Supplier> supplier) { this.supplier = supplier;}
+    
+    public List<String> getSupplierIds(){
+        List<String> ids = new ArrayList<>();
+        for (Supplier s : supplier){
+            ids.add(s.getSupplierId());
+        }
+        return ids;
     }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
+    
+    public int getQuantity() {return quantity;}
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
@@ -88,50 +77,52 @@ public class PurchaseRequisition {
     }
 
     public String toString() {
-        return  prId + "," + item.getItemID() + "," + supplier.getSupplierId() + "," + quantity + "," + requiredDate + "," + raisedBy + "," + status;
+        String supplierJoined = String.join(";", getSupplierIds());
+        return  prId + "," + item.getItemID() + "," + supplierJoined + "," + quantity + "," + requiredDate + "," + raisedBy + "," + status;
     }
     
-    public static ArrayList<PurchaseRequisition> loadPRFromFile(String filename, ArrayList<Item> itemList, ArrayList<Supplier> supplierList) {
-        ArrayList<PurchaseRequisition> prList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 7) {
-                    String prId = parts[0].trim();
-                    String itemId = parts[1].trim();
-                    String supplierId = parts[2].trim();
-                    int quantity = Integer.parseInt(parts[3].trim());
-                    String requiredDate = parts[4].trim();
-                    String raisedBy = parts[5].trim();
-                    String status = parts[6].trim();
-
-                    // Find matching Item
-                    Item matchedItem = null;
-                    for (Item item : itemList) {
-                        if (item.getItemID().equalsIgnoreCase(itemId)) {
-                            matchedItem = item;
-                            break;
-                        }
-                    }
-
-                    // Find matching Supplier
-                    Supplier matchedSupplier = null;
-                    for (Supplier s : supplierList) {
-                        if (s.getSupplierId().equalsIgnoreCase(supplierId)) {
-                            matchedSupplier = s;
-                            break;
-                        }
-                    }
-
-                    if (matchedItem != null && matchedSupplier != null) {
-                        prList.add(new PurchaseRequisition(prId, matchedItem, matchedSupplier, quantity, requiredDate, raisedBy, status));
+    public static List<PurchaseRequisition> loadPRFromFile(String filename, List<Item> itemList, List<Supplier> supplierList) {
+        List<PurchaseRequisition> prList = new ArrayList<>();
+        List<String[]> prData = FileReaderUtil.readFile(filename);
+        for (String[] parts : prData) {
+            if (parts.length == 7) {
+                String prId = parts[0].trim();
+                String itemId = parts[1].trim();
+                String[] supplierIds = parts[2].split(";");
+                int quantity = Integer.parseInt(parts[3].trim());
+                String requiredDate = parts[4].trim();
+                String raisedBy = parts[5].trim();
+                String status = parts[6].trim();
+                
+                // Match item
+                Item matchedItem = null;
+                for (Item item : itemList) {
+                    if (item.getItemID().equalsIgnoreCase(itemId)) {
+                        matchedItem = item;
+                        break;
                     }
                 }
+
+                // Match supplier
+                List<Supplier>  matchedSuppliers = new ArrayList<>();
+                for (String sid : supplierIds) {
+                    for(Supplier s: supplierList){
+                        if (s.getSupplierId().equalsIgnoreCase(sid.trim())) {
+                            matchedSuppliers.add(s);
+                            break;
+                        }
+                    }
+                }
+                
+                if (matchedItem != null && !matchedSuppliers.isEmpty()) {
+                    PurchaseRequisition pr = new PurchaseRequisition(
+                        prId, matchedItem, matchedSuppliers, quantity, requiredDate, raisedBy, status
+                    );
+                    prList.add(pr);
+                }
+                
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }            
         return prList;
     }
 }

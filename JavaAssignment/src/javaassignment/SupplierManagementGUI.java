@@ -1,9 +1,10 @@
 package javaassignment;
 
-import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -16,27 +17,16 @@ import javax.swing.table.DefaultTableModel;
  * @author User
  */
 public class SupplierManagementGUI extends javax.swing.JFrame {
-    ArrayList<Supplier> supplierList =  new ArrayList<Supplier>();
-    ArrayList<Item> itemList =  new ArrayList<Item>();
+    List<Supplier> supplierList = new ArrayList<>();
+    List<Item> itemList = new ArrayList<>();
         public SupplierManagementGUI() {
             initComponents();
-            
-            SupplierTable.getColumnModel().getColumn(4).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
-                JTextArea textArea = new JTextArea(value != null ? value.toString() : "");
-                textArea.setLineWrap(true);
-                textArea.setWrapStyleWord(true);
-                textArea.setOpaque(true);
-                textArea.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-                textArea.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
-                table.setRowHeight(row, textArea.getPreferredSize().height); // auto adjust height
-                return textArea;
-            });
-
             setLocationRelativeTo(null);
             supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
             itemList = Item.loadItemFromFile("item.txt",supplierList);
             System.out.println("Loaded suppliers: " + supplierList.size());
-            loadSuppliersToTable();
+            makeTableReadOnly();
+            loadSuppliersToTable();       
         }
 
     /**
@@ -67,6 +57,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         BackToMenuBtn = new java.awt.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         saveSupplierBtn.setBackground(new java.awt.Color(255, 255, 255));
         saveSupplierBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
@@ -86,6 +77,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("SUPPLIER MANAGEMENT");
 
+        SupplierTable.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         SupplierTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -94,9 +86,10 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Supplier ID", "Supplier Nama", "Contact Number", "Email", "Supplies Item"
+                "Supplier ID", "Supplier Name", "Contact Number", "Email", "Supplies Item"
             }
         ));
+        SupplierTable.setEnabled(false);
         SupplierTable.setShowGrid(true);
         jScrollPane2.setViewportView(SupplierTable);
 
@@ -295,7 +288,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                     txtSupplierPhoneNo.getText(),
                     txtSupplierEmail.getText());
                     supplierList.add(newSupplier);
-                    Supplier.saveSupplierToFile(supplierList);
+                    FileWriterUtil.writeFile("supplier.txt",Supplier.convertToStringArrayList(supplierList));
                     System.out.println("New Supplier added.");
                 }
         }catch(Exception e){
@@ -320,7 +313,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                    if(confirm == JOptionPane.YES_OPTION){
                         supplierList.remove(i);
                         System.out.println("Loaded suppliers: " + supplierList.size());
-                        Supplier.saveSupplierToFile(supplierList);
+                        FileWriterUtil.writeFile("supplier.txt",Supplier.convertToStringArrayList(supplierList));
                         //clear input
                         clearInput();
                         JOptionPane.showMessageDialog(this, "Item deleted successfully.");
@@ -389,17 +382,58 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         System.out.println("Rows loaded into table: " + model.getRowCount());
     }
     
-    private String getFormattedItemDetails(Supplier supplier,ArrayList<Item> itemList){
+    private void makeTableReadOnly(){
+        DefaultTableModel model = new DefaultTableModel(
+        new String[]{"Supplier ID","Supplier Name", "Contact Number","Email","Supplied Item"},0
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        SupplierTable.setModel(model);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);
+
+        for (int i = 0; i < SupplierTable.getColumnCount(); i++) {
+            if (i != 4) { // Skip column 5 for wrapping
+                SupplierTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            }
+        }
+        SupplierTable.getColumnModel().getColumn(4).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+            JTextArea textArea = new JTextArea(value != null ? value.toString() : "");
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setOpaque(true);
+            textArea.setEditable(false);
+            textArea.setFocusable(false);
+            textArea.setFont(table.getFont());
+            textArea.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            textArea.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+
+            // 🧠 Adjust row height to fit wrapped text
+            int preferredHeight = textArea.getPreferredSize().height;
+            if (table.getRowHeight(row) < preferredHeight) {
+                table.setRowHeight(row, preferredHeight);
+            }
+            return textArea;
+        });
+    }
+    
+    private String getFormattedItemDetails(Supplier supplier,List<Item> itemList){
         StringBuilder sb = new StringBuilder();
         String supplierid = supplier.getSupplierId();
         for (Item item : itemList){
-            if(item.getSupplierIds().contains(supplierid)){
+            if(item.getSupplierids().contains(supplierid)){
                 sb.append(item.getItemID()).append(" - ").append(item.getItemName()).append("\n");
             }
         }
         return sb.toString().trim();
     }
     
+    
+
+   
     private void clearInput(){
         txtSupplierName.setText("");
         txtSupplierPhoneNo.setText("");

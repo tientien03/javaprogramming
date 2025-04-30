@@ -14,9 +14,9 @@ import javax.swing.table.DefaultTableModel;
  * @author User
  */
 public class PurchaseRequisitionGUI extends javax.swing.JFrame {
-    ArrayList<Item> itemList = new ArrayList<>();
-    ArrayList<Supplier> supplierList = new ArrayList<>();
-    ArrayList<PurchaseRequisition> PRList = new ArrayList<>();
+    List<Item> itemList = new ArrayList<>();
+    List<Supplier> supplierList = new ArrayList<>();
+    List<PurchaseRequisition> PRList = new ArrayList<>();
     int editingRowIndex = 0;
     boolean isEditing = false;
     public PurchaseRequisitionGUI() {
@@ -27,7 +27,8 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
         PRList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
-        
+        DefaultTableModel pr = (DefaultTableModel) PRTable.getModel();
+        pr.setRowCount(0);
         loadLowStockItemsToTable();
         ComboItem.removeAllItems();
         ComboItem.addItem("-- Select Item --");
@@ -271,14 +272,15 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
         model.setRowCount(0);
         for (PurchaseRequisition pr : PRList) {
-            model.addRow(new Object[]{
+            Object[] row = {
                 pr.getPrId(),
                 pr.getItem().getItemID(),
                 pr.getQuantity(),
                 pr.getRequiredDate(),
-                pr.getSupplier().getSupplierId(),
+                String.join(" | ", pr.getSupplierIds()),
                 pr.getRaisedBy()
-            });
+            };
+            model.addRow(row);
         }
     }//GEN-LAST:event_viewAllBtnActionPerformed
 
@@ -288,17 +290,38 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             String prId = generateNextPrId();
             String itemId = ComboItem.getSelectedItem().toString().split("-")[0].trim();
             Item selectedItem = null;
+            if (itemId.isEmpty() ||
+                txtquantity.getText().isEmpty()||
+                txtDate.getText().isEmpty() ||
+                txtRaisedBy.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                return; // stop the method here
+            }
             for (Item i : itemList){
                 if (i.getItemID().equalsIgnoreCase(itemId)){
                     selectedItem = i;
                 }
             }
-            Supplier selectedSupplier = selectedItem.getSupplierIds();
+            if(selectedItem == null){
+                JOptionPane.showMessageDialog(this,"Item not found.");
+                return;
+            }           
+            List<Supplier> matchedSuppliers = new ArrayList();
+            for(String sid : selectedItem.getSupplierids()){
+                for(Supplier s : supplierList){
+                    if(s.getSupplierId().equalsIgnoreCase(sid.trim())){
+                        matchedSuppliers.add(s);
+                        break;
+                    }
+                }
+            }
             int quantity = Integer.parseInt(txtquantity.getText().trim());
             String requiredDate = txtDate.getText().trim();
             String raisedBy = txtRaisedBy.getText().trim();
 
-            PurchaseRequisition newPr = new PurchaseRequisition(prId, selectedItem, selectedSupplier, quantity, requiredDate, raisedBy,"Pending");
+            PurchaseRequisition newPr = new PurchaseRequisition(
+                prId, selectedItem,matchedSuppliers, quantity, requiredDate, raisedBy,"Pending"
+            );
             PRList.add(newPr);
             savePrToFile();
             JOptionPane.showMessageDialog(this, "PR Added Successfully.");
@@ -357,10 +380,16 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             for (Item item : itemList) {
                 if (item.getItemID().equalsIgnoreCase(selectedItemId)) {
                     pr.setItem(item);
-                    ArrayList<String> supplierIds = item.getSupplierIds();
-                    if(!supplierIds.isEmpty()){
-                        (supplierIds.get(0));
+                    List<Supplier> matchedSuppliers = new ArrayList();
+                    for(String sid: item.getSupplierids()){
+                        for(Supplier s : supplierList){
+                            if(s.getSupplierId().equalsIgnoreCase(sid.trim())){
+                                matchedSuppliers.add(s);
+                                break;
+                            }
+                        }
                     }
+                    pr.setSupplier(matchedSuppliers);
                     break;
                 }
             }
@@ -404,7 +433,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         return;
     }
     
-    private ArrayList<Item> getLowStockItems(ArrayList<Item> itemList) {
+    private ArrayList<Item> getLowStockItems(List<Item> itemList) {
         ArrayList<Item> lowStockItems = new ArrayList<>();
         for (Item item : itemList) {
             if (item.getStock() <= 20) {
@@ -418,13 +447,13 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) lockStockTable.getModel();
         model.setRowCount(0); // Clear previous rows
 
-        ArrayList<Item> lowItems = getLowStockItems(itemList); // itemList must already be loaded
+        List<Item> lowItems = getLowStockItems(itemList); // itemList must already be loaded
         for (Item item : lowItems) {
             Object[] row = {
                 item.getItemID(),
                 item.getItemName(),
                 item.getStock(),
-                item.getSupplier().getSupplierId()
+                String.join(";",item.getSupplierids())
             };
             model.addRow(row);
         }

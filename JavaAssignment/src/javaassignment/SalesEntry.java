@@ -4,11 +4,8 @@
  */
 package javaassignment;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -69,32 +66,48 @@ public class SalesEntry {
         this.total = total;
     }
  
-    public static ArrayList<SalesEntry> loadSalesEntryFromFile(String filename) throws FileNotFoundException{
-        ArrayList<SalesEntry> salesList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
-            String line;
-            while((line = reader.readLine())!=null){
-                String[] parts = line.split(",");
-                if(parts.length == 7){
-                    String salesId = parts[0].trim();
-                    String date = parts[1].trim();
-                    String itemId = parts[2].trim();
-                    String itemName = parts[3].trim();
-                    double price = Double.parseDouble(parts[4].trim());
-                    int quantity = Integer.parseInt(parts[5].trim());
-                    double total = Double.parseDouble(parts[6].trim());
-                    
-                    Item item = new Item (itemId, itemName,price,0);
-                    
-                    SalesEntry entry = new SalesEntry(salesId,date,item,quantity,total);
-                    salesList.add(entry);
-                }
+    public static List<SalesEntry> loadSalesEntryFromFile(String filename, List<Item> itemList){
+        List<SalesEntry> salesList = new ArrayList<>();
+        List<String[]> SalesEntryData = FileReaderUtil.readFile(filename);
+        for (String[] parts : SalesEntryData) {
+            if (parts.length == 7) {
+                String salesId = parts[0].trim();
+                String salesDate = parts[1].trim();
+                String itemId = parts[2].trim();
+                String itemName = parts[3].trim();
+                Double salesprice = Double.parseDouble(parts[4].trim());
+                int quantity = Integer.parseInt(parts[5].trim());
+                Double total = Double.parseDouble(parts[6].trim());
+                // Match item
+                Item matchedItem = null;
+                for (Item item : itemList) {
+                    if (item.getItemID().equalsIgnoreCase(itemId)) {
+                        matchedItem = item;
+                        break;
+                    }
+                }             
+                Item item = matchedItem != null ? matchedItem : new Item (itemId, itemName,null,0.0,0.0,0);            
+                SalesEntry entry = new SalesEntry(salesId,salesDate,item,quantity,total);
+                salesList.add(entry);            
             }
-            
-        }catch (IOException e){
-            System.out.println("Error reading file:"+e.getMessage());
-        }
+        }            
         return salesList;
-    }
+    } 
     
+    public static List<String[]> convertToStringArrayList(List<SalesEntry> salesEntryList) {
+        List<String[]> data = new ArrayList<>();
+        for (SalesEntry se : salesEntryList) {
+            String[] parts = {
+                se.getSalesID(),
+                se.getSalesdate(),
+                se.getItem().getItemID(),
+                se.getItem().getItemName(),
+                String.valueOf(se.getItem().getSalesPrice()),
+                String.valueOf(se.getQuantity()),
+                String.valueOf(se.getTotal()),
+            };
+            data.add(parts);
+        }
+        return data;
+    }
 }

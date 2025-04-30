@@ -15,9 +15,9 @@ import java.text.*;
  * @author User
  */
 public class SalesEntryGUI extends javax.swing.JFrame {
-    ArrayList<Item> itemList = new ArrayList<Item>();
-    ArrayList<Supplier> supplierList = new ArrayList<Supplier>();
-    ArrayList<SalesEntry> salesEntryList = new ArrayList<SalesEntry>();
+    List<Item> itemList = new ArrayList<>();
+    List<Supplier> supplierList = new ArrayList<>();
+    List<SalesEntry> salesEntryList = new ArrayList<>();
     
     private boolean isEditing = false;
     private int editingRowIndex = -1;
@@ -31,6 +31,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         
         supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
         itemList = Item.loadItemFromFile("item.txt", supplierList);
+        salesEntryList = SalesEntry.loadSalesEntryFromFile("sales_entry.txt", itemList);
         
         lblItemError.setText("");  
         lblquantityError.setText("");  
@@ -424,28 +425,26 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     }
                 }
             }
-            Item.saveItemToFile(itemList);
+            FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
             // append sales enrty into file
-            try(PrintWriter writer = new PrintWriter(new FileWriter("sales_entry.txt",true))){
-                int rowCount = model.getRowCount();
-                if(rowCount == 0){
-                    JOptionPane.showMessageDialog(this, "No sales to save","Warning",JOptionPane.WARNING_MESSAGE);
-                }
-                for(int i = 0; i<rowCount ;i++){
-                    String itemId = model.getValueAt(i, 0).toString();
-                    String itemName = model.getValueAt(i, 1).toString();
-                    String price = model.getValueAt(i, 2).toString();
-                    String quantity = model.getValueAt(i, 3).toString();
-                    String total = model.getValueAt(i, 3).toString();
-                    String line = salesId + "," + formattedDate + "," + itemId + "," + itemName +"," + price +"," + quantity +"," +total;
-                    writer.printf(line + "\n");
-                }
-                writer.flush();
-                model.setRowCount(0);
-                JOptionPane.showMessageDialog(this, "Sales saved successfully");
-            }catch (IOException e){
-                JOptionPane.showMessageDialog(this, "Error saving sales:" +e.getMessage());
+            int rowCount = model.getRowCount();
+            if(rowCount == 0){
+                JOptionPane.showMessageDialog(this, "No sales to save","Warning",JOptionPane.WARNING_MESSAGE);
             }
+            for(int i = 0; i<rowCount ;i++){
+                String itemId = model.getValueAt(i, 0).toString();
+                String itemName = model.getValueAt(i, 1).toString();
+                double price = Double.parseDouble(model.getValueAt(i, 2).toString());
+                int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
+                double total = Double.parseDouble(model.getValueAt(i, 4).toString());
+                Item item = new Item(itemId, itemName, null, price, 0.0,0);
+                SalesEntry newEntry = new SalesEntry(salesId, formattedDate,item,quantity,total);
+                salesEntryList.add(newEntry);
+            }
+            FileWriterUtil.writeFile("sales_entry.txt",SalesEntry.convertToStringArrayList(salesEntryList));
+            model.setRowCount(0);
+            JOptionPane.showMessageDialog(this, "Sales saved successfully");
+            
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd");
             return;
