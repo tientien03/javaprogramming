@@ -21,8 +21,9 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     List<Item> itemList = new ArrayList<>();
         public SupplierManagementGUI() {
             initComponents();
+            getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
             setLocationRelativeTo(null);
-            supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+            supplierList = Supplier.loadSupplierFromFile("supplier.txt");
             itemList = Item.loadItemFromFile("item.txt",supplierList);
             System.out.println("Loaded suppliers: " + supplierList.size());
             makeTableReadOnly();
@@ -38,7 +39,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        saveSupplierBtn = new java.awt.Button();
         txtSupplierEmail = new javax.swing.JTextField();
         txtSupplierPhoneNo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -47,31 +47,24 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        editSupplierBtn = new java.awt.Button();
-        addSupplierBtn = new java.awt.Button();
-        deleteSupplierBtn = new java.awt.Button();
         txtSupplierName = new javax.swing.JTextField();
         txtSearch = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         SearchBtn = new javax.swing.JButton();
         BackToMenuBtn = new java.awt.Button();
+        addbtn = new javax.swing.JButton();
+        editBtn = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        deleteBtn = new javax.swing.JButton();
+        resetBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        saveSupplierBtn.setBackground(new java.awt.Color(255, 255, 255));
-        saveSupplierBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        saveSupplierBtn.setLabel("SAVE");
-        saveSupplierBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveSupplierBtnActionPerformed(evt);
-            }
-        });
-
-        txtSupplierEmail.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtSupplierEmail.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         txtSupplierEmail.setToolTipText("Supplier Email");
 
-        txtSupplierPhoneNo.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        txtSupplierPhoneNo.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -89,55 +82,32 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                 "Supplier ID", "Supplier Name", "Contact Number", "Email", "Supplies Item"
             }
         ));
-        SupplierTable.setEnabled(false);
         SupplierTable.setShowGrid(true);
+        SupplierTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SupplierTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(SupplierTable);
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel3.setText("Name");
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel4.setText("Contact Number");
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel5.setText("Email");
 
-        editSupplierBtn.setBackground(new java.awt.Color(255, 255, 255));
-        editSupplierBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        editSupplierBtn.setLabel("EDIT");
-        editSupplierBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editSupplierBtnActionPerformed(evt);
-            }
-        });
+        txtSupplierName.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
-        addSupplierBtn.setBackground(new java.awt.Color(255, 255, 255));
-        addSupplierBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        addSupplierBtn.setLabel("ADD");
-        addSupplierBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addSupplierBtnActionPerformed(evt);
-            }
-        });
+        txtSearch.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
-        deleteSupplierBtn.setBackground(new java.awt.Color(255, 255, 255));
-        deleteSupplierBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        deleteSupplierBtn.setLabel("DELETE");
-        deleteSupplierBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteSupplierBtnActionPerformed(evt);
-            }
-        });
-
-        txtSupplierName.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-
-        txtSearch.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel6.setText("Search Supplier");
 
         SearchBtn.setBackground(java.awt.SystemColor.activeCaption);
-        SearchBtn.setFont(new java.awt.Font("Times New Roman", 3, 12)); // NOI18N
+        SearchBtn.setFont(new java.awt.Font("Times New Roman", 3, 13)); // NOI18N
         SearchBtn.setText("SEARCH");
         SearchBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,6 +123,47 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
             }
         });
 
+        addbtn.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        addbtn.setText("ADD");
+        addbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addbtnActionPerformed(evt);
+            }
+        });
+
+        editBtn.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        editBtn.setText("EDIT");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
+
+        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jButton1.setText("SAVE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        deleteBtn.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        deleteBtn.setText("DELETE");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
+
+        resetBtn.setBackground(new java.awt.Color(249, 231, 166));
+        resetBtn.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        resetBtn.setText("RESET");
+        resetBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -161,9 +172,13 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(180, 180, 180)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(180, 180, 180)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(10, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -171,103 +186,121 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(41, 41, 41)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtSupplierPhoneNo, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtSupplierEmail, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(addSupplierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(23, 23, 23)
-                                .addComponent(editSupplierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(39, 39, 39)
-                                .addComponent(deleteSupplierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                                .addComponent(saveSupplierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtSupplierName)
-                            .addComponent(txtSearch))
-                        .addGap(31, 31, 31)
-                        .addComponent(SearchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(addbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtSupplierPhoneNo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                                    .addComponent(txtSupplierEmail, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtSupplierName)
+                                    .addComponent(txtSearch))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(SearchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(12, 12, 12))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(SearchBtn))
-                .addGap(18, 18, 18)
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtSupplierName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txtSupplierPhoneNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19)
+                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtSupplierEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addSupplierBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editSupplierBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteSupplierBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveSupplierBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addbtn)
+                    .addComponent(editBtn)
+                    .addComponent(jButton1)
+                    .addComponent(deleteBtn)
+                    .addComponent(resetBtn))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveSupplierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveSupplierBtnActionPerformed
-    }//GEN-LAST:event_saveSupplierBtnActionPerformed
+    private void SearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBtnActionPerformed
+        // TODO add your handling code here:
+        String input = txtSearch.getText().split(" - ")[0];
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter Supplier ID or Name to search.");
+            return;
+        }
 
-    private void editSupplierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSupplierBtnActionPerformed
-        //TODO add your handling code here:
-        String editSupplier = txtSupplierName.getText().trim();
-        DefaultTableModel model = (DefaultTableModel)SupplierTable.getModel();
         boolean found = false;
-        for(int i=0; i<model.getRowCount();i++){
-            if(model.getValueAt(i,1).toString().equalsIgnoreCase(editSupplier)){
-                txtSupplierName.setText(model.getValueAt(i, 1).toString());
-                txtSupplierPhoneNo.setText(model.getValueAt(i, 2).toString());
-                txtSupplierEmail.setText(model.getValueAt(i, 3).toString());
+        for (Supplier s : supplierList) {
+            if (s.getSupplierId().equalsIgnoreCase(input) || s.getSupplierName().equalsIgnoreCase(input)) {
+            // Populate the fields
+                txtSearch.setText(s.getSupplierId() + " - " + s.getSupplierName());
+                txtSupplierName.setText(s.getSupplierName());
+                txtSupplierPhoneNo.setText(s.getSupplierPhoneNo());
+                txtSupplierEmail.setText(s.getSupplierEmail());
                 found = true;
-                txtSupplierName.setEditable(true);
-                txtSupplierPhoneNo.setEditable(true);txtSupplierEmail.setEditable(true);
                 break;
             }
         }
-    }//GEN-LAST:event_editSupplierBtnActionPerformed
+        txtSupplierName.setEditable(false);txtSupplierPhoneNo.setEditable(false);txtSupplierEmail.setEditable(false);
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "Supplier not found.");
+        }  
+    }//GEN-LAST:event_SearchBtnActionPerformed
 
-    private void addSupplierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSupplierBtnActionPerformed
-        //TODO add your handling code here:
+    private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
+        // TODO add your handling code here:
+        SalesManagerMenu menu = new SalesManagerMenu();
+        menu.setLocationRelativeTo(null); //center the window
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_BackToMenuBtnActionPerformed
+
+    private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
+        // TODO add your handling code here:
         try{
             String newSupplierName = txtSupplierName.getText().trim();
             if(!newSupplierName.isEmpty()){
-                newSupplierName = newSupplierName.substring(0,1).toUpperCase() + newSupplierName.substring(1).toLowerCase();
+                newSupplierName = newSupplierName.toUpperCase();
             }
                 
             String email = txtSupplierEmail.getText().trim();
             String phone = txtSupplierPhoneNo.getText().trim();
-
-    
+            
+            // Email format: basic validation (e.g., name@domain.com)
             if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
-                JOptionPane.showMessageDialog(null, "Invalid email format.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Invalid email format.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (!phone.matches("^\\d{8,15}$")) {
-                JOptionPane.showMessageDialog(null, "Phone number must contain 8 to 15 digits.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            // Phone format: digits only, between 8 to 15 digits
+            if (!phone.matches("^(\\+?60|0)[0-9]{1,2}-?[0-9]{6,8}$")) {
+                JOptionPane.showMessageDialog(this, "Invalid format.\nUse e.g. 012-3456789 or +60-12-3456789", "Input Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
                 
@@ -281,7 +314,11 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
             if(isDuplicate){
                 JOptionPane.showMessageDialog(null, "Supplier name already exists","Duplicate",JOptionPane.WARNING_MESSAGE);
             }else{
-                String newSupplierID = String.format("S%03d", supplierList.size()+1);
+                String newSupplierID = String.format("S%03d", 
+                        supplierList.stream()
+                        .mapToInt(s -> Integer.parseInt(s.getSupplierId().substring(1)))
+                        .max()
+                        .orElse(0)+1);
                 Supplier newSupplier = new Supplier(
                     newSupplierID,
                     newSupplierName,
@@ -291,15 +328,35 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                     FileWriterUtil.writeFile("supplier.txt",Supplier.convertToStringArrayList(supplierList));
                     System.out.println("New Supplier added.");
                 }
+                loadSuppliersToTable();
+                clearInput();
         }catch(Exception e){
             e.printStackTrace();
         }
-    }//GEN-LAST:event_addSupplierBtnActionPerformed
+    }//GEN-LAST:event_addbtnActionPerformed
 
-    private void deleteSupplierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSupplierBtnActionPerformed
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        // TODO add your handling code here:
+        String editSupplier = txtSupplierName.getText().trim();
+        DefaultTableModel model = (DefaultTableModel)SupplierTable.getModel();
+        boolean found = false;
+        for(int i=0; i<model.getRowCount();i++){
+            if(model.getValueAt(i,1).toString().equalsIgnoreCase(editSupplier)){
+                txtSupplierName.setText(model.getValueAt(i, 1).toString());
+                txtSupplierPhoneNo.setText(model.getValueAt(i, 2).toString());
+                txtSupplierEmail.setText(model.getValueAt(i, 3).toString());
+                found = true;
+                txtSearch.setEditable(false);txtSupplierName.setEditable(true);txtSupplierPhoneNo.setEditable(true);txtSupplierEmail.setEditable(true);
+                break;
+            }
+        }
+    }//GEN-LAST:event_editBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         // TODO add your handling code here:
         int selectedRow = SupplierTable.getSelectedRow();
-        if(selectedRow == -1){
+        
+        if(selectedRow != -1){
             String findSupplier = txtSupplierName.getText().trim();
             if(findSupplier.isEmpty()){
                 JOptionPane.showMessageDialog(this,"Please enter Supplier ID or Name to delete.");
@@ -309,14 +366,20 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
             for (int i = 0; i < supplierList.size(); i++){
                 Supplier s = supplierList.get(i);
                 if (s.getSupplierId().equalsIgnoreCase(findSupplier) || s.getSupplierName().equalsIgnoreCase(findSupplier)) {
-                   int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this Supplier?","Confrim Delete",JOptionPane.YES_NO_OPTION);
+                   int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this Supplier?","Confirm Delete",JOptionPane.YES_NO_OPTION);
                    if(confirm == JOptionPane.YES_OPTION){
+                       String deletedSupplier = s.getSupplierId();
                         supplierList.remove(i);
-                        System.out.println("Loaded suppliers: " + supplierList.size());
+                        for(Item item : itemList){
+                            item.getSupplier().removeIf(sup -> sup.getSupplierId().equalsIgnoreCase(deletedSupplier));
+                        }
+                        FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
                         FileWriterUtil.writeFile("supplier.txt",Supplier.convertToStringArrayList(supplierList));
                         //clear input
+                        loadSuppliersToTable();
                         clearInput();
-                        JOptionPane.showMessageDialog(this, "Item deleted successfully.");
+                        setEnabled();
+                        JOptionPane.showMessageDialog(this, "Supplier deleted successfully.");
                     } 
                     found = true;
                     break;
@@ -326,40 +389,67 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this,"Supplier not found");
             }
         }
-    }//GEN-LAST:event_deleteSupplierBtnActionPerformed
+    }//GEN-LAST:event_deleteBtnActionPerformed
 
-    private void SearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBtnActionPerformed
+    private void SupplierTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SupplierTableMouseClicked
         // TODO add your handling code here:
-        String input = txtSearch.getText().trim();
-        if (input.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter Supplier ID or Name to search.");
+        int selectedRow = SupplierTable.getSelectedRow();
+        DefaultTableModel model = (DefaultTableModel) SupplierTable.getModel();
+        if(selectedRow != -1){
+            txtSearch.setText(model.getValueAt(selectedRow, 0).toString() + " - " + model.getValueAt(selectedRow, 1).toString());
+            txtSupplierName.setText(model.getValueAt(selectedRow, 1).toString());
+            txtSupplierPhoneNo.setText(model.getValueAt(selectedRow, 2).toString());
+            txtSupplierEmail.setText(model.getValueAt(selectedRow, 3).toString());
+            txtSupplierName.setEditable(false);txtSupplierPhoneNo.setEditable(false);txtSupplierEmail.setEditable(false);
+        } 
+    }//GEN-LAST:event_SupplierTableMouseClicked
+
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        // TODO add your handling code here:
+        clearInput();
+        setEnabled();
+    }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String editSupplier = txtSearch.getText().split(" - ")[0];
+        String newSupplierName = txtSupplierName.getText().trim();
+        if(!newSupplierName.isEmpty()){
+            newSupplierName = newSupplierName.toUpperCase();
+        }       
+        String email = txtSupplierEmail.getText().trim();
+        String phone = txtSupplierPhoneNo.getText().trim();
+            
+        // Email format: basic validation (e.g., name@domain.com)
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+            JOptionPane.showMessageDialog(this, "Invalid email format.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // Phone format: digits only, between 8 to 15 digits
+        if (!phone.matches("^(\\+?60|0)[0-9]{1,2}-?[0-9]{6,8}$")) {
+            JOptionPane.showMessageDialog(this, "Invalid format.\nUse e.g. 012-3456789 or +60-12-3456789", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         boolean found = false;
-        for (Supplier s : supplierList) {
-            if (s.getSupplierId().equalsIgnoreCase(input) || s.getSupplierName().equalsIgnoreCase(input)) {
-            // Populate the fields
-                txtSupplierName.setText(s.getSupplierName());
-                txtSupplierPhoneNo.setText(s.getSupplierPhoneNo());
-                txtSupplierEmail.setText(s.getSupplierEmail());
+        for (Supplier supplier : supplierList) {
+            if (supplier.getSupplierId().equalsIgnoreCase(editSupplier)) {
+                supplier.setSupplierName(newSupplierName);
+                supplier.setSupplierPhoneNo(txtSupplierPhoneNo.getText());
+                supplier.setSupplierEmail(txtSupplierEmail.getText());
+                FileWriterUtil.writeFile("supplier.txt", Supplier.convertToStringArrayList(supplierList));
+                JOptionPane.showMessageDialog(this, "Supplier details updated successfully.");
+                loadSuppliersToTable();
+                clearInput();
+                setEnabled();
                 found = true;
                 break;
             }
         }
-
-        if (!found) {
-            JOptionPane.showMessageDialog(this, "Supplier not found.");
-        }  
-    }//GEN-LAST:event_SearchBtnActionPerformed
-
-    private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
-        // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu();
-        menu.setLocationRelativeTo(null); //center the window
-        menu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_BackToMenuBtnActionPerformed
+        if(!found){
+            JOptionPane.showMessageDialog(this, "Supplier not found to update.");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadSuppliersToTable(){
         DefaultTableModel model = (DefaultTableModel) SupplierTable.getModel();
@@ -430,14 +520,19 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         }
         return sb.toString().trim();
     }
-    
-    
 
-   
     private void clearInput(){
+        txtSearch.setText("");
         txtSupplierName.setText("");
         txtSupplierPhoneNo.setText("");
         txtSupplierEmail.setText("");
+    }
+    
+     private void setEnabled(){
+        txtSearch.setEditable(true);
+        txtSupplierName.setEditable(true);
+        txtSupplierPhoneNo.setEditable(true);
+        txtSupplierEmail.setEditable(true);
     }
     
     /**
@@ -479,16 +574,17 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     private java.awt.Button BackToMenuBtn;
     private javax.swing.JButton SearchBtn;
     private javax.swing.JTable SupplierTable;
-    private java.awt.Button addSupplierBtn;
-    private java.awt.Button deleteSupplierBtn;
-    private java.awt.Button editSupplierBtn;
+    private javax.swing.JButton addbtn;
+    private javax.swing.JButton deleteBtn;
+    private javax.swing.JButton editBtn;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane2;
-    private java.awt.Button saveSupplierBtn;
+    private javax.swing.JButton resetBtn;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtSupplierEmail;
     private javax.swing.JTextField txtSupplierName;

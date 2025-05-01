@@ -18,9 +18,10 @@ public class ItemManagement extends javax.swing.JFrame {
     List<Item> itemList = new ArrayList<>();
     public ItemManagement() {
         initComponents();
+        jDesktopPane1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         
-        supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+        supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
         
         makeTableReadOnly();
@@ -216,7 +217,7 @@ public class ItemManagement extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
                     .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jDesktopPane1Layout.createSequentialGroup()
                             .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -286,22 +287,18 @@ public class ItemManagement extends javax.swing.JFrame {
                     .addComponent(deleteBtn))
                 .addGap(16, 16, 16)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 3, Short.MAX_VALUE))
+            .addComponent(jDesktopPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jDesktopPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 8, Short.MAX_VALUE))
+            .addComponent(jDesktopPane1)
         );
 
         pack();
@@ -563,6 +560,7 @@ public class ItemManagement extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         clearInput();
+        setEnabled();
     }//GEN-LAST:event_jButton1ActionPerformed
  
     private void makeTableReadOnly(){
@@ -634,7 +632,7 @@ public class ItemManagement extends javax.swing.JFrame {
             Object[] row = {
                 item.getItemID(),
                 item.getItemName(),
-                String.join(" | ", item.getSupplierids()),
+                item.getSupplierids().isEmpty() ? "No Supplier" : String.join(" | ", item.getSupplierids()),
                 item.getPrice(),
                 item.getSalesPrice(),
                 item.getStock(),

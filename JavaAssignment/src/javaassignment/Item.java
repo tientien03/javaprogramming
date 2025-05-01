@@ -28,8 +28,6 @@ public class Item{
         this.stock = stock;
     }
 
-   
-    
     public String getItemID() {return ItemID;}
     public void setItemID(String ItemID) {this.ItemID = ItemID;}
 
@@ -46,10 +44,7 @@ public class Item{
     public void setSalesPrice(double salesPrice) { this.salesPrice = salesPrice;}
 
     public List<Supplier> getSupplier() {return supplier;}
-
-    public void setSupplier(List<Supplier> supplier) {
-        this.supplier = supplier;
-    }
+    public void setSupplier(List<Supplier> supplier) {this.supplier = supplier;}
     
     public List<String> getSupplierids(){
         List<String> ids = new ArrayList<>();

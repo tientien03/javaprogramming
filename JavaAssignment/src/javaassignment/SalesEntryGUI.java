@@ -23,13 +23,14 @@ public class SalesEntryGUI extends javax.swing.JFrame {
     private int editingRowIndex = -1;
     public SalesEntryGUI() {
         initComponents();
+        jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         
         //set today's date in text field
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         txtDateField.setText(sdf.format(new Date()));
         
-        supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+        supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         itemList = Item.loadItemFromFile("item.txt", supplierList);
         salesEntryList = SalesEntry.loadSalesEntryFromFile("sales_entry.txt", itemList);
         
@@ -73,7 +74,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         deleteEntry = new javax.swing.JButton();
         editEntry = new javax.swing.JButton();
         txtDateField = new javax.swing.JTextField();
-        BackToMenuBtn = new java.awt.Button();
+        menuBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -172,11 +173,11 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         txtDateField.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         txtDateField.setText("jTextField1");
 
-        BackToMenuBtn.setBackground(new java.awt.Color(255, 255, 255));
-        BackToMenuBtn.setLabel("MENU");
-        BackToMenuBtn.addActionListener(new java.awt.event.ActionListener() {
+        menuBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        menuBtn.setText("MENU");
+        menuBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackToMenuBtnActionPerformed(evt);
+                menuBtnActionPerformed(evt);
             }
         });
 
@@ -191,8 +192,8 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(143, 143, 143)
+                                .addComponent(menuBtn)
+                                .addGap(111, 111, 111)
                                 .addComponent(jLabel1))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
@@ -225,13 +226,10 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(menuBtn))
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -455,13 +453,13 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ConfirmSalesBtnActionPerformed
 
-    private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
+    private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
         SalesManagerMenu menu = new SalesManagerMenu();
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_BackToMenuBtnActionPerformed
+    }//GEN-LAST:event_menuBtnActionPerformed
     
     private String generateNextSalesID() {
         int maxId = 0;
@@ -518,7 +516,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddItemBtn;
-    private java.awt.Button BackToMenuBtn;
     private javax.swing.JButton ConfirmSalesBtn;
     private javax.swing.JComboBox<String> comboItemId;
     private javax.swing.JButton deleteEntry;
@@ -531,6 +528,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblItemError;
     private javax.swing.JLabel lblquantityError;
+    private javax.swing.JButton menuBtn;
     private javax.swing.JTable tableCart;
     private javax.swing.JTextField txtDateField;
     private javax.swing.JTextField txtQuantity;

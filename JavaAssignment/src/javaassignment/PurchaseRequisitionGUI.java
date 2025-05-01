@@ -21,10 +21,11 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     boolean isEditing = false;
     public PurchaseRequisitionGUI() {
         initComponents();
+        jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         txtDate.setText(java.time.LocalDate.now().toString());
         
-        supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+        supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
         PRList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
         DefaultTableModel pr = (DefaultTableModel) PRTable.getModel();
@@ -51,7 +52,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         PRTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        lockStockTable = new javax.swing.JTable();
+        StockTable = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -71,7 +72,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setText("PURCHASE REQUISITION");
 
         PRTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -87,7 +88,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(PRTable);
 
-        lockStockTable.setModel(new javax.swing.table.DefaultTableModel(
+        StockTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -98,8 +99,12 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 "Item ID", "Item Name", "Current Stock", "Supplier ID"
             }
         ));
-        lockStockTable.setEnabled(false);
-        jScrollPane2.setViewportView(lockStockTable);
+        StockTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StockTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(StockTable);
 
         jLabel2.setText(" 📋️ PURCHSE REQUISITION TABLE");
 
@@ -171,12 +176,12 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(136, 136, 136)
+                        .addGap(158, 158, 158)
                         .addComponent(jLabel1)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
@@ -203,28 +208,19 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                                             .addComponent(addPrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(0, 209, Short.MAX_VALUE)))
                         .addGap(42, 42, 42))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(addPrBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(editBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(removeBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(saveBtn))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -234,7 +230,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                             .addComponent(viewAllBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(ComboItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -249,7 +245,16 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(txtRaisedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtRaisedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(addPrBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(editBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(removeBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(saveBtn)))
                 .addGap(26, 26, 26))
         );
 
@@ -414,6 +419,30 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_BackToMenuBtnActionPerformed
 
+    private void StockTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StockTableMouseClicked
+        // TODO add your handling code here:
+        int selectedRow = StockTable.getSelectedRow();
+        if(selectedRow != -1){
+            DefaultTableModel model = (DefaultTableModel) StockTable.getModel();
+            String itemId = model.getValueAt(selectedRow, 0).toString(); // Item ID
+            String itemName = model.getValueAt(selectedRow, 1).toString(); // Item Name
+
+            // Set combo selection to match "I001 - Apple"
+            String comboLabel = itemId + " - " + itemName;
+            for (int i = 0; i < ComboItem.getItemCount(); i++) {
+                if (ComboItem.getItemAt(i).equalsIgnoreCase(comboLabel)) {
+                    ComboItem.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            // Optionally, clear or suggest values for other fields
+            txtquantity.setText("");
+            txtDate.setText(java.time.LocalDate.now().toString());
+        }
+                
+    }//GEN-LAST:event_StockTableMouseClicked
+
     private String generateNextPrId(){
         int max = 0;
         for(PurchaseRequisition pr : PRList){
@@ -446,7 +475,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     }
     
     private void loadLowStockItemsToTable() {
-        DefaultTableModel model = (DefaultTableModel) lockStockTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) StockTable.getModel();
         model.setRowCount(0); // Clear previous rows
 
         List<Item> lowItems = getLowStockItems(itemList); // itemList must already be loaded
@@ -508,6 +537,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     private java.awt.Button BackToMenuBtn;
     private javax.swing.JComboBox<String> ComboItem;
     private javax.swing.JTable PRTable;
+    private javax.swing.JTable StockTable;
     private javax.swing.JButton addPrBtn;
     private javax.swing.JButton editBtn;
     private javax.swing.JLabel jLabel1;
@@ -520,7 +550,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable lockStockTable;
     private javax.swing.JButton removeBtn;
     private javax.swing.JButton saveBtn;
     private javax.swing.JTextField txtDate;
