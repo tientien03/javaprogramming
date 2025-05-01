@@ -490,6 +490,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                 SupplierTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
         }
+        SupplierTable.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
         SupplierTable.getColumnModel().getColumn(4).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             JTextArea textArea = new JTextArea(value != null ? value.toString() : "");
             textArea.setLineWrap(true);

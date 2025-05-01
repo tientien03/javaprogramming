@@ -579,6 +579,7 @@ public class ItemManagement extends javax.swing.JFrame {
         for (int i = 0; i < ItemTable.getColumnCount(); i++) {
             ItemTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
+        ItemTable.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
     }
     
     private String generateNextItemID(){

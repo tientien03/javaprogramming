@@ -7,6 +7,7 @@ package javaassignment;
 import java.io.*;
 import java.util.*;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -30,12 +31,13 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         PRList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
         DefaultTableModel pr = (DefaultTableModel) PRTable.getModel();
         pr.setRowCount(0);
-        loadLowStockItemsToTable();
+        
         ComboItem.removeAllItems();
         ComboItem.addItem("-- Select Item --");
         for(Item item : itemList){
             ComboItem.addItem(item.getItemID() + " - " + item.getItemName());
         }
+        makeTableReadOnly();
     }
 
     /**
@@ -75,6 +77,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setText("PURCHASE REQUISITION");
 
+        PRTable.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         PRTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
@@ -88,6 +91,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(PRTable);
 
+        StockTable.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         StockTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -113,16 +117,23 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel4.setText("Item: ");
 
+        ComboItem.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         ComboItem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel5.setText("Quantity");
 
+        txtquantity.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+
         jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel6.setText("Date");
 
+        txtDate.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+
         jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel7.setText("Raised By");
+
+        txtRaisedBy.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
 
         viewAllBtn.setText("VIEW ALL");
         viewAllBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -131,6 +142,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         });
 
+        addPrBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         addPrBtn.setText("ADD PR");
         addPrBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,6 +150,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         });
 
+        removeBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         removeBtn.setText("REMOVE");
         removeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,6 +158,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         });
 
+        editBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         editBtn.setText("EDIT");
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,6 +166,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         });
 
+        saveBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         saveBtn.setText("SAVE");
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -230,7 +245,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                             .addComponent(viewAllBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(ComboItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -495,6 +510,42 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         txtDate.setText("");
         txtquantity.setText("");
         txtRaisedBy.setText("");
+    }
+    
+    private void makeTableReadOnly(){
+        DefaultTableModel stockModel = new DefaultTableModel(
+        new String[] { "Item ID", "Item Name", "Current Stock", "Supplier ID" }, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        StockTable.setModel(stockModel);
+        StockTable.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
+        loadLowStockItemsToTable();
+        
+        DefaultTableModel prModel = new DefaultTableModel(
+        new String[] { "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By" }, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        PRTable.setModel(prModel);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);
+
+        for (int i = 0; i < StockTable.getColumnCount(); i++) {
+            StockTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        for (int i = 0; i < PRTable.getColumnCount(); i++) {
+            PRTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+       
+        PRTable.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
+        
     }
 
     

@@ -9,6 +9,7 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.text.*;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -46,7 +47,8 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         }
         
         DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
-        model.setRowCount(0);//clear existing rows    
+        model.setRowCount(0);//clear existing rows   
+        makeTableReadOnly();
     }
 
     /**
@@ -103,7 +105,8 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
         });
         tableCart.setToolTipText("");
-        tableCart.setGridColor(new java.awt.Color(255, 255, 255));
+        tableCart.setGridColor(new java.awt.Color(153, 153, 153));
+        tableCart.setShowGrid(true);
         jScrollPane1.setViewportView(tableCart);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
@@ -476,6 +479,25 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             
         }
         return String.format("SE%03d", maxId + 1);
+    }
+    
+    private void makeTableReadOnly(){
+        DefaultTableModel model = new DefaultTableModel(
+        new String[]{"Item ID","Item Name", "Unit Price", "Quantity", "Total"},0
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
+        tableCart.setModel(model);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);
+
+        for (int i = 0; i < tableCart.getColumnCount(); i++) {
+            tableCart.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        tableCart.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
     }
 
     
