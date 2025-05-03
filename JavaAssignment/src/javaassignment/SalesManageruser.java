@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package javaassignment;
+package JavaAssignment;
 
 /**
  * 銷售經理角色類別，登入後顯示 SalesManagerMenu。
