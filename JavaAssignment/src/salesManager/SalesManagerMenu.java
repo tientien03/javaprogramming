@@ -167,6 +167,9 @@ public class SalesManagerMenu extends javax.swing.JFrame {
 
     private void poBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poBtnActionPerformed
         // TODO add your handling code here:
+        ViewPOs VPO = new ViewPOs();
+        VPO.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_poBtnActionPerformed
 
     public static void main(String args[]) {
