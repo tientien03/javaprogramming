@@ -4,18 +4,16 @@
  */
 package JavaAssignment;
 
-/**
- * 銷售經理角色類別，登入後顯示 SalesManagerMenu。
- */
+
 public class SalesManageruser extends User {
-
-    public SalesManageruser(String fullName) {
-        super(fullName);
-    }
-
-    @Override
-    public void showDashboard() {
-        // 如果 SalesManagerMenu 不需要 Viewuser，可直接打開
-        new SalesManagerMenu().setVisible(true);
-    }
+//
+//    public SalesManageruser(String fullName) {
+//        super(fullName);
+//    }
+//
+//    @Override
+//    public void showDashboard() {
+//
+//        new SalesManagerMenu().setVisible(true);
+//    }
 }

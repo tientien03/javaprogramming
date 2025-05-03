@@ -14,7 +14,7 @@ public class Adminuser extends User {
 
     @Override
     public void showDashboard() {
-        // 建立一個 dummy 的 Viewuser 傳入 AdminMenu
+
         Viewuser dummyUser = new Viewuser(
             "", "", "", "Administrator", fullName, "", "", "Active"
         );

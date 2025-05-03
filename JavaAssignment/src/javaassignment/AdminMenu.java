@@ -14,7 +14,7 @@ public class AdminMenu  {
 
     public void openUserManagement() {
         System.out.println(">>> User Management opened for " + currentUser.getFullName());
-        // 之後可以開啟 UserManagementGUI()
+
     }
 
     public void openItemSupplierModule() {

@@ -11,7 +11,7 @@ public class UserClassitification {
             case "Administrator":
                 return new Adminuser(fullName);
             case "Sales manager":
-                return new SalesManageruser(fullName);
+//                return new SalesManageruser(fullName);
 //            case "Purchase Manager":
 //                return new PurchaseManagerUser(fullName);
 //            case "Inventory Manager":

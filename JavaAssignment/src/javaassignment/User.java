@@ -4,10 +4,6 @@
  */
 package javaassignment;
 
-/**
- * 抽象父類，定義所有使用者角色共通邏輯。
- * 每個角色都必須實作 showDashboard() 方法。
- */
 public abstract class User {
     protected String fullName;
 

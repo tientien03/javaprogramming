@@ -4,8 +4,8 @@
  */
 package javaassignment;
 
-import javaassignment.FileWriterUtil;
-import javaassignment.FileReaderUtil;
+import main.FileWriterUtil;
+import main.FileReaderUtil;
 import java.util.List;
 import java.util.ArrayList;
 
