@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaassignment;
+package salesManager;
 
+import main.FileWriterUtil;
 import java.io.*;
 import java.util.*;
 import javax.swing.JOptionPane;
@@ -60,6 +61,8 @@ public class SalesEntryGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableCart = new javax.swing.JTable();
@@ -77,6 +80,13 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         editEntry = new javax.swing.JButton();
         txtDateField = new javax.swing.JTextField();
         menuBtn = new javax.swing.JButton();
+        viewBtn = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        txtDiscountRate = new javax.swing.JTextField();
+        enabledis = new javax.swing.JRadioButton();
+        jLabel7 = new javax.swing.JLabel();
+
+        jScrollPane2.setViewportView(jTree1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -184,47 +194,89 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
         });
 
+        viewBtn.setFont(new java.awt.Font("Times New Roman", 2, 16)); // NOI18N
+        viewBtn.setText("View Sales");
+        viewBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+        jLabel6.setText("Discount");
+
+        txtDiscountRate.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+
+        enabledis.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.default.hoverBorderColor"));
+        enabledis.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        enabledis.setText("Apply Discount");
+        enabledis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enabledisActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
+        jLabel7.setText("%");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(0, 51, Short.MAX_VALUE)
+                .addGap(0, 50, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 720, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(557, 557, 557))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(menuBtn)
-                                .addGap(111, 111, 111)
-                                .addComponent(jLabel1))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(38, 38, 38)
-                                        .addComponent(lblquantityError, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(menuBtn)
+                                        .addGap(111, 111, 111)
+                                        .addComponent(jLabel1))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(36, 36, 36)
-                                        .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel5))
-                                .addGap(42, 42, 42)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblItemError, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(comboItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(18, 18, 18)
-                        .addComponent(AddItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel4)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(36, 36, 36)
+                                                .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(38, 38, 38)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(lblquantityError, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addComponent(enabledis, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                                                .addComponent(txtDiscountRate, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(20, 20, 20))
+                                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                .addGap(51, 51, 51)
+                                                                .addComponent(jLabel7))))))))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jLabel5))
+                                        .addGap(42, 42, 42)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblItemError, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(comboItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(18, 18, 18)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(AddItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(viewBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(editEntry, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(deleteEntry, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(ConfirmSalesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -236,28 +288,35 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                    .addComponent(txtDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(viewBtn))
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(comboItemId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddItemBtn))
                 .addGap(0, 0, 0)
                 .addComponent(lblItemError)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addComponent(lblquantityError)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtDiscountRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(enabledis)
+                    .addComponent(jLabel7))
+                .addGap(26, 26, 26)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ConfirmSalesBtn)
                     .addComponent(deleteEntry)
                     .addComponent(editEntry))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -268,7 +327,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
         );
 
         pack();
@@ -332,7 +391,17 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setLenient(false);
-            Date date = sdf.parse(txtDateField.getText().trim());
+            String formattedDate = sdf.format(sdf.parse(txtDateField.getText().trim()));
+            boolean dateExists = salesEntryList.stream().anyMatch(entry -> entry.getSalesdate().equals(formattedDate));
+            
+            if (dateExists) {
+                int confirm = JOptionPane.showConfirmDialog(this, "Sales already exist for this date.\nDo you want to add more items to it?","Sales Exists",JOptionPane.YES_NO_OPTION);
+                if (confirm != JOptionPane.YES_OPTION) {
+                    return; // User chose NO or closed the dialog
+                }else{
+                    viewSales();
+                }
+            }
             
             String input = comboItemId.getSelectedItem() != null ? comboItemId.getSelectedItem().toString() : "";
             String quantityText = txtQuantity.getText().trim();
@@ -363,11 +432,11 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     break;
                 }
             }
+            //check item available in item list
             if (selectedItem == null) {
                 JOptionPane.showMessageDialog(this, "Selected item not found.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
             // Check available stock
             if (quantity > selectedItem.getStock()) {
                 JOptionPane.showMessageDialog(this, "Not enough stock available.", "Stock Error", JOptionPane.ERROR_MESSAGE);
@@ -375,8 +444,23 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
    
             double unitPrice = selectedItem.getSalesPrice();
-            double total = unitPrice*quantity;
+            double discountRate = 0.0;
             
+            if (enabledis.isSelected()) {
+                try {
+                    discountRate = Double.parseDouble(txtDiscountRate.getText().trim());
+                    if (discountRate < 0 || discountRate > 100) {
+                        JOptionPane.showMessageDialog(this, "Enter a discount rate between 0 and 100.");
+                        return;
+                    }
+                    unitPrice = unitPrice * (1 - (discountRate / 100));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Invalid discount rate.");
+                    return;
+                }
+            }
+            
+            double total = unitPrice*quantity;
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();      
             //found whether item already add to cart
             for (int i = 0; i<model.getRowCount();i++){
@@ -390,16 +474,16 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     return;
                 }
             }
-            
+            String priceLabel = String.format("%.2f", unitPrice);
+            priceLabel += String.format(" (-%.0f%%)", discountRate);
             model.addRow(new Object[]{
                 selectedId,
                 selectedItem.getItemName(),
-                String.format("%.2f", unitPrice),
+                priceLabel,
                 quantity,
                 String.format("%.2f", total),
             });
-            comboItemId.setSelectedItem("-- Selected Item --");
-            txtQuantity.setText("");
+            clearInput();
         } catch (ParseException e){
             JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd");
         }
@@ -409,41 +493,45 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setLenient(false);
-            Date date = sdf.parse(txtDateField.getText().trim());
-            String formattedDate = sdf.format(date);
+            String formattedDate = sdf.format(sdf.parse(txtDateField.getText().trim()));
+            
+            DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No sales to save", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             String salesId = generateNextSalesID();         
             //deduct stock
-            DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
             for(int i = 0; i < model.getRowCount(); i++){
                 String itemId = model.getValueAt(i, 0).toString();
                 int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
-                for (Item item : itemList) {
-                    if (item.getItemID().equalsIgnoreCase(itemId)) {
-                        int currentStock = item.getStock();
-                        item.setStock(currentStock - quantity);
-                        break;
-                    }
-                }
+                itemList.stream()
+                        .filter(item -> item.getItemID().equalsIgnoreCase(itemId))
+                        .findFirst()
+                        .ifPresent(item -> item.setStock(item.getStock()-quantity));
             }
             FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
-            // append sales enrty into file
-            int rowCount = model.getRowCount();
-            if(rowCount == 0){
-                JOptionPane.showMessageDialog(this, "No sales to save","Warning",JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            for(int i = 0; i<rowCount ;i++){
+            
+            for(int i = 0; i<model.getRowCount() ;i++){
                 String itemId = model.getValueAt(i, 0).toString();
                 int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
+                String priceText = model.getValueAt(i, 2).toString();
+                String priceOnly = priceText.split(" ")[0];  // Take only the price before '(-'
+                double unitPrice = Double.parseDouble(priceOnly);
                 Item selectedItem = itemList.stream()
                         .filter(it -> it.getItemID().equalsIgnoreCase(itemId))
                         .findFirst()
                         .orElse(null);
                 if(selectedItem != null){
-                    double salesPrice = selectedItem.getSalesPrice();
-                    double total = salesPrice * quantity;
-                    SalesEntry newEntry = new SalesEntry(salesId, formattedDate,selectedItem,quantity,total);
-                    salesEntryList.add(newEntry);
+                    double basePrice = selectedItem.getSalesPrice();
+                     SalesEntry entry;
+                    if (unitPrice < basePrice) {
+                        double discountRate = (basePrice - unitPrice)/basePrice;
+                        entry = new DiscountedSalesEntry(salesId, formattedDate, selectedItem, quantity, discountRate);
+                    } else {
+                        entry = new SalesEntry(salesId, formattedDate, selectedItem, quantity);
+                    }
+                    salesEntryList.add(entry);
                 }
             }
             FileWriterUtil.writeFile("sales_entry.txt",SalesEntry.convertToStringArrayList(salesEntryList));
@@ -463,6 +551,15 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
+
+    private void viewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBtnActionPerformed
+        viewSales();
+    }//GEN-LAST:event_viewBtnActionPerformed
+
+    private void enabledisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enabledisActionPerformed
+        // TODO add your handling code here:
+        txtDiscountRate.setEnabled(enabledis.isSelected());
+    }//GEN-LAST:event_enabledisActionPerformed
     
     private String generateNextSalesID() {
         int maxId = 0;
@@ -498,6 +595,53 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             tableCart.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         tableCart.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
+    }
+    
+    private void viewSales(){
+         try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setLenient(false);
+            String formattedDate = sdf.format(sdf.parse(txtDateField.getText().trim()));
+            
+            DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
+            model.setRowCount(0);
+            boolean salesMatch = false;
+            for (SalesEntry entry : salesEntryList) {
+                if (entry.getSalesdate().equals(formattedDate)) {
+                    double unitPrice = entry.getItem().getSalesPrice();
+                    String priceLabel;
+                    if(entry instanceof DiscountedSalesEntry) {
+                        DiscountedSalesEntry discounted = (DiscountedSalesEntry) entry;
+                        double discountRate = discounted.getDiscountRate() * 100; // convert back to percentage
+                        unitPrice = unitPrice * (1 - discounted.getDiscountRate());
+                        priceLabel = String.format("%.2f (-%.0f%%)", unitPrice, discountRate);
+                    } else {
+                        priceLabel = String.format("%.2f", unitPrice);
+                    }
+                    model.addRow(new Object[] {
+                        entry.getItem().getItemID(),
+                        entry.getItem().getItemName(),
+                        priceLabel,
+                        entry.getQuantity(),
+                        String.format("%.2f", entry.getTotal())
+                    });
+                    salesMatch = true;
+                }
+            }
+            if (!salesMatch) {
+                JOptionPane.showMessageDialog(this, "No sales found for this date.", "No Records", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }catch (ParseException e){
+            JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd", "Format Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void clearInput(){
+        comboItemId.setSelectedItem("-- Selected Item --");
+        txtQuantity.setText("");    
+        txtDiscountRate.setText("");
+        enabledis.setSelected(false);
+        txtDiscountRate.setEnabled(false);
     }
 
     
@@ -542,17 +686,24 @@ public class SalesEntryGUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboItemId;
     private javax.swing.JButton deleteEntry;
     private javax.swing.JButton editEntry;
+    private javax.swing.JRadioButton enabledis;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTree jTree1;
     private javax.swing.JLabel lblItemError;
     private javax.swing.JLabel lblquantityError;
     private javax.swing.JButton menuBtn;
     private javax.swing.JTable tableCart;
     private javax.swing.JTextField txtDateField;
+    private javax.swing.JTextField txtDiscountRate;
     private javax.swing.JTextField txtQuantity;
+    private javax.swing.JButton viewBtn;
     // End of variables declaration//GEN-END:variables
 }

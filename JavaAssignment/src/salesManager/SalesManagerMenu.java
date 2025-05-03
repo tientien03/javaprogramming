@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaassignment;
+package salesManager;
 
 /**
  *
@@ -11,6 +11,7 @@ package javaassignment;
 public class SalesManagerMenu extends javax.swing.JFrame {
     public SalesManagerMenu() {
         initComponents();
+        jDesktopPane1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -33,6 +34,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jLabel1.setText("SALES MANAGER MENU");
 
+        supplierbtn.setBackground(new java.awt.Color(204, 204, 204));
         supplierbtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         supplierbtn.setText("SUPPLIER MANAGEMENT");
         supplierbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -41,6 +43,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
+        itemBtn.setBackground(new java.awt.Color(204, 204, 204));
         itemBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         itemBtn.setText("ITEM MANAGEMENT");
         itemBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -49,6 +52,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
+        salesEntryBtn.setBackground(new java.awt.Color(204, 204, 204));
         salesEntryBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         salesEntryBtn.setText("DAILY SALES ENTRY");
         salesEntryBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -57,6 +61,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
+        prBtn.setBackground(new java.awt.Color(204, 204, 204));
         prBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         prBtn.setText("PURCHASE REQUISITION");
         prBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -65,6 +70,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
+        poBtn.setBackground(new java.awt.Color(204, 204, 204));
         poBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         poBtn.setText("VIEW PURCHASE ORDER");
         poBtn.addActionListener(new java.awt.event.ActionListener() {

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaassignment;
+package salesManager;
 
 import java.io.*;
 import java.util.*;
@@ -507,7 +507,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     
     private void clearInput(){
         ComboItem.setSelectedItem(0);
-        txtDate.setText("");
         txtquantity.setText("");
         txtRaisedBy.setText("");
     }

@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaassignment;
+package salesManager;
+import main.FileWriterUtil;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -58,7 +59,7 @@ public class ItemManagement extends javax.swing.JFrame {
         saveBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        resetBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -176,11 +177,11 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jButton1.setText("RESET");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        resetBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        resetBtn.setText("RESET");
+        resetBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                resetBtnActionPerformed(evt);
             }
         });
 
@@ -203,7 +204,7 @@ public class ItemManagement extends javax.swing.JFrame {
         jDesktopPane1.setLayer(saveBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(editBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(deleteBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(resetBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -241,7 +242,7 @@ public class ItemManagement extends javax.swing.JFrame {
                                             .addComponent(txtSupplierid)
                                             .addGap(18, 18, 18)
                                             .addComponent(selectSupplierbtn))))
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(39, 39, 39)
                             .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -286,7 +287,7 @@ public class ItemManagement extends javax.swing.JFrame {
                     .addComponent(txtSalesPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteBtn))
                 .addGap(16, 16, 16)
-                .addComponent(jButton1)
+                .addComponent(resetBtn)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -349,7 +350,6 @@ public class ItemManagement extends javax.swing.JFrame {
             checkBoxes.add(checkBox);
         }
 
-        
         JScrollPane scrollPane = new JScrollPane(Supplierpanel);
         scrollPane.setPreferredSize(new Dimension(250,200));
         
@@ -470,7 +470,7 @@ public class ItemManagement extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return;
             }
-            String[] supplierId = txtSupplierid.getText().split(",");
+            String[] supplierId = txtSupplierid.getText().split(" | ");
             ArrayList<Supplier> matchedSupplierIds = new ArrayList<>();
             for(String id : supplierId){
                 String trimmedId = id.trim();
@@ -557,11 +557,11 @@ public class ItemManagement extends javax.swing.JFrame {
         setEnabled();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
         // TODO add your handling code here:
         clearInput();
         setEnabled();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_resetBtnActionPerformed
  
     private void makeTableReadOnly(){
         DefaultTableModel model = new DefaultTableModel(
@@ -634,8 +634,8 @@ public class ItemManagement extends javax.swing.JFrame {
                 item.getItemID(),
                 item.getItemName(),
                 item.getSupplierids().isEmpty() ? "No Supplier" : String.join(" | ", item.getSupplierids()),
-                item.getPrice(),
-                item.getSalesPrice(),
+                String.format("%.2f", item.getPrice()),
+                String.format("%.2f",item.getSalesPrice()),
                 item.getStock(),
             };
             model.addRow(row);
@@ -680,7 +680,6 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JButton addBtn;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -689,6 +688,7 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton resetBtn;
     private javax.swing.JButton saveBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JButton selectSupplierbtn;

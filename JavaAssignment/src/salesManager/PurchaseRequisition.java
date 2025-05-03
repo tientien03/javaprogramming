@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package javaassignment;
+package salesManager;
 
+import main.FileReaderUtil;
 import java.util.*;
 
 /**
@@ -47,26 +48,14 @@ public class PurchaseRequisition {
     }
     
     public int getQuantity() {return quantity;}
+    public void setQuantity(int quantity) {this.quantity = quantity;}
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+    public String getStatus() {return status;}
+    public void setStatus(String status) {this.status = status;}
 
-    public String getStatus() {
-        return status;
-    }
+    public String getRequiredDate() {return requiredDate;}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getRequiredDate() {
-        return requiredDate;
-    }
-
-    public void setRequiredDate(String requiredDate) {
-        this.requiredDate = requiredDate;
-    }
+    public void setRequiredDate(String requiredDate) {this.requiredDate = requiredDate;}
 
     public String getRaisedBy() {
         return raisedBy;
@@ -124,5 +113,22 @@ public class PurchaseRequisition {
             }
         }            
         return prList;
+    }
+    
+    public static List<String[]> convertToStringArrayList(List<PurchaseRequisition> PRList) {
+        List<String[]> data = new ArrayList<>();
+        for (PurchaseRequisition pr : PRList) {
+            String[] parts = {
+                pr.getPrId(),
+                pr.getItem().getItemID(),            
+                String.join(";", pr.getSupplierIds()),
+                String.valueOf(pr.getQuantity()),
+                pr.getRequiredDate(),
+                pr.getRaisedBy(),
+                pr.getStatus()
+            };
+            data.add(parts);
+        }
+        return data;
     }
 }

@@ -2,11 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package javaassignment;
+package salesManager;
 
-import java.io.*;
+import main.FileReaderUtil;
 import java.util.*;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -90,5 +89,3 @@ public class Supplier {
         return data;
     }
 }
-    
- 
