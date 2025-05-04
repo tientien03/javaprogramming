@@ -139,7 +139,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
 
     private void supplierbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierbtnActionPerformed
         // TODO add your handling code here:
-            SupplierManagementGUI supplierForm = new SupplierManagementGUI();
+        SupplierManagementGUI supplierForm = new SupplierManagementGUI();
         supplierForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_supplierbtnActionPerformed

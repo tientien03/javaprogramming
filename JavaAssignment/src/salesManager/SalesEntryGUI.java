@@ -345,6 +345,27 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             String itemId = tableCart.getValueAt(selectedRow, 0).toString();
             comboItemId.setSelectedItem(itemId + " - " + tableCart.getValueAt(selectedRow, 1).toString());
             txtQuantity.setText(tableCart.getValueAt(selectedRow, 3).toString());
+            String priceText = tableCart.getValueAt(selectedRow, 2).toString();
+            if (priceText.contains("(-") && priceText.contains("%")) {
+                try {
+                    // Extract discount rate
+                    String discountPart = priceText.split("[-%]")[1];
+                    double discountRate = Double.parseDouble(discountPart);
+                    enabledis.setSelected(true);
+                    txtDiscountRate.setEnabled(true);
+                    txtDiscountRate.setText(String.format("%.0f", discountRate)); // e.g., "15"
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    // Reset if error during parsing
+                    enabledis.setSelected(false);
+                    txtDiscountRate.setEnabled(false);
+                    txtDiscountRate.setText("");
+                }
+            } else {
+                // No discount
+                enabledis.setSelected(false);
+                txtDiscountRate.setEnabled(false);
+                txtDiscountRate.setText("");
+            }
         }
     }//GEN-LAST:event_editEntryActionPerformed
 
@@ -392,9 +413,9 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setLenient(false);
             String formattedDate = sdf.format(sdf.parse(txtDateField.getText().trim()));
+            //check if sales date existed
             boolean dateExists = salesEntryList.stream().anyMatch(entry -> entry.getSalesdate().equals(formattedDate));
-            
-            if (dateExists) {
+            if (dateExists && !isEditing) {
                 int confirm = JOptionPane.showConfirmDialog(this, "Sales already exist for this date.\nDo you want to add more items to it?","Sales Exists",JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) {
                     return; // User chose NO or closed the dialog
@@ -402,16 +423,14 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     viewSales();
                 }
             }
-            
             String input = comboItemId.getSelectedItem() != null ? comboItemId.getSelectedItem().toString() : "";
             String quantityText = txtQuantity.getText().trim();
-            
             if(input.isEmpty()||input.equalsIgnoreCase("-- Selected Item --")){
                 lblItemError.setText("Please select a valid item.");
                 return;
             } 
             
-            int quantity = 0;
+            int quantity;
             try{
                 quantity = Integer.parseInt(quantityText);
                 if(quantity<=0 || quantityText.isEmpty()){
@@ -422,7 +441,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                 lblquantityError.setText("Please enter a valid number");
                 return;
             }
-            
             //Find the selected item for itemList
             String selectedId = input.contains("-")? input.split("-")[0].trim():input;
             Item selectedItem = null;
@@ -442,7 +460,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Not enough stock available.", "Stock Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-   
             double unitPrice = selectedItem.getSalesPrice();
             double discountRate = 0.0;
             
@@ -459,23 +476,28 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     return;
                 }
             }
-            
             double total = unitPrice*quantity;
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();      
             //found whether item already add to cart
+            String priceLabel = String.format("%.2f", unitPrice);
+            priceLabel += String.format(" (-%.0f%%)", discountRate);
             for (int i = 0; i<model.getRowCount();i++){
-                if ( i == editingRowIndex && isEditing){
+                if (i == editingRowIndex && isEditing) {
+                    String currentQty = model.getValueAt(i, 3).toString();
+                    String currentPrice = model.getValueAt(i, 2).toString();
+                    if (currentQty.equals(String.valueOf(quantity)) && currentPrice.equals(priceLabel)) {
+                        JOptionPane.showMessageDialog(this, "No changes detected in the selected entry.");
+                        return;
+                    }
                     model.removeRow(editingRowIndex);
                     continue;
                 }
                 String itemIdInTable = model.getValueAt(i, 0).toString();
-                if(itemIdInTable.equalsIgnoreCase(selectedId)){
+                if(itemIdInTable.equalsIgnoreCase(selectedId) && (!isEditing || i != editingRowIndex)){
                     JOptionPane.showMessageDialog(this,"This item is already added to the sales.","Duplicate Item",JOptionPane.WARNING_MESSAGE);
                     return;
                 }
             }
-            String priceLabel = String.format("%.2f", unitPrice);
-            priceLabel += String.format(" (-%.0f%%)", discountRate);
             model.addRow(new Object[]{
                 selectedId,
                 selectedItem.getItemName(),
@@ -494,39 +516,50 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setLenient(false);
             String formattedDate = sdf.format(sdf.parse(txtDateField.getText().trim()));
-            
+            String salesId = salesEntryList.stream()
+                .filter(entry -> entry.getSalesdate().equals(formattedDate))
+                .map(SalesEntry::getSalesID)
+                .findFirst()
+                .orElseGet(() -> generateNextSalesID());
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
             if (model.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this, "No sales to save", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            String salesId = generateNextSalesID();         
-            //deduct stock
-            for(int i = 0; i < model.getRowCount(); i++){
-                String itemId = model.getValueAt(i, 0).toString();
-                int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
-                itemList.stream()
-                        .filter(item -> item.getItemID().equalsIgnoreCase(itemId))
-                        .findFirst()
-                        .ifPresent(item -> item.setStock(item.getStock()-quantity));
+            //add back stock first (for edit purpose)
+            for (SalesEntry entry : salesEntryList) {
+                if (entry.getSalesdate().equals(formattedDate)) {
+                    Item item = entry.getItem();
+                    item.setStock(item.getStock() + entry.getQuantity());
+                }
             }
-            FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
-            
-            for(int i = 0; i<model.getRowCount() ;i++){
+            salesEntryList.removeIf(entry -> entry.getSalesdate().equals(formattedDate));
+            //deduct stock
+            for (int i = 0; i < model.getRowCount(); i++) {
                 String itemId = model.getValueAt(i, 0).toString();
                 int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
                 String priceText = model.getValueAt(i, 2).toString();
                 String priceOnly = priceText.split(" ")[0];  // Take only the price before '(-'
                 double unitPrice = Double.parseDouble(priceOnly);
                 Item selectedItem = itemList.stream()
-                        .filter(it -> it.getItemID().equalsIgnoreCase(itemId))
-                        .findFirst()
-                        .orElse(null);
-                if(selectedItem != null){
-                    double basePrice = selectedItem.getSalesPrice();
-                     SalesEntry entry;
-                    if (unitPrice < basePrice) {
-                        double discountRate = (basePrice - unitPrice)/basePrice;
+                    .filter(it -> it.getItemID().equalsIgnoreCase(itemId))
+                    .findFirst()
+                    .orElse(null);
+                if (selectedItem != null) {
+                    // Deduct stock again based on new quantity
+                    selectedItem.setStock(selectedItem.getStock() - quantity);
+                    // Determine if it's a discounted entry
+                    double discountRate = 0.0;
+                    if (priceText.contains("(-") && priceText.contains("%")) {
+                        try {
+                            String discountPart = priceText.split("[-%]")[1];
+                            discountRate = Double.parseDouble(discountPart);
+                        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                            discountRate = 0.0;
+                        }
+                    }
+                    SalesEntry entry;
+                    if (discountRate > 0.0) {
                         entry = new DiscountedSalesEntry(salesId, formattedDate, selectedItem, quantity, discountRate);
                     } else {
                         entry = new SalesEntry(salesId, formattedDate, selectedItem, quantity);
@@ -534,10 +567,10 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     salesEntryList.add(entry);
                 }
             }
+            FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
             FileWriterUtil.writeFile("sales_entry.txt",SalesEntry.convertToStringArrayList(salesEntryList));
             model.setRowCount(0);
             JOptionPane.showMessageDialog(this, "Sales saved successfully");
-            
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(this, "Invalid date format. Please use yyyy-MM-dd");
             return;
@@ -602,7 +635,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setLenient(false);
             String formattedDate = sdf.format(sdf.parse(txtDateField.getText().trim()));
-            
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
             model.setRowCount(0);
             boolean salesMatch = false;
@@ -612,8 +644,8 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     String priceLabel;
                     if(entry instanceof DiscountedSalesEntry) {
                         DiscountedSalesEntry discounted = (DiscountedSalesEntry) entry;
-                        double discountRate = discounted.getDiscountRate() * 100; // convert back to percentage
-                        unitPrice = unitPrice * (1 - discounted.getDiscountRate());
+                        double discountRate = discounted.getDiscountRate();
+                        unitPrice = unitPrice * (1 - discounted.getDiscountRate()/100);
                         priceLabel = String.format("%.2f (-%.0f%%)", unitPrice, discountRate);
                     } else {
                         priceLabel = String.format("%.2f", unitPrice);

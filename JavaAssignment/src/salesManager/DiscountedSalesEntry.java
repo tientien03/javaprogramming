@@ -18,7 +18,7 @@ public class DiscountedSalesEntry extends SalesEntry {
     
     @Override
     public double getTotal(){
-        return getItem().getSalesPrice()* getQuantity() * (1-discountRate);
+        return getItem().getSalesPrice()* getQuantity() * (1-discountRate/100);
     }
 
     public double getDiscountRate() {

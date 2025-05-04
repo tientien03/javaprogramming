@@ -4,7 +4,6 @@
  */
 package salesManager;
 
-import salesManager.DiscountedSalesEntry;
 import main.FileReaderUtil;
 import java.util.*;
 
@@ -110,7 +109,7 @@ public class SalesEntry {
                     String.format("%.2f",dse.getItem().getSalesPrice()),
                     String.valueOf(dse.getQuantity()),
                     String.format("%.2f",dse.getTotal()),
-                    String.format("%.0f",dse.getDiscountRate()*100)
+                    String.format("%.0f",dse.getDiscountRate())
                 });
             }else{
                 data.add(new String[]{
