@@ -470,14 +470,13 @@ public class ItemManagement extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return;
             }
-            String[] supplierId = txtSupplierid.getText().split(" | ");
+            String[] supplierId = txtSupplierid.getText().split(",");
             ArrayList<Supplier> matchedSupplierIds = new ArrayList<>();
             for(String id : supplierId){
                 String trimmedId = id.trim();
                 for (Supplier s : supplierList) {
                     if (s.getSupplierId().equalsIgnoreCase(trimmedId)) {
                         matchedSupplierIds.add(s);
-                        break;
                     }
                 }
             }
@@ -488,6 +487,14 @@ public class ItemManagement extends javax.swing.JFrame {
             boolean found = false;
             for(Item item : itemList){
                 if(item.getItemID().equalsIgnoreCase(itemId)){
+                    String newName = txtItemName.getText().trim();
+                    for (Item other : itemList) {
+                        //not same item id but have same item id, no duplication on same item name
+                        if (!other.getItemID().equalsIgnoreCase(itemId) && other.getItemName().equalsIgnoreCase(newName)) {
+                            JOptionPane.showMessageDialog(this, "Another item already has this name.");
+                            return;
+                        }
+                    }
                     item.setItemName(txtItemName.getText().trim());
                     item.setPrice(Double.parseDouble(txtItemPrice.getText().trim()));
                     item.setSalesPrice(Double.parseDouble(txtSalesPrice.getText().trim()));                   
@@ -633,7 +640,7 @@ public class ItemManagement extends javax.swing.JFrame {
             Object[] row = {
                 item.getItemID(),
                 item.getItemName(),
-                item.getSupplierids().isEmpty() ? "No Supplier" : String.join(" | ", item.getSupplierids()),
+                item.getSupplierids().isEmpty() ? "No Supplier" : String.join(",", item.getSupplierids()),
                 String.format("%.2f", item.getPrice()),
                 String.format("%.2f",item.getSalesPrice()),
                 item.getStock(),

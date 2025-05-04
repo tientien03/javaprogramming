@@ -295,7 +295,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             if(pr.getStatus().equalsIgnoreCase("Pending")){
                 Object[] row = {
                     pr.getPrId(),
-                    pr.getItem().getItemID(),
+                    String.format(pr.getItem().getItemID() + " - " + pr.getItem().getItemName()),
                     pr.getQuantity(),
                     pr.getRequiredDate(),
                     String.join(" | ", pr.getSupplierIds()),
@@ -525,7 +525,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         loadLowStockItemsToTable();
         
         DefaultTableModel prModel = new DefaultTableModel(
-        new String[] { "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By" }, 0
+        new String[] { "PR ID", "Item", "Quantity", "Required Date", "Supplier ID", "Raised By" }, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
