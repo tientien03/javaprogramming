@@ -2,7 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaassignment;
+package financeManager;
+
+import Inventory.ViewPOs;
 
 /**
  *
@@ -15,6 +17,8 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
      */
     public FinanceManagerMenu() {
         initComponents();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     /**
@@ -46,6 +50,11 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
 
         ViewPO_Button.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         ViewPO_Button.setText("VIEW PURCHASE ORDER");
+        ViewPO_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewPO_ButtonActionPerformed(evt);
+            }
+        });
 
         ViewPR_Button1.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         ViewPR_Button1.setText("VIEW PURCHASE REQUISITION\n");
@@ -127,6 +136,13 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
         ViewPRFrame.setVisible(true);                                        
         this.dispose();  
     }//GEN-LAST:event_ViewPR_Button1ActionPerformed
+
+    private void ViewPO_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPO_ButtonActionPerformed
+        // TODO add your handling code here:
+        ViewPOs ViewPOFrame = new ViewPOs(); 
+        ViewPOFrame.setVisible(true);                                        
+        this.dispose();  
+    }//GEN-LAST:event_ViewPO_ButtonActionPerformed
 
     /**
      * @param args the command line arguments

@@ -1,15 +1,9 @@
-package salesManager;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package PurchaseManager;
 
-
-/**
- *
- * @author limsh
- */
 public class PurchaseOrder {
     private String poID;
     private String prID;
@@ -47,8 +41,8 @@ public class PurchaseOrder {
                 qty,      // quantity
                 parts[4], // supplierID
                 parts[5], // purchaseManagerID
-                parts[6],
-                parts[7]
+                parts[6], // Date
+                parts[7]  // Status
         );
     }
     
@@ -72,3 +66,4 @@ public class PurchaseOrder {
     public void setDate(String date) { this.date = date; }
     public void setStatus(String status) { this.status = status; }
 }
+

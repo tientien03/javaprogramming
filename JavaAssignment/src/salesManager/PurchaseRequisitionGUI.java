@@ -6,9 +6,8 @@ package salesManager;
 
 import java.io.*;
 import java.util.*;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.table.*;
 
 /**
  *

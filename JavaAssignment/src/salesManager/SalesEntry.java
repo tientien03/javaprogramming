@@ -4,8 +4,8 @@
  */
 package salesManager;
 
-import main.FileReaderUtil;
 import java.util.*;
+import main.FileReaderUtil;
 
 /**
  *

@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaassignment;
+package financeManager;
 
+import main.FileReaderUtil;
+import main.FileWriterUtil;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.event.ListSelectionEvent;

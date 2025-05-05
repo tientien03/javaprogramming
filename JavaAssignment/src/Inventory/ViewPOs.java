@@ -2,13 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package salesManager;
+package Inventory;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import javax.swing.table.DefaultTableCellRenderer;
-import main.FileReaderUtil;
+import PurchaseManager.*;
+import main.*;
 
 
 /**
@@ -94,7 +95,7 @@ public class ViewPOs extends javax.swing.JFrame {
         jScrollPane1.setViewportView(POTable);
 
         CloseButton.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        CloseButton.setText("Close");
+        CloseButton.setText("Menu");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CloseButtonActionPerformed(evt);
@@ -164,7 +165,7 @@ public class ViewPOs extends javax.swing.JFrame {
     }//GEN-LAST:event_RefreshButtonActionPerformed
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
-        new SalesManagerMenu().setVisible(true);  // Open Dashboard GUI
+        new Dashboard().setVisible(true);  // Open Dashboard GUI
         this.dispose();  // TODO add your handling code here:
     }//GEN-LAST:event_CloseButtonActionPerformed
 

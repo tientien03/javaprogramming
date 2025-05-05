@@ -84,6 +84,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="VIEW PURCHASE ORDER"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ViewPO_ButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="ViewPR_Button1">
       <Properties>

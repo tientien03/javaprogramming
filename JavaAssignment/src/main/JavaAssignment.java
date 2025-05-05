@@ -4,13 +4,14 @@
  */
 package main;
 
-import javaassignment.Login;
-import salesManager.SalesManagerMenu;
+import Inventory.Dashboard;
+import financeManager.FinanceManagerMenu;
+import PurchaseManager.Menu;
 public class JavaAssignment {
 
     public static void main(String[] args) {
         // TODO code application logic here
-        new SalesManagerMenu();
+        new Menu();
         
     }
     
