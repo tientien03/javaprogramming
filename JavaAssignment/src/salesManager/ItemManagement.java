@@ -335,7 +335,7 @@ public class ItemManagement extends javax.swing.JFrame {
         Supplierpanel.setLayout(new BoxLayout(Supplierpanel, BoxLayout.Y_AXIS));
 
         ArrayList<JCheckBox> checkBoxes = new ArrayList<>();
-        String[] selectedIds = txtSupplierid.getText().split(" | ");
+        String[] selectedIds = txtSupplierid.getText().split(",");
         for (Supplier supplier : supplierList) {
             String supplierId = supplier.getSupplierId();
             String label = supplierId + " - " + supplier.getSupplierName();
