@@ -125,7 +125,7 @@ public class PurchaseOrder {
         return list;
     }
 
-    // Save POs back to purchase_orders.txt
+
     public static void savePurchaseOrders(List<PurchaseOrder> list) {
         try (PrintWriter writer = new PrintWriter(new FileWriter("purchase_orders.txt"))) {
             for (PurchaseOrder po : list) {

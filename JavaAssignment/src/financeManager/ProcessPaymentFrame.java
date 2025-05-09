@@ -15,20 +15,25 @@ import java.util.List;
  */
 public class ProcessPaymentFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ProcessPaymentFrame
-     */
+
     public ProcessPaymentFrame() {
         initComponents();
         loadUpdatedPurchaseOrders();
         loadProcessPaymentTable();
         setupListeners();
+        jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
     }
 
 
     private void loadUpdatedPurchaseOrders() {
         DefaultTableModel model = new DefaultTableModel(
-            new String[]{"PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date" ,"Status"}, 0);
+            new String[]{
+                "PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"},0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
         List<String[]> data = FileReaderUtil.readFile("purchase_orders.txt");
         for (String[] po : data) {
@@ -40,25 +45,31 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
         jTable1.setModel(model);
     }
 
+
     private void loadProcessPaymentTable() {
-        DefaultTableModel model = (DefaultTableModel) paymentTable.getModel();
-        model.setRowCount(0); // clear table first
+        DefaultTableModel model = new DefaultTableModel(
+            new String[]{
+                "PO ID", "PR ID", "Item Code", "Quantity", "Unit Price", "Total Price", "Supplier ID", "PM ID", "Date", "Status"},0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
         List<String[]> data = FileReaderUtil.readFile("purchase_orders.txt");
 
         for (String[] po : data) {
             if (po.length >= 8 && po[7].trim().equalsIgnoreCase("Updated")) {
-                String itemCode = po[2];      // I003
-                String supplierID = po[4];    // S001
+                String itemCode = po[2];
+                String supplierID = po[4];
                 String unitPrice = getUnitPrice(itemCode, supplierID);
-
                 int qty = Integer.parseInt(po[3]);
                 double totalPrice = qty * Double.parseDouble(unitPrice);
 
                 model.addRow(new Object[]{
                     po[0], // PO ID
                     po[1], // PR ID
-                    itemCode,
+                    itemCode, // Item Code
                     po[3], // Quantity
                     unitPrice,
                     String.format("%.2f", totalPrice),
@@ -69,7 +80,11 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
                 });
             }
         }
+
+        paymentTable.setModel(model);
     }
+
+
 
 
     private String getUnitPrice(String itemCode, String supplierID) {
@@ -81,14 +96,13 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
                 return item[3]; // supplier price
             }
         }
-        return "0.00"; // fallback if not found
+        return "0.00"; 
     }
 
     private void setupListeners() {
         jTable1.getSelectionModel().addListSelectionListener(e -> {
             int row = jTable1.getSelectedRow();
             if (row >= 0) {
-                // Optional: fill form fields or trigger PO details
             }
         });
     }
@@ -144,20 +158,21 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         menuButton = new javax.swing.JButton();
+        Refresh_Button = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
+        statusComboBox = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+        Search_Button = new javax.swing.JButton();
+        searchField = new javax.swing.JTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
         paymentTable = new javax.swing.JTable();
         ProcessPayment_Button = new javax.swing.JButton();
-        Refresh_Button = new javax.swing.JButton();
-        searchField = new javax.swing.JTextField();
-        Search_Button = new javax.swing.JButton();
-        statusComboBox = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -170,6 +185,14 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
         menuButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuButtonActionPerformed(evt);
+            }
+        });
+
+        Refresh_Button.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        Refresh_Button.setText("Refresh");
+        Refresh_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Refresh_ButtonActionPerformed(evt);
             }
         });
 
@@ -189,8 +212,24 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel3.setText("Process Payment Table");
+        statusComboBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Approved", "Updated", "Pending" }));
+        statusComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statusComboBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel4.setText("Status:");
+
+        Search_Button.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        Search_Button.setText("Search");
+        Search_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Search_ButtonActionPerformed(evt);
+            }
+        });
 
         paymentTable.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         paymentTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -214,89 +253,60 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
             }
         });
 
-        Refresh_Button.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        Refresh_Button.setText("Refresh");
-        Refresh_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Refresh_ButtonActionPerformed(evt);
-            }
-        });
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel3.setText("Process Payment Table");
 
-        Search_Button.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        Search_Button.setText("Search");
-        Search_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Search_ButtonActionPerformed(evt);
-            }
-        });
-
-        statusComboBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Approved", "Updated" }));
-        statusComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusComboBoxActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel4.setText("Status:");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(menuButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
+                        .addGap(49, 49, 49)
                         .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(ProcessPayment_Button)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jScrollPane1)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(Search_Button))
-                                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 768, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(statusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(ProcessPayment_Button)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jScrollPane1)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(Search_Button))
+                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 768, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(statusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(menuButton)
-                            .addComponent(Refresh_Button)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(menuButton)
+                        .addComponent(Refresh_Button))
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(statusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Search_Button))
@@ -304,7 +314,20 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(ProcessPayment_Button)
-                .addGap(39, 39, 39))
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -351,7 +374,19 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_Search_ButtonActionPerformed
 
     private void statusComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusComboBoxActionPerformed
-
+        String selectedStatus = statusComboBox.getSelectedItem().toString();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        
+        List<String[]> data = FileReaderUtil.readFile("purchase_orders.txt");
+        for(String[]po : data){
+            if(po.length >= 8){
+                String status = po[7].trim();
+                if(selectedStatus.equals("All") || status.equalsIgnoreCase(selectedStatus)){
+                    model.addRow(po);
+                }
+            }
+        }
     }//GEN-LAST:event_statusComboBoxActionPerformed
 
     /**
@@ -397,6 +432,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTable1;

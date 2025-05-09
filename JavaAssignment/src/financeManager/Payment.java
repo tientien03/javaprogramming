@@ -22,7 +22,7 @@ public class Payment {
     public String paymentDate;
     public String method;
 
-    // Constructor
+
     public Payment(String poID, String supplierID, String itemID, int quantity,
                    double unitPrice, double totalPrice, String paymentDate, String method) {
         this.poID = poID;
@@ -35,7 +35,7 @@ public class Payment {
         this.method = method;
     }
 
-    // Check if payment already exists
+
     public static boolean isAlreadyPaid(String poID, String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -51,7 +51,7 @@ public class Payment {
         return false;
     }
 
-    // Save payment to payments.txt
+
     public static void savePayment(Payment payment) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("payments.txt", true))) {
             writer.write(payment.poID + "," +
@@ -68,7 +68,7 @@ public class Payment {
         }
     }
 
-    // Update purchase order status in purchase_orders.txt
+
     public static void updatePOStatus(String poID, String filePath) {
         File inputFile = new File(filePath);
         File tempFile = new File("temp.txt");
@@ -94,7 +94,7 @@ public class Payment {
         tempFile.renameTo(inputFile);
     }
 
-    // Get supplier price from item.txt
+
     public static double lookupSupplierPrice(String itemCode, String supplierID, String itemFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(itemFilePath))) {
             String line;
@@ -115,7 +115,7 @@ public class Payment {
         return -1;
     }
 
-    // Optional: total calculator used earlier (not required anymore)
+
     public static double calculateTotalFromSupplier(String itemCode, String supplierID, int quantity, String itemFilePath) {
         double price = lookupSupplierPrice(itemCode, supplierID, itemFilePath);
         return (price > 0) ? price * quantity : -1;

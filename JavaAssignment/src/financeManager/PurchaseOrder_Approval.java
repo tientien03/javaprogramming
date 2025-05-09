@@ -8,6 +8,9 @@ package financeManager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.List;
+import main.FileReaderUtil;
+import main.FileWriterUtil;
 
 
 /**
@@ -28,11 +31,20 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         loadTableData();
         setupListeners();
+        jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
     }
     
     private void loadTableData() {
         poList = PurchaseOrder.loadPurchaseOrders();
-        tableModel = new DefaultTableModel(new String[]{"PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"}, 0);
+
+        tableModel = new DefaultTableModel(
+            new String[]{"PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         jTable2.setModel(tableModel);
         for (PurchaseOrder po : poList) {
             tableModel.addRow(new Object[]{
@@ -46,7 +58,11 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
                 po.getStatus()
             });
         }
+        tableModel.fireTableDataChanged();
     }
+
+    
+    
     
     private void setupListeners() {
         jTable2.getSelectionModel().addListSelectionListener(e -> {
@@ -57,21 +73,61 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
                 PR_ID_TextField.setText(selectedPO.getPrID());
                 Item_Code_TextField.setText(selectedPO.getItemCode());
                 Quantity_TextField.setText(String.valueOf(selectedPO.getQuantity()));
-                Supplier_ID_TextField.setText(selectedPO.getSupplierID());
                 PM_ID_TextField.setText(selectedPO.getPmID());
                 Date_TextField.setText(selectedPO.getDate());
                 Status_TextField.setText(selectedPO.getStatus());
                 
-                PO_ID_TextField.setEditable(false);
-                PR_ID_TextField.setEditable(false);
-                Item_Code_TextField.setEditable(false);
-                Quantity_TextField.setEditable(false);
-                Supplier_ID_TextField.setEditable(false);
-                PM_ID_TextField.setEditable(false);
-                Date_TextField.setEditable(false);
-                Status_TextField.setEditable(false);
+                List<String> suppliers = loadSuppliersForPR(selectedPO.getPrID());
+
+                if (suppliers.size() == 1) {
+                    jComboBox1.setSelectedItem(suppliers.get(0));
+                }
+                
+                PO_ID_TextField.setEnabled(false);
+                PR_ID_TextField.setEnabled(false);
+                Item_Code_TextField.setEnabled(false);
+                Quantity_TextField.setEnabled(false);
+                PM_ID_TextField.setEnabled(false);
+                Date_TextField.setEnabled(false);
+                Status_TextField.setEnabled(false);
+                jComboBox1.setEnabled(false);
             }
         });
+    }
+    
+    private void savePurchaseOrdersToFile() {
+        List<String[]> dataToWrite = new ArrayList<>();
+
+        for (PurchaseOrder po : poList) {
+            String line = po.getPoID() + "," + po.getPrID() + "," + po.getItemCode() + "," +
+                          po.getQuantity() + "," + po.getSupplierID() + "," + po.getPmID() + "," +
+                          po.getDate() + "," + po.getStatus();
+            dataToWrite.add(line.split(","));
+        }
+
+        FileWriterUtil.writeFile("purchase_orders.txt", dataToWrite);
+    }
+    
+    private List<String> loadSuppliersForPR(String prID) {
+        jComboBox1.removeAllItems();
+        jComboBox1.addItem("Select Supplier");
+
+        List<String[]> prList = FileReaderUtil.readFile("purchase_requisition.txt");
+        List<String> suppliers = new ArrayList<>();
+
+        for (String[] pr : prList) {
+            if (pr[0].equalsIgnoreCase(prID)) {
+                String[] supplierIDs = pr[2].split(";");
+                for (String supplierID : supplierIDs) {
+                    String trimmedID = supplierID.trim();
+                    jComboBox1.addItem(trimmedID);
+                    suppliers.add(trimmedID);
+                }
+                break;
+            }
+        }
+
+        return suppliers;
     }
 
 
@@ -95,10 +151,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         PM_ID_TextField = new javax.swing.JTextField();
         Approve = new javax.swing.JButton();
         Modify_Quantity = new javax.swing.JButton();
-        Change_Supplier = new javax.swing.JButton();
         Save = new javax.swing.JButton();
-        PO_Title1 = new javax.swing.JPanel();
-        MenuButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         PO_ID = new javax.swing.JLabel();
@@ -110,7 +163,6 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         Status_TextField = new javax.swing.JTextField();
         ItemCode_Label = new javax.swing.JLabel();
         Item_Code_TextField = new javax.swing.JTextField();
-        Supplier_ID_TextField = new javax.swing.JTextField();
         PM_ID = new javax.swing.JLabel();
         Date = new javax.swing.JLabel();
         Date_TextField = new javax.swing.JTextField();
@@ -118,6 +170,9 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         RefreshButton = new javax.swing.JButton();
         SearchButton = new javax.swing.JButton();
         PO_name1 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jButton5 = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
@@ -132,6 +187,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         Quantity_TextField.setColumns(15);
         Quantity_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        Quantity_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         Quantity_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Quantity_TextFieldActionPerformed(evt);
@@ -140,6 +196,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         PR_ID_TextField.setColumns(15);
         PR_ID_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        PR_ID_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         PR_ID_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PR_ID_TextFieldActionPerformed(evt);
@@ -148,6 +205,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         PM_ID_TextField.setColumns(15);
         PM_ID_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        PM_ID_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         PM_ID_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PM_ID_TextFieldActionPerformed(evt);
@@ -163,18 +221,10 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         });
 
         Modify_Quantity.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        Modify_Quantity.setText("Modify Quantity");
+        Modify_Quantity.setText("Edit");
         Modify_Quantity.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Modify_QuantityActionPerformed(evt);
-            }
-        });
-
-        Change_Supplier.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        Change_Supplier.setText("Change Supplier");
-        Change_Supplier.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Change_SupplierActionPerformed(evt);
             }
         });
 
@@ -185,33 +235,6 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
                 SaveActionPerformed(evt);
             }
         });
-
-        PO_Title1.setBackground(java.awt.SystemColor.controlHighlight);
-
-        MenuButton.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        MenuButton.setText("Menu");
-        MenuButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout PO_Title1Layout = new javax.swing.GroupLayout(PO_Title1);
-        PO_Title1.setLayout(PO_Title1Layout);
-        PO_Title1Layout.setHorizontalGroup(
-            PO_Title1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PO_Title1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(MenuButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        PO_Title1Layout.setVerticalGroup(
-            PO_Title1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PO_Title1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(MenuButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -243,6 +266,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         PO_ID_TextField.setColumns(15);
         PO_ID_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        PO_ID_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         PO_ID_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PO_ID_TextFieldActionPerformed(evt);
@@ -251,6 +275,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         Status_TextField.setColumns(15);
         Status_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        Status_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         Status_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Status_TextFieldActionPerformed(evt);
@@ -262,17 +287,10 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         Item_Code_TextField.setColumns(15);
         Item_Code_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        Item_Code_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         Item_Code_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Item_Code_TextFieldActionPerformed(evt);
-            }
-        });
-
-        Supplier_ID_TextField.setColumns(15);
-        Supplier_ID_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        Supplier_ID_TextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Supplier_ID_TextFieldActionPerformed(evt);
             }
         });
 
@@ -284,6 +302,7 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
         Date_TextField.setColumns(15);
         Date_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        Date_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         Date_TextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Date_TextFieldActionPerformed(evt);
@@ -312,78 +331,112 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         PO_name1.setFont(new java.awt.Font("Times New Roman", 0, 48)); // NOI18N
         PO_name1.setText("Purchase Order Approval");
 
+        jButton4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jButton4.setText("Menu");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selected Supplier", " " }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jButton5.setText("Edit");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(PO_Title1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(57, 57, 57)
-                .addComponent(PO_name1)
-                .addGap(478, 478, 478))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(RefreshButton)
-                        .addGap(301, 301, 301)
-                        .addComponent(Search_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Quantity)
-                            .addComponent(Supplier)
-                            .addComponent(PR_ID)
-                            .addComponent(PO_ID)
-                            .addComponent(ItemCode_Label))
-                        .addGap(41, 41, 41)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(Supplier_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Quantity_TextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Item_Code_TextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PR_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PO_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGap(46, 46, 46)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Status)
-                                    .addComponent(PM_ID)
-                                    .addComponent(Date))
+                                .addComponent(RefreshButton)
+                                .addGap(301, 301, 301)
+                                .addComponent(Search_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(PM_ID_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Status_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Date_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(Modify_Quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Change_Supplier, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(35, 35, 35)
-                                .addComponent(Approve, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(Save, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton4)
+                                .addGap(55, 55, 55)
+                                .addComponent(PO_name1)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addGap(42, 42, 42))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Quantity)
+                    .addComponent(Supplier)
+                    .addComponent(PR_ID)
+                    .addComponent(PO_ID)
+                    .addComponent(ItemCode_Label))
+                .addGap(41, 41, 41)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(Quantity_TextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Item_Code_TextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(PR_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(PO_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Status)
+                            .addComponent(PM_ID)
+                            .addComponent(Date))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(PM_ID_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Status_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Date_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Modify_Quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(Approve, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(Save, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PO_Title1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 8, Short.MAX_VALUE)
-                        .addComponent(PO_name1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addContainerGap(19, Short.MAX_VALUE)
+                        .addComponent(PO_name1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RefreshButton)
                     .addComponent(Search_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -413,25 +466,24 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
                     .addComponent(Modify_Quantity))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(Supplier))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(23, 23, 23)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(Supplier_ID_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Change_Supplier)
                             .addComponent(Approve)
-                            .addComponent(Save))))
-                .addGap(22, 22, 22))
+                            .addComponent(Save)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Supplier)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton5))))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -458,34 +510,38 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
     }//GEN-LAST:event_ApproveActionPerformed
 
     private void Modify_QuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Modify_QuantityActionPerformed
-        Quantity_TextField.setEditable(true);
+        Quantity_TextField.setEnabled(true);
     }//GEN-LAST:event_Modify_QuantityActionPerformed
-
-    private void Change_SupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Change_SupplierActionPerformed
-        Supplier_ID_TextField.setEditable(true);
-    }//GEN-LAST:event_Change_SupplierActionPerformed
 
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
         int row = jTable2.getSelectedRow();
+
         if (row >= 0) {
             PurchaseOrder selectedPO = poList.get(row);
-            // Update PO details from TextFields
+
             selectedPO.setQuantity(Integer.parseInt(Quantity_TextField.getText()));
-            selectedPO.setSupplierID(Supplier_ID_TextField.getText());
             selectedPO.setStatus(Status_TextField.getText());
-            PurchaseOrder.savePurchaseOrders(poList);
 
-            // Refresh table row
-            tableModel.setValueAt(selectedPO.getQuantity(), row, 3);
-            tableModel.setValueAt(selectedPO.getSupplierID(), row, 4);
-            tableModel.setValueAt(selectedPO.getStatus(), row, 7);
+            String selectedSupplier = (String) jComboBox1.getSelectedItem();
+            if (selectedSupplier != null && !selectedSupplier.equals("Select Supplier")) {
+                selectedPO.setSupplierID(selectedSupplier);
 
-            // Lock fields again
-            Quantity_TextField.setEditable(false);
-            Supplier_ID_TextField.setEditable(false);
-            Status_TextField.setEditable(false);
+                tableModel.setValueAt(selectedPO.getQuantity(), row, 3);    // Quantity
+                tableModel.setValueAt(selectedPO.getSupplierID(), row, 4);  // Supplier ID
+                tableModel.setValueAt(selectedPO.getStatus(), row, 7);      // Status
 
-            JOptionPane.showMessageDialog(this, "Changes saved for PO " + selectedPO.getPoID());
+                savePurchaseOrdersToFile();
+
+                JOptionPane.showMessageDialog(this, "Purchase Order updated for " + selectedPO.getPoID());
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select a valid supplier ID.");
+            }
+
+            Quantity_TextField.setEnabled(false);
+            Status_TextField.setEnabled(false);
+            jComboBox1.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "No row selected.");
         }
     }//GEN-LAST:event_SaveActionPerformed
 
@@ -501,20 +557,16 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Item_Code_TextFieldActionPerformed
 
-    private void Supplier_ID_TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Supplier_ID_TextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Supplier_ID_TextFieldActionPerformed
-
     private void Date_TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Date_TextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_Date_TextFieldActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
         String searchText = Search_TextField.getText().trim();
-        tableModel.setRowCount(0);  // Clear table
+        tableModel.setRowCount(0);
 
         for (PurchaseOrder po : poList) {
-            if (po.getPoID().contains(searchText)) {  // Filter by PO ID
+            if (po.getPoID().contains(searchText)) {
                 tableModel.addRow(new Object[]{
                     po.getPoID(),
                     po.getPrID(),
@@ -526,18 +578,47 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
                     po.getStatus()
                 });
             }
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_SearchButtonActionPerformed
-
-    private void MenuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuButtonActionPerformed
-        FinanceManagerMenu menu = new FinanceManagerMenu();
-        menu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_MenuButtonActionPerformed
 
     private void RefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshButtonActionPerformed
         loadTableData();
     }//GEN-LAST:event_RefreshButtonActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        FinanceManagerMenu menu = new FinanceManagerMenu();
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow >= 0) {
+            String supplierID = jTable2.getValueAt(selectedRow, 4).toString();
+            jComboBox1.setSelectedItem(supplierID);
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int row = jTable2.getSelectedRow();
+
+        if (row >= 0) {
+            String prID = (String) jTable2.getValueAt(row, 1);
+
+
+            List<String> suppliers = loadSuppliersForPR(prID);
+
+            if (suppliers.size() > 1) {
+                jComboBox1.setEnabled(true);
+                JOptionPane.showMessageDialog(this, "You can now change the supplier.");
+            } else {
+                jComboBox1.setEnabled(false);
+                JOptionPane.showMessageDialog(this, "This PR only has one supplier. Editing is not allowed.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a row first.");
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -576,18 +657,15 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Approve;
-    private javax.swing.JButton Change_Supplier;
     private javax.swing.JLabel Date;
     private javax.swing.JTextField Date_TextField;
     private javax.swing.JLabel ItemCode_Label;
     private javax.swing.JTextField Item_Code_TextField;
-    private javax.swing.JButton MenuButton;
     private javax.swing.JButton Modify_Quantity;
     private javax.swing.JLabel PM_ID;
     private javax.swing.JTextField PM_ID_TextField;
     private javax.swing.JLabel PO_ID;
     private javax.swing.JTextField PO_ID_TextField;
-    private javax.swing.JPanel PO_Title1;
     private javax.swing.JLabel PO_name1;
     private javax.swing.JLabel PR_ID;
     private javax.swing.JTextField PR_ID_TextField;
@@ -600,10 +678,12 @@ public class PurchaseOrder_Approval extends javax.swing.JFrame {
     private javax.swing.JLabel Status;
     private javax.swing.JTextField Status_TextField;
     private javax.swing.JLabel Supplier;
-    private javax.swing.JTextField Supplier_ID_TextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable2;

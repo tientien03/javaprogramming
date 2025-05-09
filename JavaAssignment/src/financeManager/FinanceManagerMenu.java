@@ -6,19 +6,19 @@ package financeManager;
 
 import Inventory.ViewPOs;
 
+
 /**
  *
  * @author HP
  */
 public class FinanceManagerMenu extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FinanceManagerMenu
-     */
+
     public FinanceManagerMenu() {
         initComponents();
         setLocationRelativeTo(null);
         setVisible(true);
+        jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
     }
 
     /**
@@ -30,15 +30,36 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ProcessPayment_Button = new javax.swing.JButton();
-        ViewPO_Button = new javax.swing.JButton();
-        ViewPR_Button1 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         POApproval_Button = new javax.swing.JButton();
         FiananceReport_Button = new javax.swing.JButton();
+        ProcessPayment_Button = new javax.swing.JButton();
+        ViewPO_Button = new javax.swing.JButton();
+        ViewPR_Button1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
+        jLabel1.setText("Finance Manager Menu");
+
+        POApproval_Button.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        POApproval_Button.setText("PURCHASE ORDER APPROVAL");
+        POApproval_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                POApproval_ButtonActionPerformed(evt);
+            }
+        });
+
+        FiananceReport_Button.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        FiananceReport_Button.setText("GENERATE FINANCE REPORT\n");
+        FiananceReport_Button.setActionCommand("GENERATE FINANCE REPORT");
+        FiananceReport_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FiananceReport_ButtonActionPerformed(evt);
+            }
+        });
 
         ProcessPayment_Button.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         ProcessPayment_Button.setText("PROCESS PAYMENT");
@@ -64,46 +85,31 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
-        jLabel1.setText("Finance Manager Menu");
-
-        POApproval_Button.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        POApproval_Button.setText("PURCHASE ORDER APPROVAL");
-        POApproval_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                POApproval_ButtonActionPerformed(evt);
-            }
-        });
-
-        FiananceReport_Button.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        FiananceReport_Button.setText("GENERATE FINANCE REPORT\n");
-        FiananceReport_Button.setActionCommand("GENERATE FINANCE REPORT");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(152, 152, 152)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(150, 150, 150)
                         .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(189, 189, 189)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(193, 193, 193)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(POApproval_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(FiananceReport_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ProcessPayment_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ViewPO_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ViewPR_Button1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap(157, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
                 .addComponent(jLabel1)
-                .addGap(63, 63, 63)
+                .addGap(38, 38, 38)
                 .addComponent(POApproval_Button)
                 .addGap(28, 28, 28)
                 .addComponent(FiananceReport_Button)
@@ -113,7 +119,18 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
                 .addComponent(ViewPO_Button)
                 .addGap(29, 29, 29)
                 .addComponent(ViewPR_Button1)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(90, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -138,11 +155,16 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_ViewPR_Button1ActionPerformed
 
     private void ViewPO_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPO_ButtonActionPerformed
-        // TODO add your handling code here:
         ViewPOs ViewPOFrame = new ViewPOs(); 
         ViewPOFrame.setVisible(true);                                        
         this.dispose();  
     }//GEN-LAST:event_ViewPO_ButtonActionPerformed
+
+    private void FiananceReport_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FiananceReport_ButtonActionPerformed
+        FinanceReport reportFrame = new FinanceReport();
+        reportFrame.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_FiananceReport_ButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -186,5 +208,6 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
     private javax.swing.JButton ViewPO_Button;
     private javax.swing.JButton ViewPR_Button1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

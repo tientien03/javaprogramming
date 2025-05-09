@@ -118,6 +118,11 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
         ComboItem.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         ComboItem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ComboItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboItemActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel5.setText("Quantity");
@@ -456,6 +461,10 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         }
                 
     }//GEN-LAST:event_StockTableMouseClicked
+
+    private void ComboItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboItemActionPerformed
 
     private String generateNextPrId(){
         int max = 0;
