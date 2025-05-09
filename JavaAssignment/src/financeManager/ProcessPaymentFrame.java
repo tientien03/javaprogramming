@@ -21,6 +21,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
         loadUpdatedPurchaseOrders();
         loadProcessPaymentTable();
         setupListeners();
+        setLocationRelativeTo(null);
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
     }
 

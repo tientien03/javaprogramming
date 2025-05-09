@@ -24,6 +24,7 @@ public class FinanceReport extends javax.swing.JFrame {
     public FinanceReport() {
         initComponents();
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
+        setLocationRelativeTo(null);
     }
 
     /**
