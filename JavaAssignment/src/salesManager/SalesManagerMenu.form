@@ -51,13 +51,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="219" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="itemBtn" max="32767" attributes="0"/>
+                      <Component id="supplierbtn" min="-2" max="-2" attributes="0"/>
+                      <Component id="poBtn" alignment="0" min="-2" pref="333" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="itemBtn" pref="337" max="32767" attributes="0"/>
                           <Component id="salesEntryBtn" max="32767" attributes="0"/>
-                          <Component id="supplierbtn" min="-2" max="-2" attributes="0"/>
                           <Component id="prBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="poBtn" min="-2" pref="333" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -70,10 +70,10 @@
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="itemBtn" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  <Component id="supplierbtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="salesEntryBtn" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="supplierbtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="prBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>

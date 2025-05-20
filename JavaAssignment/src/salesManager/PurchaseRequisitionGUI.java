@@ -19,12 +19,15 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     List<PurchaseRequisition> PRList = new ArrayList<>();
     int editingRowIndex = 0;
     boolean isEditing = false;
-    public PurchaseRequisitionGUI() {
+    private String loggedInUser;
+    public PurchaseRequisitionGUI(String username) {
+        this.loggedInUser = username;
         initComponents();
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         txtDate.setText(java.time.LocalDate.now().toString());
-        
+        txtRaisedBy.setText(loggedInUser);
+        txtRaisedBy.setEditable(false);
         supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
         PRList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
@@ -341,7 +344,14 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     }
                 }
             }
-            int quantity = Integer.parseInt(txtquantity.getText().trim());
+            int quantity;
+            try {
+                quantity = Integer.parseInt(txtquantity.getText().trim());
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "Quantity must be a valid number.");
+                return;
+            }
+    
             String requiredDate = txtDate.getText().trim();
             String raisedBy = txtRaisedBy.getText().trim();
 
@@ -445,8 +455,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) StockTable.getModel();
             String itemId = model.getValueAt(selectedRow, 0).toString(); // Item ID
             String itemName = model.getValueAt(selectedRow, 1).toString(); // Item Name
-
-            // Set combo selection to match "I001 - Apple"
             String comboLabel = itemId + " - " + itemName;
             for (int i = 0; i < ComboItem.getItemCount(); i++) {
                 if (ComboItem.getItemAt(i).equalsIgnoreCase(comboLabel)) {
@@ -455,7 +463,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 }
             }
 
-            // Optionally, clear or suggest values for other fields
             txtquantity.setText("");
             txtDate.setText(java.time.LocalDate.now().toString());
         }
@@ -516,7 +523,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     private void clearInput(){
         ComboItem.setSelectedItem(0);
         txtquantity.setText("");
-        txtRaisedBy.setText("");
     }
     
     private void makeTableReadOnly(){
@@ -586,7 +592,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseRequisitionGUI().setVisible(true);
+                new PurchaseRequisitionGUI("TestManager").setVisible(true);
             }
         });
     }

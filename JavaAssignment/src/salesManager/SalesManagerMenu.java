@@ -5,9 +5,6 @@
  */
 package salesManager;
 
-import Inventory.ViewPOs;
-
-
 /**
  *
  * @author User
@@ -101,12 +98,12 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addGap(219, 219, 219)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(supplierbtn)
+                    .addComponent(poBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(itemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(itemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                         .addComponent(salesEntryBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(supplierbtn)
-                        .addComponent(prBtn))
-                    .addComponent(poBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(prBtn)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
@@ -117,9 +114,9 @@ public class SalesManagerMenu extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(itemBtn)
                 .addGap(18, 18, 18)
-                .addComponent(salesEntryBtn)
-                .addGap(18, 18, 18)
                 .addComponent(supplierbtn)
+                .addGap(18, 18, 18)
+                .addComponent(salesEntryBtn)
                 .addGap(18, 18, 18)
                 .addComponent(prBtn)
                 .addGap(18, 18, 18)
@@ -164,7 +161,8 @@ public class SalesManagerMenu extends javax.swing.JFrame {
 
     private void prBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prBtnActionPerformed
         // TODO add your handling code here:
-        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI();
+        String loggedInUsername="SM001";
+        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI(loggedInUsername);
         PRForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_prBtnActionPerformed

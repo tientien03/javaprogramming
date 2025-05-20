@@ -5,13 +5,6 @@
 package financeManager;
 import java.io.*;
 
-/**
- *
- * @author HP
- */
-
-
-
 public class Payment {
     public String poID;
     public String supplierID;

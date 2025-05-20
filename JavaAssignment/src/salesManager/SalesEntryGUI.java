@@ -4,15 +4,12 @@
  */
 package salesManager;
 
-import main.FileWriterUtil;
 import java.io.*;
 import java.util.*;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
 import java.text.*;
 import main.FileWriterUtil;
-import javax.swing.table.DefaultTableCellRenderer;
-
 /**
  *
  * @author User
@@ -339,7 +336,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         int selectedRow = tableCart.getSelectedRow();
         if(selectedRow == -1){
             JOptionPane.showMessageDialog(this, "Please select a sales entry to edit.");
-            return;
         }else{
             isEditing = true;
             editingRowIndex = selectedRow;
@@ -357,16 +353,9 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     txtDiscountRate.setText(String.format("%.0f", discountRate)); // e.g., "15"
                 } catch (NumberFormatException | IndexOutOfBoundsException e) {
                     // Reset if error during parsing
-                    enabledis.setSelected(false);
-                    txtDiscountRate.setEnabled(false);
-                    txtDiscountRate.setText("");
+                    clearInput();
                 }
-            } else {
-                // No discount
-                enabledis.setSelected(false);
-                txtDiscountRate.setEnabled(false);
-                txtDiscountRate.setText("");
-            }
+            } 
         }
     }//GEN-LAST:event_editEntryActionPerformed
 
@@ -383,6 +372,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
         model.removeRow(selectedRow);
         }
+        clearInput();
     }//GEN-LAST:event_deleteEntryActionPerformed
 
     private void comboItemIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboItemIdActionPerformed
@@ -395,7 +385,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         String selectedId = itemInput.contains("-")? itemInput.split("-")[0].trim():itemInput; //Split the string at -, take first part [0]
         Item matchedItem = null;
         for(Item item : itemList){
-            if(item.getItemID().equalsIgnoreCase(selectedId)||item.getItemID().equalsIgnoreCase(itemInput)){
+            if(item.getItemID().equalsIgnoreCase(selectedId)||item.getItemName().equalsIgnoreCase(itemInput)){
                 matchedItem = item;
                 break;
             }
@@ -446,7 +436,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             String selectedId = input.contains("-")? input.split("-")[0].trim():input;
             Item selectedItem = null;
             for(Item item : itemList){
-                if(item.getItemID().equalsIgnoreCase(selectedId)){
+                if(item.getItemID().equalsIgnoreCase(selectedId)||item.getItemName().equalsIgnoreCase(input)){
                     selectedItem = item;
                     break;
                 }
@@ -463,7 +453,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
             double unitPrice = selectedItem.getSalesPrice();
             double discountRate = 0.0;
-            
             if (enabledis.isSelected()) {
                 try {
                     discountRate = Double.parseDouble(txtDiscountRate.getText().trim());
@@ -488,6 +477,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     String currentPrice = model.getValueAt(i, 2).toString();
                     if (currentQty.equals(String.valueOf(quantity)) && currentPrice.equals(priceLabel)) {
                         JOptionPane.showMessageDialog(this, "No changes detected in the selected entry.");
+                        clearInput();
                         return;
                     }
                     model.removeRow(editingRowIndex);
@@ -643,13 +633,13 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                 if (entry.getSalesdate().equals(formattedDate)) {
                     double unitPrice = entry.getItem().getSalesPrice();
                     String priceLabel;
-                    if(entry instanceof DiscountedSalesEntry) {
+                    if(!(entry instanceof DiscountedSalesEntry)) {
+                        priceLabel = String.format("%.2f", unitPrice);
+                    } else {
                         DiscountedSalesEntry discounted = (DiscountedSalesEntry) entry;
                         double discountRate = discounted.getDiscountRate();
                         unitPrice = unitPrice * (1 - discounted.getDiscountRate()/100);
                         priceLabel = String.format("%.2f (-%.0f%%)", unitPrice, discountRate);
-                    } else {
-                        priceLabel = String.format("%.2f", unitPrice);
                     }
                     model.addRow(new Object[] {
                         entry.getItem().getItemID(),

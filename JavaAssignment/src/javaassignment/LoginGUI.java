@@ -5,15 +5,14 @@
 package javaassignment;
 
 import javax.swing.JOptionPane;
-import javaassignment.User;
-import javaassignment.UserClassitification;
-import javaassignment.Viewuser;
-import java.util.ArrayList;
 
 public class LoginGUI extends javax.swing.JFrame {
     
     public LoginGUI() {
         initComponents();
+        setVisible(true);
+        setLocationRelativeTo(null);
+
         getContentPane().setBackground(new java.awt.Color(0xC5E1EF));
     }
     
