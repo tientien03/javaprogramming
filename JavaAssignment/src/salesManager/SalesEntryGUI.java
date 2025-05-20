@@ -4,12 +4,14 @@
  */
 package salesManager;
 
+import admin.UserClassification;
 import java.io.*;
 import java.util.*;
 import javax.swing.JOptionPane;
 import javax.swing.table.*;
 import java.text.*;
-import main.FileWriterUtil;
+import main.*;
+
 /**
  *
  * @author User
@@ -44,7 +46,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         for(Item item : itemList){
             comboItemId.addItem(item.getItemID() + " - " + item.getItemName());
         }
-        
         DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
         model.setRowCount(0);//clear existing rows   
         makeTableReadOnly();
@@ -352,10 +353,9 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     txtDiscountRate.setEnabled(true);
                     txtDiscountRate.setText(String.format("%.0f", discountRate)); // e.g., "15"
                 } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                    // Reset if error during parsing
                     clearInput();
                 }
-            } 
+            }
         }
     }//GEN-LAST:event_editEntryActionPerformed
 
@@ -391,7 +391,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
         }
         if(matchedItem == null){
-            if(!!selected.toString().trim().equalsIgnoreCase("-- Select Item --")){
+            if(!selected.toString().trim().equalsIgnoreCase("-- Select Item --")){
                 lblItemError.setText("Item not found. Please check ID or name.");
             }
         }else{
@@ -570,7 +570,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu();
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();

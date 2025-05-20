@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package salesManager;
-import main.FileWriterUtil;
+import admin.UserClassification;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -309,7 +309,7 @@ public class ItemManagement extends javax.swing.JFrame {
        
     private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu();
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();

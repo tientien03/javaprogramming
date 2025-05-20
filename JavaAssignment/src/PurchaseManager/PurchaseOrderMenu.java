@@ -4,15 +4,14 @@
  */
 package PurchaseManager;
 
-import salesManager.PurchaseRequisition;
-import salesManager.Item;
-import salesManager.Supplier;
-import main.*;
+import main.FileWriterUtil;
+import main.FileReaderUtil;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
+import salesManager.*;
 
 public class PurchaseOrderMenu extends javax.swing.JFrame {
     private String userID;
@@ -22,7 +21,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
     public PurchaseOrderMenu(String userID) {
         this.userID = userID;
         initComponents();
-        this.setLocationRelativeTo(null);
+        
         getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
         
         //PR table
@@ -90,7 +89,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
 
                 List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
                 List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
 
                 PurchaseRequisition selectedPR = null;
                 for (PurchaseRequisition pr : prList) {
@@ -113,12 +112,44 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 // Generate PO ID
                 String poID = "PO" + (System.currentTimeMillis() % 100000);
                 
+                if (selectedPR.getSupplier().isEmpty()) {
+                    JOptionPane.showMessageDialog(PurchaseOrderMenu.this, "No suppliers available for this requisition.");
+                    return;
+                }
+
+//                Supplier selectedSupplier = selectedPR.getSupplierIds().get(0);
+//                List<Supplier> selectedSuppliers = new ArrayList<>();
+//                supplierList.add(selectedSupplier);
+
+                // Get the list of supplier IDs from the PR
+                List<String> supplierIDs = selectedPR.getSupplierIds();
+
+                // Create a new list to hold the actual Supplier objects
+                List<Supplier> selectedSuppliers = new ArrayList<>();
+
+                // Iterate through the IDs and find the matching Suppliers
+                List<Supplier> allSuppliers = Supplier.loadSupplierFromFile("supplier.txt");
+                for (String id : supplierIDs) {
+                    for (Supplier supplier : allSuppliers) {
+                        if (supplier.getSupplierId().equalsIgnoreCase(id)) {
+                            selectedSuppliers.add(supplier);
+                            break;
+                        }
+                    }
+                }
+
+                // If no suppliers found, display a warning and return
+                if (selectedSuppliers.isEmpty()) {
+                    JOptionPane.showMessageDialog(PurchaseOrderMenu.this, "No suppliers available for this requisition.");
+                    return;
+                }
+
                 PurchaseOrder po = new PurchaseOrder(
                     poID,
-                    selectedPR.getPrId(),
-                    selectedPR.getItem().getItemID(),
+                    selectedPR,
+                    selectedPR.getItem(),
                     selectedPR.getQuantity(),
-                    String.join(";", selectedPR.getSupplierIds()),
+                    selectedSuppliers,
                     getUserID(),
                     java.time.LocalDate.now().toString(),
                     "Pending"
@@ -222,53 +253,85 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                     return;
                 }
 
-                
-                // Check if Supplier ID exists
-                List<String[]> suppliers = FileReaderUtil.readFileAsArrays("supplier.txt");
+                // Load the supplier list from the file
+                List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
 
-                String[] supplierIDs = newSupplierID.split(";");  // Split by semicolon
-                List<String> validSupplierIDs = new ArrayList<>();
+                // Split the newSupplierID string by semicolon
+                String[] supplierIDs = newSupplierID.split(";");
+
+                // Validate each supplier ID
+                List<Supplier> newSupplierList = new ArrayList<>();
                 for (String id : supplierIDs) {
                     String trimmedID = id.trim();
-                    boolean exists = suppliers.stream().anyMatch(parts -> parts[0].equalsIgnoreCase(trimmedID));
-                    if (!exists) {
+    
+                    Supplier foundSupplier = supplierList.stream()
+                            .filter(s -> s.getSupplierId().equalsIgnoreCase(trimmedID))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (foundSupplier == null) {
                         JOptionPane.showMessageDialog(null, "❌ Supplier ID not found: " + trimmedID);
                         return;
                     }
-                    validSupplierIDs.add(trimmedID);
+
+                    newSupplierList.add(foundSupplier);
                 }
 
-                // Recombine valid supplier IDs (in case of extra spaces)
-                newSupplierID = String.join(";", validSupplierIDs);
+//                // Recombine valid supplier IDs (in case of extra spaces)
+//                newSupplierID = newSupplierList.stream()
+//                                .map(Supplier::getSupplierId)
+//                                .reduce((s1, s2) -> s1 + ";" + s2)
+//                                .orElse("");
+
+                
+                // Load Suppliers, Items, and Requisitions
+//                List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
+                List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
+                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
 
                 // Load all PO lines
                 List<String[]> rawLines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
                 List<PurchaseOrder> poList = new ArrayList<>();
                 for (String[] parts : rawLines) {
-                    PurchaseOrder po = PurchaseOrder.fromString(String.join(",", parts));
+                    PurchaseOrder po = PurchaseOrder.fromString(String.join(",", parts), prList, supplierList);
                     if (po != null) poList.add(po);
                 }
                 
                 boolean found = false;
-                String updatedDetails = "";
+//                String updatedDetails = "";
 
                 for (PurchaseOrder po : poList) {
                     if (po.getPoID().equalsIgnoreCase(poID)) {
                         po.setQuantity(Integer.parseInt(newQuantity));
-                        po.setSupplierID(newSupplierID);
+                        po.setSuppliers(newSupplierList);   // ✅ Update suppliers in PO
                         found = true;
-
-                        updatedDetails = "PO ID: " + po.getPoID() + "\n"
-                                       + "PR ID: " + po.getPrID() + "\n"
-                                       + "Item Code: " + po.getItemCode() + "\n"
-                                       + "Quantity: " + po.getQuantity() + "\n"
-                                       + "Supplier ID: " + po.getSupplierID() + "\n"
-                                       + "Purchase Manager ID: " + po.getPurchaseManagerID() + "\n"
-                                       + "Date: " + po.getDate() + "\n"
-                                       + "Status: " + po.getStatus();
                         break;
                     }
                 }
+//
+//                        if (updatedSupplier == null) {
+//                            JOptionPane.showMessageDialog(null, "❌ Supplier ID not found: " + newSupplierID);
+//                            return;
+//                        }
+//                        
+//                        po.setQuantity(Integer.parseInt(newQuantity));
+//                        po.setSuppliers(newSupplierList);
+//                        found = true;
+//
+//                        List<String> supplierIds = po.getSupplierIds();
+//                        String supplierIdsString = String.join(";", supplierIds);
+//                        
+//                        updatedDetails = "PO ID: " + po.getPoID() + "\n"
+//                                       + "PR ID: " + po.getPurchaseRequisition().getPrId() + "\n"
+//                                       + "Item Code: " + po.getItem().getItemID() + "\n"
+//                                       + "Quantity: " + po.getQuantity() + "\n"
+//                                       + "Supplier ID: " + supplierIds + "\n"
+//                                       + "Purchase Manager ID: " + po.getPurchaseManagerID() + "\n"
+//                                       + "Date: " + po.getDate() + "\n"
+//                                       + "Status: " + po.getStatus();
+//                        break;
+//                    }
+//                }
 
                 if (!found) {
                     JOptionPane.showMessageDialog(null, "❌ Purchase Order not found!");
@@ -282,7 +345,16 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 }
                 FileWriterUtil.writeFile("purchase_orders.txt", updatedLines);
              
-                JOptionPane.showMessageDialog(null, "✅ Purchase Order updated successfully!\n\n" + updatedDetails);
+                JOptionPane.showMessageDialog(null, "✅ Purchase Order updated successfully!\n\n" +
+                    "PO ID: " + poID + "\n" +
+                    "PR ID: " + textFieldPRID.getText() + "\n" +
+                    "Item Code: " + textFieldItemCode.getText() + "\n" +
+                    "Quantity: " + textFieldQuantity.getText() + "\n" +
+                    "Supplier ID: " + textFieldSupplierID.getText() + "\n" +
+                    "Purchase Manager ID: " + textFieldPurchaseManagerID.getText() + "\n" +
+                    "Date: " + textFieldDate.getText() + "\n" +
+                    "Status: " + textFieldStatus.getText()
+                );
                     
                 loadPurchaseOrders();  // Refresh table
                 clearFields();  // Clears the 8 detail fields
@@ -309,10 +381,14 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                     return;  // Cancelled
                 }
 
+                List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
+                List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
+                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+
                 List<String[]> rawLines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
                 List<PurchaseOrder> poList = new ArrayList<>();
                 for (String[] parts : rawLines) {
-                    PurchaseOrder po = PurchaseOrder.fromString(String.join(",", parts));
+                    PurchaseOrder po = PurchaseOrder.fromString(String.join(",", parts), prList, supplierList);
                     if (po != null) poList.add(po);
                 }
 
@@ -323,7 +399,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 for (PurchaseOrder po : poList) {
                     if (po.getPoID().equalsIgnoreCase(poID)) {
                         found = true;
-                        prIDToUpdate = po.getPrID();
+                        prIDToUpdate = po.getPurchaseRequisition().getPrId();
                     } else {
                         updatedList.add(po);
                     }
@@ -343,11 +419,11 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                     
                 if (!prIDToUpdate.isEmpty()) {
                     // Load Supplier and Item lists first
-                    List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
-                    List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-
-                    // Load PRs using the class
-                    List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+//                    List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
+//                    List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
+//
+//                    // Load PRs using the class
+//                    List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
 
                     for (PurchaseRequisition pr : prList) {
                         if (pr.getPrId().equalsIgnoreCase(prIDToUpdate)) {
@@ -361,7 +437,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                     for (PurchaseRequisition pr : prList) {
                         updatedPRLines.add(pr.toString().split(","));
                     }
-                    FileWriterUtil.writeFile("purchase_requisition.txt", updatedPRLines);
+                    FileWriterUtil.writeFile("purchase_requisitions.txt", updatedPRLines);
                 }
                     
                 JOptionPane.showMessageDialog(null, "Purchase Order deleted successfully!");
@@ -395,7 +471,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
 
         List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
 
         requisitionTableModel.setRowCount(0);  // Clear table
 
@@ -416,17 +492,36 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
     
     private void loadPurchaseOrders() {
         tableModel.setRowCount(0);  // Clear existing rows
+        
+        // Load the required lists for matching
+        List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
+        List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
+        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+
         List<String []> lines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
+        
         for (String[] parts : lines) {
             String line = String.join(",", parts);
-            PurchaseOrder po = PurchaseOrder.fromString(line);
+            
+            PurchaseOrder po = PurchaseOrder.fromString(line, prList, supplierList);
             if (po != null) {
+                // Combine the supplier IDs
+                List<String> suppliers = po.getSupplierIds();
+                String supplierIDs = String.join(";", suppliers);
+//                String supplierIDs = String.join(";", po.getSupplierIds());
+            
+//                // 🔄 Combine the supplier IDs
+//                String supplierIDs = suppliers.stream()
+//                                          .map(Supplier::getSupplierId)
+//                                          .reduce((s1, s2) -> s1 + ";" + s2)
+//                                          .orElse("");
+            
                 tableModel.addRow(new Object[]{
                     po.getPoID(),
-                    po.getPrID(),
-                    po.getItemCode(),
+                    po.getPurchaseRequisition().getPrId(),
+                    po.getItem().getItemID(),
                     po.getQuantity(),
-                    po.getSupplierID(),
+                    supplierIDs,
                     po.getPurchaseManagerID(),
                     po.getDate(),
                     po.getStatus()

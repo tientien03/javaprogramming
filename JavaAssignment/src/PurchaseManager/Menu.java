@@ -4,9 +4,12 @@
  */
 package PurchaseManager;
 
+import admin.LoginGUI;
 import java.awt.Color;
+import admin.UserClassification;
 
 public class Menu extends javax.swing.JFrame {
+    
 
     /**
      * Creates new form Menu
@@ -15,10 +18,10 @@ public class Menu extends javax.swing.JFrame {
         initComponents();
         setVisible(true);
         this.setLocationRelativeTo(null);
-        java.awt.Color customBt = new java.awt.Color(0x66a3c9);
-        jButtonItems.setBackground(customBt);
-        jButtonSuppliers.setBackground(customBt);
-        jButtonPO.setBackground(customBt);
+        getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
+
+        
+
     }
 
     /**
@@ -48,30 +51,30 @@ public class Menu extends javax.swing.JFrame {
         setBackground(new java.awt.Color(102, 102, 102));
         setForeground(new java.awt.Color(102, 102, 102));
 
-        jButtonItems.setBackground(new java.awt.Color(0, 0, 0));
+        jButtonItems.setBackground(new java.awt.Color(204, 204, 204));
         jButtonItems.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
-        jButtonItems.setForeground(new java.awt.Color(255, 255, 255));
         jButtonItems.setText("Items");
+        jButtonItems.setBorder(new javax.swing.border.MatteBorder(null));
         jButtonItems.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonItemsActionPerformed(evt);
             }
         });
 
-        jButtonSuppliers.setBackground(new java.awt.Color(0, 0, 0));
+        jButtonSuppliers.setBackground(new java.awt.Color(204, 204, 204));
         jButtonSuppliers.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
-        jButtonSuppliers.setForeground(new java.awt.Color(255, 255, 255));
         jButtonSuppliers.setText("Suppliers");
+        jButtonSuppliers.setBorder(new javax.swing.border.MatteBorder(null));
         jButtonSuppliers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSuppliersActionPerformed(evt);
             }
         });
 
-        jButtonPO.setBackground(new java.awt.Color(0, 0, 0));
+        jButtonPO.setBackground(new java.awt.Color(204, 204, 204));
         jButtonPO.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
-        jButtonPO.setForeground(new java.awt.Color(255, 255, 255));
         jButtonPO.setText("Purchase Orders");
+        jButtonPO.setBorder(new javax.swing.border.MatteBorder(null));
         jButtonPO.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonPOActionPerformed(evt);
@@ -82,6 +85,7 @@ public class Menu extends javax.swing.JFrame {
         jButton9.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jButton9.setForeground(new java.awt.Color(255, 255, 255));
         jButton9.setText("EXIT");
+        jButton9.setBorder(new javax.swing.border.MatteBorder(null));
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
@@ -106,9 +110,9 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(150, 150, 150))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton9)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
                 .addGap(84, 84, 84))
         );
         layout.setVerticalGroup(
@@ -118,7 +122,7 @@ public class Menu extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton9)))
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(29, 29, 29)
                 .addComponent(jButtonItems, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50)
@@ -155,6 +159,8 @@ public class Menu extends javax.swing.JFrame {
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
+        dispose(); 
+        new LoginGUI().setVisible(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
@@ -187,7 +193,8 @@ public class Menu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Menu().setVisible(true);
+                    new Menu().setVisible(true);
+                
             }
         });
     }

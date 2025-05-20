@@ -4,6 +4,7 @@
  */
 package salesManager;
 
+import admin.UserClassification;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -19,18 +20,30 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     List<PurchaseRequisition> PRList = new ArrayList<>();
     int editingRowIndex = 0;
     boolean isEditing = false;
-    private String loggedInUser;
+    private String currentUsername;
     public PurchaseRequisitionGUI(String username) {
-        this.loggedInUser = username;
         initComponents();
+        this.currentUsername = username;
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         txtDate.setText(java.time.LocalDate.now().toString());
-        txtRaisedBy.setText(loggedInUser);
-        txtRaisedBy.setEditable(false);
+        String userId = "UNKNOWN";
+        String name = "UNKNOWN";
+        List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
+        for (String[] user : users) {
+            if (user.length >= 8 && user[1].equalsIgnoreCase(username)) {
+                userId = user[0];  // ID is in column 0
+                name = user[3];
+                break;
+            }
+        }
+        txtRaisedBy.setText(userId + " - " + name);
+        txtRaisedBy.setEditable(false); 
+        
         supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
         PRList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+        
         DefaultTableModel pr = (DefaultTableModel) PRTable.getModel();
         pr.setRowCount(0);
         
@@ -121,11 +134,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
         ComboItem.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         ComboItem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        ComboItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboItemActionPerformed(evt);
-            }
-        });
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel5.setText("Quantity");
@@ -344,16 +352,9 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     }
                 }
             }
-            int quantity;
-            try {
-                quantity = Integer.parseInt(txtquantity.getText().trim());
-            } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(this, "Quantity must be a valid number.");
-                return;
-            }
-    
+            int quantity = Integer.parseInt(txtquantity.getText().trim());
             String requiredDate = txtDate.getText().trim();
-            String raisedBy = txtRaisedBy.getText().trim();
+            String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
 
             PurchaseRequisition newPr = new PurchaseRequisition(
                 prId, selectedItem,matchedSuppliers, quantity, requiredDate, raisedBy,"Pending"
@@ -390,13 +391,38 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select a PR to edit.");
             return;
         }
+        // Get PR ID from the selected row
+        String selectedPrId = PRTable.getValueAt(selectedRow, 0).toString();
 
-        PurchaseRequisition pr = PRList.get(selectedRow);
+        // Find the PR in PRList by ID
+        PurchaseRequisition pr = null;
+        for (int i = 0; i < PRList.size(); i++) {
+            if (PRList.get(i).getPrId().equalsIgnoreCase(selectedPrId)) {
+                pr = PRList.get(i);
+                editingRowIndex = i; // Store the correct index
+                break;
+            }
+        }
+
+        if (pr == null) {
+            JOptionPane.showMessageDialog(this, "Selected PR not found.");
+            return;
+        }
         ComboItem.setSelectedItem(pr.getItem().getItemID() + " - " + pr.getItem().getItemName());
         txtquantity.setText(String.valueOf(pr.getQuantity()));
         txtDate.setText(pr.getRequiredDate());
-        txtRaisedBy.setText(pr.getRaisedBy());
+        String raisedById = pr.getRaisedBy();
+        String raisedByName = "UNKNOWN";
 
+        // Look up name from user.txt
+        List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
+        for (String[] user : users) {
+            if (user.length >= 4 && user[0].equalsIgnoreCase(raisedById)) {
+                raisedByName = user[3];  // assuming name is in column 3
+                break;
+            }
+        }
+        txtRaisedBy.setText(raisedById + " - " + raisedByName);
         editingRowIndex = selectedRow;
         isEditing = true;
     }//GEN-LAST:event_editBtnActionPerformed
@@ -442,7 +468,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
     private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu();
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
@@ -455,6 +481,8 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) StockTable.getModel();
             String itemId = model.getValueAt(selectedRow, 0).toString(); // Item ID
             String itemName = model.getValueAt(selectedRow, 1).toString(); // Item Name
+
+            // Set combo selection to match "I001 - Apple"
             String comboLabel = itemId + " - " + itemName;
             for (int i = 0; i < ComboItem.getItemCount(); i++) {
                 if (ComboItem.getItemAt(i).equalsIgnoreCase(comboLabel)) {
@@ -463,15 +491,12 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 }
             }
 
+            // Optionally, clear or suggest values for other fields
             txtquantity.setText("");
             txtDate.setText(java.time.LocalDate.now().toString());
         }
                 
     }//GEN-LAST:event_StockTableMouseClicked
-
-    private void ComboItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ComboItemActionPerformed
 
     private String generateNextPrId(){
         int max = 0;
@@ -523,6 +548,17 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     private void clearInput(){
         ComboItem.setSelectedItem(0);
         txtquantity.setText("");
+        String userId = "UNKNOWN";
+        String name = "UNKNOWN";
+        List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
+        for (String[] user : users) {
+            if (user.length >= 8 && user[1].equalsIgnoreCase(currentUsername)) {
+                userId = user[0];
+                name = user[3];
+                break;
+            }
+        }
+        txtRaisedBy.setText(userId + " - " + name);
     }
     
     private void makeTableReadOnly(){
@@ -539,7 +575,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         loadLowStockItemsToTable();
         
         DefaultTableModel prModel = new DefaultTableModel(
-        new String[] { "PR ID", "Item", "Quantity", "Required Date", "Supplier ID", "Raised By" }, 0
+        new String[] { "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By" }, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -556,43 +592,14 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         for (int i = 0; i < PRTable.getColumnCount(); i++) {
             PRTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
-       
         PRTable.getTableHeader().setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
         
     }
 
-    
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisitionGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisitionGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisitionGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisitionGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseRequisitionGUI("TestManager").setVisible(true);
+                new PurchaseRequisitionGUI(UserClassification.getCurrentUsername()).setVisible(true);
             }
         });
     }

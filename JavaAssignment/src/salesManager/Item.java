@@ -69,7 +69,7 @@ public class Item{
                 String[] supplierIds = parts[2].split(";");
                 List<Supplier> matchedSuppliers = new ArrayList<>();
                 for (String sid : supplierIds) {
-                        for (Supplier s : supplierList) {
+                    for (Supplier s : supplierList) {
                         if (s.getSupplierId().equalsIgnoreCase(sid.trim())) {
                             matchedSuppliers.add(s);
                             break;

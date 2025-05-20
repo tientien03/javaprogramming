@@ -1,5 +1,6 @@
 package salesManager;
 
+import admin.UserClassification;
 import main.FileWriterUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -294,7 +295,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
 
     private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu();
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
@@ -583,6 +584,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(SupplierManagementGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

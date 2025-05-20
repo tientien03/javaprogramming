@@ -5,16 +5,30 @@
  */
 package salesManager;
 
+import admin.LoginGUI;
+import admin.UserClassification;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import main.FileReaderUtil;
+
 /**
  *
  * @author User
  */
 public class SalesManagerMenu extends javax.swing.JFrame {
-    public SalesManagerMenu() {
-        initComponents();
-        jDesktopPane1.setBackground(new java.awt.Color(0xc5e1ef));
-        setLocationRelativeTo(null);
-        setVisible(true);
+        public SalesManagerMenu(String username) {
+            initComponents();
+            jDesktopPane1.setBackground(new java.awt.Color(0xc5e1ef));
+            setLocationRelativeTo(null);
+            List<String[]> users = FileReaderUtil.readFileAsArrays("user.txt");
+            setCurrentTime();
+            for(String[] user : users){
+                if(user[1].equalsIgnoreCase(username)){
+                    userlabel.setText(user[3].toUpperCase());
+                    break;
+                }
+            }
+
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -27,6 +41,9 @@ public class SalesManagerMenu extends javax.swing.JFrame {
         salesEntryBtn = new javax.swing.JButton();
         prBtn = new javax.swing.JButton();
         poBtn = new javax.swing.JButton();
+        poBtn1 = new javax.swing.JButton();
+        userlabel = new javax.swing.JLabel();
+        dateLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,30 +97,55 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
+        poBtn1.setBackground(new java.awt.Color(255, 51, 51));
+        poBtn1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        poBtn1.setText("LOG OUT");
+        poBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                poBtn1ActionPerformed(evt);
+            }
+        });
+
+        userlabel.setBackground(new java.awt.Color(255, 255, 255));
+        userlabel.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        userlabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        userlabel.setText("hhhh");
+
+        dateLabel.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
+        dateLabel.setForeground(new java.awt.Color(102, 102, 102));
+        dateLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        dateLabel.setText("yyyy-MM-dd HH:mm");
+
         jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(supplierbtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(itemBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(salesEntryBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(prBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(poBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(poBtn1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(userlabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(dateLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
-                .addGap(0, 120, Short.MAX_VALUE)
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addContainerGap(120, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(105, 105, 105))
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addGap(219, 219, 219)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(supplierbtn)
-                    .addComponent(poBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(itemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                        .addComponent(itemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(salesEntryBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(prBtn)))
+                        .addComponent(supplierbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(prBtn)
+                        .addComponent(poBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(poBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(userlabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
@@ -111,17 +153,23 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jLabel1)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(userlabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dateLabel)
+                .addGap(8, 8, 8)
                 .addComponent(itemBtn)
                 .addGap(18, 18, 18)
-                .addComponent(supplierbtn)
-                .addGap(18, 18, 18)
                 .addComponent(salesEntryBtn)
+                .addGap(18, 18, 18)
+                .addComponent(supplierbtn)
                 .addGap(18, 18, 18)
                 .addComponent(prBtn)
                 .addGap(18, 18, 18)
                 .addComponent(poBtn)
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(poBtn1)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -161,8 +209,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
 
     private void prBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prBtnActionPerformed
         // TODO add your handling code here:
-        String loggedInUsername="SM001";
-        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI(loggedInUsername);
+        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI(UserClassification.getCurrentUsername());
         PRForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_prBtnActionPerformed
@@ -174,21 +221,36 @@ public class SalesManagerMenu extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_poBtnActionPerformed
 
+    private void poBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poBtn1ActionPerformed
+        // TODO add your handling code here:
+        dispose(); 
+        new LoginGUI().setVisible(true);
+    }//GEN-LAST:event_poBtn1ActionPerformed
+
+    private void setCurrentTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date();
+        dateLabel.setText(formatter.format(date));
+    }
+    
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SalesManagerMenu().setVisible(true);
+            public void run(){
+                new SalesManagerMenu("sales_user").setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel dateLabel;
     private javax.swing.JButton itemBtn;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton poBtn;
+    private javax.swing.JButton poBtn1;
     private javax.swing.JButton prBtn;
     private javax.swing.JButton salesEntryBtn;
     private javax.swing.JButton supplierbtn;
+    private javax.swing.JLabel userlabel;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,10 +1,10 @@
-A001, admin01, password123, Administrator, John Tan, johntan@owsb.com, 012-3456789, Active
-PM001, pm_user, pm_pass, Purchase Manager, Ali Lim, alilim@owsb.com, 011-2233445, Active
-SM001, sm_jane, sm123, Sales Manager, Jane Ng, janeng@owsb.com, 016-9988776, Active
-IM001, im_mike, impass, Inventory Manager, Mike Lee, mikelee@owsb.com, 014-5566778, Active
-FM001, fm_sara, fmsecure, Finance Manager, Sara Wong, sarawong@owsb.com, 017-3344556, Active
-A002, admin02, admin456, Administrator, Karen Teo, karenteo@owsb.com, 018-3344556, Active
-PM002, pm_hassan, pmsecure1, Purchase Manager, Hassan Ibrahim, hassani@owsb.com, 013-4455667, Active
-SM003, sm_david, smpass1, Sales Manager, David Chong, davidchong@owsb.com, 017-5566778, Active
-IM004, im_siti, imsecure, Inventory Manager, Siti Aisyah, sitiaisyah@owsb.com, 019-2233445, Active
-FM005, fm_john, fm987, Finance Manager, John Lim, johnlim@owsb.com, 012-6677889, Active
+A001,admin01,password123,John Tan,johntan@owsb.com,012-3456789,Administrator,Active
+A002,admin02,admin456,Karen Teo,karenteo@owsb.com,018-3344556,Administrator,Active
+PM001,pm_user,pm_pass,Ali Lim,alilim@owsb.com,011-2233445,Purchase Manager,Active
+PM002,pm_hassan,pmsecure1,HassanIbrahim,hassani@owsb.com,013-4455667,Purchase Manager,Active
+SM001,sm_jane,sm123,Jane Ng,janeng@owsb.com,016-9988776,Sales Manager,Active
+SM002,sm_david,smpass1,David Chong,davidchong@owsb.com,017-5566778,Sales Manager,Active
+IM001,im_mike,impass,Mike Lee,mikelee@owsb.com,014-5566778,Inventory Manager,Active
+IM002,im_siti,imsecure,Siti Aisyah,sitiaisyah@owsb.com,019-2233445,Inventory Manager,Active
+FM001,fm_sara,fmsecure,Sara Wong,sarawong@owsb.com,017-3344556,Finance Manager,Active
+FM002,fm_john,fm987,John Lim,johnlim@owsb.com,012-6677889,Administrator,Active

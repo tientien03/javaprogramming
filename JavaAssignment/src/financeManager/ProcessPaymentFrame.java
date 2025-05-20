@@ -141,7 +141,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
             FileWriterUtil.appendToFile("payments.txt", String.join(",", paymentEntry));
             FileWriterUtil.writeFile("purchase_orders.txt", updatedPOData);
 
-            JOptionPane.showMessageDialog(this, "Payment processed successfully for PO: " + selectedPOID);
+            JOptionPane.showMessageDialog(this, "Payment processed successfully for " + selectedPOID);
             loadUpdatedPurchaseOrders();
             loadProcessPaymentTable();
         } else {

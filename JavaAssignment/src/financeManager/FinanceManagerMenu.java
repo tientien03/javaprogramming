@@ -4,9 +4,6 @@
  */
 package financeManager;
 
-import Inventory.ViewPOs;
-
-
 /**
  *
  * @author HP
@@ -37,8 +34,10 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
         ProcessPayment_Button = new javax.swing.JButton();
         ViewPO_Button = new javax.swing.JButton();
         ViewPR_Button1 = new javax.swing.JButton();
+        ViewPR_Button2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jLabel1.setText("Finance Manager Menu");
@@ -84,6 +83,15 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
             }
         });
 
+        ViewPR_Button2.setBackground(new java.awt.Color(255, 102, 102));
+        ViewPR_Button2.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        ViewPR_Button2.setText("LOG OUT");
+        ViewPR_Button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewPR_Button2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -100,8 +108,9 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
                             .addComponent(FiananceReport_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ProcessPayment_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ViewPO_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ViewPR_Button1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(179, Short.MAX_VALUE))
+                            .addComponent(ViewPR_Button1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ViewPR_Button2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,7 +127,9 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
                 .addComponent(ViewPO_Button)
                 .addGap(29, 29, 29)
                 .addComponent(ViewPR_Button1)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addComponent(ViewPR_Button2)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -126,8 +137,9 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,7 +150,7 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void POApproval_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_POApproval_ButtonActionPerformed
-        PurchaseOrder_Approval poApprovalFrame = new PurchaseOrder_Approval(); 
+        PurchaseOrderApproval poApprovalFrame = new PurchaseOrderApproval(); 
         poApprovalFrame.setVisible(true);                                        
         this.dispose();   
     }//GEN-LAST:event_POApproval_ButtonActionPerformed
@@ -166,6 +178,10 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
         reportFrame.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_FiananceReport_ButtonActionPerformed
+
+    private void ViewPR_Button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPR_Button2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ViewPR_Button2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -208,6 +224,7 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
     private javax.swing.JButton ProcessPayment_Button;
     private javax.swing.JButton ViewPO_Button;
     private javax.swing.JButton ViewPR_Button1;
+    private javax.swing.JButton ViewPR_Button2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

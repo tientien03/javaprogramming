@@ -4,6 +4,9 @@
  */
 package salesManager;
 
+import salesManager.Item;
+import salesManager.SalesEntry;
+
 /**
  *
  * @author User
@@ -24,4 +27,5 @@ public class DiscountedSalesEntry extends SalesEntry {
     public double getDiscountRate() {
         return discountRate;
     }
+    
 }

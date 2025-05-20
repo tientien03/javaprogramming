@@ -199,6 +199,7 @@ public class ViewItems extends javax.swing.JFrame {
         Menu mainMenu = new Menu();
         mainMenu.setVisible(true);
         this.dispose();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

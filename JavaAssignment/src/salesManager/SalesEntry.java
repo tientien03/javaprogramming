@@ -24,6 +24,8 @@ public class SalesEntry {
         this.quantity = quantity;
     }
 
+    
+
     public String getSalesID() {
         return SalesID;
     }
