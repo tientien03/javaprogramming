@@ -66,6 +66,7 @@ public class ViewPOs extends javax.swing.JFrame {
         Filter = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Title.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         Title.setText("Purchase Orders");

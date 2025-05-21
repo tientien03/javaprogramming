@@ -20,7 +20,7 @@ public class ItemManagement extends javax.swing.JFrame {
     List<Item> itemList = new ArrayList<>();
     public ItemManagement() {
         initComponents();
-        jDesktopPane1.setBackground(new java.awt.Color(0xc5e1ef));
+        getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         
         supplierList = Supplier.loadSupplierFromFile("supplier.txt");
@@ -39,7 +39,6 @@ public class ItemManagement extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDesktopPane1 = new javax.swing.JDesktopPane();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         ItemTable = new javax.swing.JTable();
@@ -64,8 +63,6 @@ public class ItemManagement extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-
-        jDesktopPane1.setBackground(new java.awt.Color(242, 242, 242));
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -187,270 +184,152 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
-        jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(jLabel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtSalesPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemName, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtItemId, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(selectSupplierbtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(txtSupplierid, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(searchBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(addBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(saveBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(editBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(deleteBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(resetBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(menuBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
-
-        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
-        jDesktopPane1.setLayout(jDesktopPane1Layout);
-        jDesktopPane1Layout.setHorizontalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
-                    .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
                             .addComponent(menuBtn)
                             .addGap(151, 151, 151)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                            .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                    .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(0, 0, 0)
-                                    .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(txtSalesPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                                            .addComponent(txtSupplierid)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(txtSupplierid, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(18, 18, 18)
                                             .addComponent(selectSupplierbtn))))
                                 .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(39, 39, 39)
-                            .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addGap(22, 22, 22))
+                                .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(24, 24, 24))
         );
-        jDesktopPane1Layout.setVerticalGroup(
-            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(menuBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtItemId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchBtn))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addBtn))
                 .addGap(21, 21, 21)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectSupplierbtn)
                     .addComponent(txtSupplierid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(saveBtn))
                 .addGap(24, 24, 24)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editBtn))
                 .addGap(21, 21, 21)
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtSalesPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteBtn))
                 .addGap(16, 16, 16)
                 .addComponent(resetBtn)
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDesktopPane1)
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-       
-    private void ItemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemTableMouseClicked
-        //TODO add your handling code here:
-        int selectedRow = ItemTable.getSelectedRow();
-        DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
-        if(selectedRow != -1){
-            txtItemId.setText(model.getValueAt(selectedRow, 0).toString()+ " - " + model.getValueAt(selectedRow, 1).toString());
-            txtItemName.setText(model.getValueAt(selectedRow, 1).toString());
-            txtSupplierid.setText(model.getValueAt(selectedRow, 2).toString());
-            txtItemPrice.setText(model.getValueAt(selectedRow, 3).toString());
-            txtSalesPrice.setText(model.getValueAt(selectedRow, 4).toString());
-            setUnenabled();  
-        }   
-    }//GEN-LAST:event_ItemTableMouseClicked
-
-    private void selectSupplierbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectSupplierbtnActionPerformed
+    private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
-        JPanel Supplierpanel = new JPanel();
-        Supplierpanel.setLayout(new BoxLayout(Supplierpanel, BoxLayout.Y_AXIS));
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        menu.setLocationRelativeTo(null); //center the window
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuBtnActionPerformed
 
-        ArrayList<JCheckBox> checkBoxes = new ArrayList<>();
-        String[] selectedIds = txtSupplierid.getText().split(",");
-        for (Supplier supplier : supplierList) {
-            String supplierId = supplier.getSupplierId();
-            String label = supplierId + " - " + supplier.getSupplierName();
-            JCheckBox checkBox = new JCheckBox(label);
-            // Pre-select if supplier ID exists
-            for (String id : selectedIds) {
-                if (supplierId.equalsIgnoreCase(id.trim())) {
-                    checkBox.setSelected(true);
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        // TODO add your handling code here:
+        clearInput();
+        setEnabled();
+    }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        String itemNameToDelete = txtItemName.getText();
+        int comfirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to delete this item?","Confirm Delete", JOptionPane.YES_NO_OPTION);
+        if(comfirm == JOptionPane.YES_OPTION){
+            boolean removed = false;
+            for (int j = 0; j<itemList.size(); j++){
+                Item i = itemList.get(j);
+                if(i.getItemName().equalsIgnoreCase(itemNameToDelete)){
+                    itemList.remove(j);
+                    removed = true;
                     break;
                 }
             }
-            Supplierpanel.add(checkBox);
-            checkBoxes.add(checkBox);
-        }
-
-        JScrollPane scrollPane = new JScrollPane(Supplierpanel);
-        scrollPane.setPreferredSize(new Dimension(250,200));
-        
-        int result = JOptionPane.showConfirmDialog(
-            null, 
-            scrollPane, 
-            "Select Suppliers",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE);
-        
-        if (result == JOptionPane.OK_OPTION){
-            ArrayList<String> selectedSupplierIds = new ArrayList<>();
-            for(JCheckBox cb : checkBoxes){
-                if(cb.isSelected()){
-                    String supplierId = cb.getText().split(" - ")[0].trim();
-                    selectedSupplierIds.add(supplierId);
-                }
+            if(removed){
+                FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
+                loadItemtoTable();
+                JOptionPane.showMessageDialog(this, "Item deleted successfully.");
+            }else{
+                JOptionPane.showMessageDialog(this, "Item not found in list.");
             }
-            if (!selectedSupplierIds.isEmpty()) {
-                txtSupplierid.setText(String.join(", ", selectedSupplierIds));
-            } else {
-                txtSupplierid.setText("");
-                JOptionPane.showMessageDialog(null, "No suppliers selected.");
-            }   
         }
-    }//GEN-LAST:event_selectSupplierbtnActionPerformed
+        clearInput();
+        setEnabled();
+    }//GEN-LAST:event_deleteBtnActionPerformed
 
-    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-        String findID = txtItemId.getText().trim();
-        if(findID.isEmpty()){
-            JOptionPane.showMessageDialog(this, "❌ Please enter Item ID or Name to search.");
-            return;//exit the method here
-        }
+        String editID = txtItemId.getText().trim();
         DefaultTableModel model = (DefaultTableModel)ItemTable.getModel();
         boolean found = false;
         for(int i=0; i<model.getRowCount();i++){
-            if(model.getValueAt(i,0).toString().equalsIgnoreCase(findID)||model.getValueAt(i,1).toString().equalsIgnoreCase(findID)){
-                txtItemId.setText(model.getValueAt(i, 0).toString() +" - " +model.getValueAt(i, 1).toString() );
+            if(model.getValueAt(i,0).toString().equalsIgnoreCase(editID)){
                 txtItemName.setText(model.getValueAt(i, 1).toString());
                 txtSupplierid.setText(model.getValueAt(i, 2).toString());
                 txtItemPrice.setText(model.getValueAt(i, 3).toString());
                 txtSalesPrice.setText(model.getValueAt(i, 4).toString());
                 ItemTable.setRowSelectionInterval(i,i);
                 found = true;
-                setUnenabled();
-                break; 
+                break;
             }
         }
-        if (!found) {
-            JOptionPane.showMessageDialog(this, "❌ Item not found.");
-            clearInput();
-        }
-    }//GEN-LAST:event_searchBtnActionPerformed
-
-    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        // TODO add your handling code here:
-        try{
-            if (txtItemName.getText().isEmpty() ||
-                txtSupplierid.getText().isEmpty()||
-                txtItemPrice.getText().isEmpty() ||
-                txtSalesPrice.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-                return; // stop the method here
-            }
-            //check item id
-            String newItemId = generateNextItemID();
-            boolean isDuplicate = false;
-            for (Item item : itemList){
-                if (item.getItemName().equalsIgnoreCase(txtItemName.getText())) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            if(isDuplicate){
-                JOptionPane.showMessageDialog(this, "Item already exists. Please use a different ID.");
-                return;
-            }
-            
-            String itemName = txtItemName.getText().trim();
-            double netPrice = Double.parseDouble(txtItemPrice.getText().trim());
-            double SalesPrice = Double.parseDouble(txtSalesPrice.getText().trim());
-            int quantity = 0;
-            String[] supplierIds = txtSupplierid.getText().split(",");
-            
-            List<Supplier> matchedSuppliers = new ArrayList<>();
-            for (String sid : supplierIds){
-                for (Supplier s : this.supplierList){
-                    if (s.getSupplierId().equalsIgnoreCase(sid.trim())){
-                        matchedSuppliers.add(s);
-                        break;
-                    }
-                }
-            }
-
-            Item newItem = new Item(newItemId, itemName, matchedSuppliers, netPrice, SalesPrice, quantity);            
-            itemList.add(newItem);
-            FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
-            JOptionPane.showMessageDialog(this, "New Item added successfully");
-            System.out.println("New item added.");
-            //clear input
-            clearInput();
-            loadItemtoTable();
-        }catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Price and Quantity must be numeric.");
-        }
-    }//GEN-LAST:event_addBtnActionPerformed
+        setEnabled();
+    }//GEN-LAST:event_editBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         // TODO add your handling code here:
@@ -491,7 +370,7 @@ public class ItemManagement extends javax.swing.JFrame {
                     }
                     item.setItemName(txtItemName.getText().trim());
                     item.setPrice(Double.parseDouble(txtItemPrice.getText().trim()));
-                    item.setSalesPrice(Double.parseDouble(txtSalesPrice.getText().trim()));                   
+                    item.setSalesPrice(Double.parseDouble(txtSalesPrice.getText().trim()));
                     item.getSupplier().clear();
                     for(Supplier s : matchedSupplierIds){
                         item.getSupplier().add(s);
@@ -513,65 +392,151 @@ public class ItemManagement extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_saveBtnActionPerformed
 
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         // TODO add your handling code here:
-        String editID = txtItemId.getText().trim();
+        try{
+            if (txtItemName.getText().isEmpty() ||
+                txtSupplierid.getText().isEmpty()||
+                txtItemPrice.getText().isEmpty() ||
+                txtSalesPrice.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+                return; // stop the method here
+            }
+            //check item id
+            String newItemId = generateNextItemID();
+            boolean isDuplicate = false;
+            for (Item item : itemList){
+                if (item.getItemName().equalsIgnoreCase(txtItemName.getText())) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if(isDuplicate){
+                JOptionPane.showMessageDialog(this, "Item already exists. Please use a different ID.");
+                return;
+            }
+
+            String itemName = txtItemName.getText().trim();
+            double netPrice = Double.parseDouble(txtItemPrice.getText().trim());
+            double SalesPrice = Double.parseDouble(txtSalesPrice.getText().trim());
+            int quantity = 0;
+            String[] supplierIds = txtSupplierid.getText().split(",");
+
+            List<Supplier> matchedSuppliers = new ArrayList<>();
+            for (String sid : supplierIds){
+                for (Supplier s : this.supplierList){
+                    if (s.getSupplierId().equalsIgnoreCase(sid.trim())){
+                        matchedSuppliers.add(s);
+                        break;
+                    }
+                }
+            }
+
+            Item newItem = new Item(newItemId, itemName, matchedSuppliers, netPrice, SalesPrice, quantity);
+            itemList.add(newItem);
+            FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
+            JOptionPane.showMessageDialog(this, "New Item added successfully");
+            System.out.println("New item added.");
+            //clear input
+            clearInput();
+            loadItemtoTable();
+        }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Price and Quantity must be numeric.");
+        }
+    }//GEN-LAST:event_addBtnActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        String findID = txtItemId.getText().trim();
+        if(findID.isEmpty()){
+            JOptionPane.showMessageDialog(this, "❌ Please enter Item ID or Name to search.");
+            return;//exit the method here
+        }
         DefaultTableModel model = (DefaultTableModel)ItemTable.getModel();
         boolean found = false;
         for(int i=0; i<model.getRowCount();i++){
-            if(model.getValueAt(i,0).toString().equalsIgnoreCase(editID)){
+            if(model.getValueAt(i,0).toString().equalsIgnoreCase(findID)||model.getValueAt(i,1).toString().equalsIgnoreCase(findID)){
+                txtItemId.setText(model.getValueAt(i, 0).toString() +" - " +model.getValueAt(i, 1).toString() );
                 txtItemName.setText(model.getValueAt(i, 1).toString());
                 txtSupplierid.setText(model.getValueAt(i, 2).toString());
                 txtItemPrice.setText(model.getValueAt(i, 3).toString());
                 txtSalesPrice.setText(model.getValueAt(i, 4).toString());
                 ItemTable.setRowSelectionInterval(i,i);
                 found = true;
-                break; 
+                setUnenabled();
+                break;
             }
         }
-        setEnabled();
-    }//GEN-LAST:event_editBtnActionPerformed
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "❌ Item not found.");
+            clearInput();
+        }
+    }//GEN-LAST:event_searchBtnActionPerformed
 
-    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+    private void selectSupplierbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectSupplierbtnActionPerformed
         // TODO add your handling code here:
-        String itemNameToDelete = txtItemName.getText();
-        int comfirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to delete this item?","Confirm Delete", JOptionPane.YES_NO_OPTION);
-        if(comfirm == JOptionPane.YES_OPTION){
-            boolean removed = false;
-            for (int j = 0; j<itemList.size(); j++){
-                Item i = itemList.get(j); 
-                if(i.getItemName().equalsIgnoreCase(itemNameToDelete)){
-                    itemList.remove(j);
-                    removed = true;
+        JPanel Supplierpanel = new JPanel();
+        Supplierpanel.setLayout(new BoxLayout(Supplierpanel, BoxLayout.Y_AXIS));
+
+        ArrayList<JCheckBox> checkBoxes = new ArrayList<>();
+        String[] selectedIds = txtSupplierid.getText().split(",");
+        for (Supplier supplier : supplierList) {
+            String supplierId = supplier.getSupplierId();
+            String label = supplierId + " - " + supplier.getSupplierName();
+            JCheckBox checkBox = new JCheckBox(label);
+            // Pre-select if supplier ID exists
+            for (String id : selectedIds) {
+                if (supplierId.equalsIgnoreCase(id.trim())) {
+                    checkBox.setSelected(true);
                     break;
                 }
             }
-            if(removed){
-                FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
-                loadItemtoTable();
-                JOptionPane.showMessageDialog(this, "Item deleted successfully.");
-            }else{
-                JOptionPane.showMessageDialog(this, "Item not found in list.");
+            Supplierpanel.add(checkBox);
+            checkBoxes.add(checkBox);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(Supplierpanel);
+        scrollPane.setPreferredSize(new Dimension(250,200));
+
+        int result = JOptionPane.showConfirmDialog(
+            null,
+            scrollPane,
+            "Select Suppliers",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION){
+            ArrayList<String> selectedSupplierIds = new ArrayList<>();
+            for(JCheckBox cb : checkBoxes){
+                if(cb.isSelected()){
+                    String supplierId = cb.getText().split(" - ")[0].trim();
+                    selectedSupplierIds.add(supplierId);
+                }
+            }
+            if (!selectedSupplierIds.isEmpty()) {
+                txtSupplierid.setText(String.join(", ", selectedSupplierIds));
+            } else {
+                txtSupplierid.setText("");
+                JOptionPane.showMessageDialog(null, "No suppliers selected.");
             }
         }
-        clearInput();
-        setEnabled();
-    }//GEN-LAST:event_deleteBtnActionPerformed
+    }//GEN-LAST:event_selectSupplierbtnActionPerformed
 
-    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
-        // TODO add your handling code here:
-        clearInput();
-        setEnabled();
-    }//GEN-LAST:event_resetBtnActionPerformed
+    private void ItemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemTableMouseClicked
+        //TODO add your handling code here:
+        int selectedRow = ItemTable.getSelectedRow();
+        DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
+        if(selectedRow != -1){
+            txtItemId.setText(model.getValueAt(selectedRow, 0).toString()+ " - " + model.getValueAt(selectedRow, 1).toString());
+            txtItemName.setText(model.getValueAt(selectedRow, 1).toString());
+            txtSupplierid.setText(model.getValueAt(selectedRow, 2).toString());
+            txtItemPrice.setText(model.getValueAt(selectedRow, 3).toString());
+            txtSalesPrice.setText(model.getValueAt(selectedRow, 4).toString());
+            setUnenabled();
+        }
+    }//GEN-LAST:event_ItemTableMouseClicked
 
-    private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
-        // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
-        menu.setLocationRelativeTo(null); //center the window
-        menu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_menuBtnActionPerformed
- 
+        
     private void makeTableReadOnly(){
         DefaultTableModel model = new DefaultTableModel(
         new String[]{"Item ID","Item Name", "Supplier ID", "Net Price", "Sales Price","Quantity"},0
@@ -688,7 +653,6 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JButton addBtn;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
-    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

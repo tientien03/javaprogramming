@@ -5,9 +5,12 @@
 package salesManager;
 
 import admin.UserClassification;
+import java.awt.Color;
+import java.awt.Component;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import static javax.swing.SwingConstants.CENTER;
 import javax.swing.table.*;
 
 /**
@@ -88,6 +91,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         status = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setText("PURCHASE REQUISITION");
@@ -95,13 +99,13 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         PRTable.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         PRTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By"
+                "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By", "Status"
             }
         ));
         jScrollPane1.setViewportView(PRTable);
@@ -296,11 +300,11 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -544,10 +548,12 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     pr.getQuantity(),
                     pr.getRequiredDate(),
                     String.join(" | ", pr.getSupplierIds()),
-                    pr.getRaisedBy()
+                    pr.getRaisedBy(),
+                    pr.getStatus()
                 };
                 model.addRow(row);
             }
+            colorizeRows();
         }
         if (selectedStatus.equalsIgnoreCase("Updated")) {
             editBtn.setEnabled(false);
@@ -557,6 +563,29 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_statusActionPerformed
 
+    private void colorizeRows() {
+        PRTable.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                String status = value.toString();
+                
+                setHorizontalAlignment(CENTER);
+                
+                if (!isSelected) { // Optional: preserve selection highlight
+                    switch (status) {
+                        case "Pending" -> c.setBackground(new Color(255, 224, 224));      // Red
+                        case "Updated" -> c.setBackground(new Color(204, 255, 204));       // Green
+                        default -> c.setBackground(Color.WHITE);
+                    }
+                }
+                return c;
+            }
+        });
+    }
+    
     private String generateNextPrId(){
         int max = 0;
         for(PurchaseRequisition pr : PRList){
@@ -634,7 +663,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         loadLowStockItemsToTable();
         
         DefaultTableModel prModel = new DefaultTableModel(
-        new String[] { "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By" }, 0
+        new String[] { "PR ID", "Item Code", "Quantity", "Required Date", "Supplier ID", "Raised By","Status" }, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {

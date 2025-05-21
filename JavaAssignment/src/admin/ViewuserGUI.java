@@ -4,14 +4,10 @@
  */
 package admin;
 
-import main.FileReaderUtil;
-import main.FileWriterUtil;
+import main.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import java.awt.event.*;
-
-
 
 public class ViewuserGUI extends javax.swing.JFrame {
     private Viewuser selectedUser = null;
@@ -68,6 +64,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 255, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
 
         jScrollPane1.setRowHeaderView(null);
         jScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {

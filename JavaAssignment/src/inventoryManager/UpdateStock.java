@@ -67,6 +67,7 @@ public class UpdateStock extends javax.swing.JFrame {
         POTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Title.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         Title.setText("Update Stock");

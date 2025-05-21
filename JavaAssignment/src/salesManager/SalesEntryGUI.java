@@ -88,6 +88,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTree1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBackground(java.awt.SystemColor.control);
         jPanel1.setForeground(java.awt.SystemColor.controlHighlight);

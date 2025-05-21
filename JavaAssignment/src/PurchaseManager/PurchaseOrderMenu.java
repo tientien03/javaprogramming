@@ -4,10 +4,7 @@
  */
 package PurchaseManager;
 
-import main.FileWriterUtil;
-import main.FileReaderUtil;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import main.*;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +18,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
     public PurchaseOrderMenu(String userID) {
         this.userID = userID;
         initComponents();
+        this.setLocationRelativeTo(null);
         
         getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
         
@@ -277,15 +275,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                     newSupplierList.add(foundSupplier);
                 }
 
-//                // Recombine valid supplier IDs (in case of extra spaces)
-//                newSupplierID = newSupplierList.stream()
-//                                .map(Supplier::getSupplierId)
-//                                .reduce((s1, s2) -> s1 + ";" + s2)
-//                                .orElse("");
-
-                
                 // Load Suppliers, Items, and Requisitions
-//                List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
                 List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
                 List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
@@ -298,40 +288,28 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 }
                 
                 boolean found = false;
-//                String updatedDetails = "";
 
                 for (PurchaseOrder po : poList) {
                     if (po.getPoID().equalsIgnoreCase(poID)) {
-                        po.setQuantity(Integer.parseInt(newQuantity));
+                        int updatedQty;
+                        try {
+                            updatedQty = Integer.parseInt(newQuantity);
+                            if (updatedQty < 0) {
+                                JOptionPane.showMessageDialog(null, "❌ Quantity cannot be negative.");
+                                return;
+                            }
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "❌ Please enter a valid number for quantity.");
+                            return;
+                        }
+
+                        // Update PO
+                        po.setQuantity(updatedQty);
                         po.setSuppliers(newSupplierList);   // ✅ Update suppliers in PO
                         found = true;
                         break;
                     }
                 }
-//
-//                        if (updatedSupplier == null) {
-//                            JOptionPane.showMessageDialog(null, "❌ Supplier ID not found: " + newSupplierID);
-//                            return;
-//                        }
-//                        
-//                        po.setQuantity(Integer.parseInt(newQuantity));
-//                        po.setSuppliers(newSupplierList);
-//                        found = true;
-//
-//                        List<String> supplierIds = po.getSupplierIds();
-//                        String supplierIdsString = String.join(";", supplierIds);
-//                        
-//                        updatedDetails = "PO ID: " + po.getPoID() + "\n"
-//                                       + "PR ID: " + po.getPurchaseRequisition().getPrId() + "\n"
-//                                       + "Item Code: " + po.getItem().getItemID() + "\n"
-//                                       + "Quantity: " + po.getQuantity() + "\n"
-//                                       + "Supplier ID: " + supplierIds + "\n"
-//                                       + "Purchase Manager ID: " + po.getPurchaseManagerID() + "\n"
-//                                       + "Date: " + po.getDate() + "\n"
-//                                       + "Status: " + po.getStatus();
-//                        break;
-//                    }
-//                }
 
                 if (!found) {
                     JOptionPane.showMessageDialog(null, "❌ Purchase Order not found!");
@@ -565,6 +543,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jButtonGenerate.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jButtonGenerate.setText("Generate");

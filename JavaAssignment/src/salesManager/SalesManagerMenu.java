@@ -46,6 +46,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
         dateLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jDesktopPane1.setBackground(new java.awt.Color(242, 242, 242));
 

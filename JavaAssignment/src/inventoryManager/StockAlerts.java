@@ -64,6 +64,7 @@ public class StockAlerts extends javax.swing.JFrame {
         CloseButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Title.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         Title.setText("Stock Alerts");

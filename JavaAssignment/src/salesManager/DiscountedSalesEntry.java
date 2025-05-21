@@ -4,8 +4,6 @@
  */
 package salesManager;
 
-import salesManager.Item;
-import salesManager.SalesEntry;
 
 /**
  *

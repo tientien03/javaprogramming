@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import main.FileReaderUtil;
 import main.FileWriterUtil;
-import PurchaseManager.PurchaseOrder;
-import java.awt.event.ItemEvent;
-import java.io.IOException;
+import PurchaseManager.*;
+import java.nio.file.DirectoryStream.Filter;
 import java.util.Arrays;
+import salesManager.*;
+
 
 /**
  *
@@ -21,7 +22,7 @@ import java.util.Arrays;
  */
 public class PurchaseOrderApproval extends javax.swing.JFrame {
     
-    private ArrayList<PurchaseOrder> poList;
+    private List<String[]> poList;
     private DefaultTableModel tableModel;
     /**
      * Creates new form PurchaseOrderApproval
@@ -38,8 +39,9 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
 
     private void loadTableData() {
         poList = new ArrayList<>();
-        tableModel = new DefaultTableModel(
-            new String[]{"PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"}, 0) {
+        tableModel = new DefaultTableModel(new String[]{
+            "PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"
+        }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -48,69 +50,71 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         jTable2.setModel(tableModel);
 
         try {
-            List<String[]> rawData = FileReaderUtil.readFile("purchase_orders.txt");
+            List<String[]> rawData = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
             for (String[] parts : rawData) {
                 if (parts.length == 8) {
-                    PurchaseOrder po = new PurchaseOrder(
-                        parts[0], parts[1], parts[2],
-                        Integer.parseInt(parts[3]), parts[4],
-                        parts[5], parts[6], parts[7]
-                    );
-                    poList.add(po);
+                    String poID = parts[0];
+                    String prID = parts[1];
+                    String itemCode = parts[2];
+                    int quantity = Integer.parseInt(parts[3]);
+                    String supplierIDs = parts[4];
+                    String pmID = parts[5];
+                    String date = parts[6];
+                    String status = parts[7];
 
                     tableModel.addRow(new Object[]{
-                        po.getPoID(), po.getPrID(), po.getItemCode(),
-                        po.getQuantity(), po.getSupplierID(),
-                        po.getPurchaseManagerID(), po.getDate(),
-                        po.getStatus()
+                        poID, prID, itemCode, quantity, supplierIDs, pmID, date, status
                     });
                 }
             }
             tableModel.fireTableDataChanged();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error reading purchase orders: " + e.getMessage(), "Read Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error reading purchase orders: " + e.getMessage(),
+                    "Read Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    
+
     private void setupListeners() {
         jTable2.getSelectionModel().addListSelectionListener(e -> {
             int selectedRow = jTable2.getSelectedRow();
-            if (selectedRow >= 0) {
-                PurchaseOrder po = poList.get(selectedRow);
-                PO_ID_TextField.setText(po.getPoID());
-                PR_ID_TextField.setText(po.getPrID());
-                Item_Code_TextField.setText(po.getItemCode());
-                Quantity_TextField.setText(String.valueOf(po.getQuantity()));
-                PM_ID_TextField.setText(po.getPurchaseManagerID());
-                Date_TextField.setText(po.getDate());
-                Status_TextField.setText(po.getStatus());
+            if (selectedRow >= 0 && jTable2.getRowCount() > selectedRow) {
 
-                jComboBox1.removeAllItems();
-                List<String> suppliers = getSuppliersFromPR(po.getPrID());
+                String[] po = new String[8];
+                for (int i = 0; i < 8; i++) {
+                    po[i] = String.valueOf(jTable2.getValueAt(selectedRow, i));
+                }
+
+                PO_ID_TextField.setText(po[0]);
+                PR_ID_TextField.setText(po[1]);
+                Item_Code_TextField.setText(po[2]);
+                Quantity_TextField.setText(po[3]);
+                PM_ID_TextField.setText(po[5]);
+                Date_TextField.setText(po[6]);
+                Status_TextField.setText(po[7]);
+
+             
+                SupplierID_ComboBox.removeAllItems();
+                List<String> suppliers = getSuppliersFromPR(po[1]); // PR ID
                 for (String supplier : suppliers) {
-                    jComboBox1.addItem(supplier);
+                    SupplierID_ComboBox.addItem(supplier);
                 }
 
-                if (suppliers.contains(po.getSupplierID())) {
-                    jComboBox1.setSelectedItem(po.getSupplierID());
-                } else {
-                    jComboBox1.setSelectedIndex(0);
+                if (suppliers.contains(po[4])) {
+                    SupplierID_ComboBox.setSelectedItem(po[4]);
+                } else if (SupplierID_ComboBox.getItemCount() > 0) {
+                    SupplierID_ComboBox.setSelectedIndex(0);
                 }
 
-                if (po.getStatus().equalsIgnoreCase("Approved") || po.getStatus().equalsIgnoreCase("Paid")) {
-                    Approve.setEnabled(false);
-                    Quantity_TextField.setEnabled(false);
-                    jComboBox1.setEnabled(false);
-                    Modify_Quantity.setEnabled(false);
-                    SupplierID_edit.setEnabled(false);
-                } else {
-                    Approve.setEnabled(true);
-                    Quantity_TextField.setEnabled(false);
-                    jComboBox1.setEnabled(false);
-                    Modify_Quantity.setEnabled(true);
-                    SupplierID_edit.setEnabled(true);
-                }
+                String status = po[7].trim();
+                boolean isPending = status.equalsIgnoreCase("Pending");
+
+                Approve.setEnabled(isPending);
+                Quantity_TextField.setEnabled(false); 
+                SupplierID_ComboBox.setEnabled(false);
+                Modify_Quantity.setEnabled(isPending);
+
+                SupplierID_edit.setEnabled(isPending && suppliers.size() > 1);
             }
         });
     }
@@ -118,42 +122,47 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
 
 
 
-    
     private void savePurchaseOrders() {
-        List<String[]> data = new ArrayList<>();
-        for (PurchaseOrder po : poList) {
-            String[] lineData = new String[]{
-                po.getPoID(), po.getPrID(), po.getItemCode(),
-                String.valueOf(po.getQuantity()), po.getSupplierID(),
-                po.getPurchaseManagerID(), po.getDate(), po.getStatus()
-            };
-            data.add(lineData);
-        }
         try {
-            FileWriterUtil.writeFile("purchase_orders.txt", data);
-            JOptionPane.showMessageDialog(this, "Data saved successfully.");
+            poList.clear();
+            
+            int rowCount = tableModel.getRowCount();
+            for (int i = 0; i < rowCount; i++) {
+                String[] row = new String[8];
+                for (int j = 0; j < 8; j++) {
+                    row[j] = String.valueOf(tableModel.getValueAt(i, j));
+                }
+                poList.add(row);
+            }
+
+            FileWriterUtil.writeFile("purchase_orders.txt", poList);
+            JOptionPane.showMessageDialog(this, "Data saved successfully!");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Save Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(),
+                    "Save Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private List<String> getSuppliersFromPR(String prId) {
         List<String> suppliers = new ArrayList<>();
 
-        List<String[]> rawData = FileReaderUtil.readFile("purchase_requisition.txt");
-        List<String> lines = new ArrayList<>();
-        for (String[] parts : rawData) {
-            lines.add(String.join(",", parts));
+        try {
+            List<String[]> rawData = FileReaderUtil.readFileAsArrays("purchase_requisition.txt");
+            for (String[] parts : rawData) {
+                if (parts.length >= 3 && parts[0].equalsIgnoreCase(prId)) {
+                    String[] supplierArray = parts[2].split(";");
+                    suppliers.addAll(Arrays.asList(supplierArray));
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error reading purchase requisitions: " + e.getMessage(),
+                    "File Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        for (String line : lines) {
-            String[] parts = line.split(",");
-            if (parts[0].equals(prId)) {
-                suppliers = Arrays.asList(parts[2].split(";"));
-            }
-        }
         return suppliers;
     }
+
 
 
 
@@ -170,7 +179,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         RefreshButton = new javax.swing.JButton();
         PO_name1 = new javax.swing.JLabel();
-        Search_TextField = new javax.swing.JTextField();
+        SearchTextField = new javax.swing.JTextField();
         SearchButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -179,7 +188,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         ItemCode_Label = new javax.swing.JLabel();
         Quantity = new javax.swing.JLabel();
         Supplier = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        SupplierID_ComboBox = new javax.swing.JComboBox<>();
         Quantity_TextField = new javax.swing.JTextField();
         Item_Code_TextField = new javax.swing.JTextField();
         PR_ID_TextField = new javax.swing.JTextField();
@@ -190,6 +199,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         Status_TextField = new javax.swing.JTextField();
         PM_ID_TextField = new javax.swing.JTextField();
         Approve = new javax.swing.JButton();
+        StatusBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -213,7 +223,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         PO_name1.setFont(new java.awt.Font("Times New Roman", 0, 48)); // NOI18N
         PO_name1.setText("Purchase Order Approval");
 
-        Search_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        SearchTextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
         SearchButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         SearchButton.setText("Search");
@@ -251,14 +261,15 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         Supplier.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         Supplier.setText("Supplier ID:");
 
-        jComboBox1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jComboBox1.setEnabled(false);
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        SupplierID_ComboBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        SupplierID_ComboBox.setEnabled(false);
+        SupplierID_ComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                SupplierID_ComboBoxActionPerformed(evt);
             }
         });
 
+        Quantity_TextField.setEditable(false);
         Quantity_TextField.setColumns(15);
         Quantity_TextField.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         Quantity_TextField.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -353,14 +364,31 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             }
         });
 
+        StatusBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        StatusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Pending", "Paid", "Updated", "Approved" }));
+        StatusBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StatusBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(598, Short.MAX_VALUE)
-                .addComponent(Approve, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(92, 92, 92))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(372, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(Approve, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(92, 92, 92))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(SearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(StatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54))))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(36, 36, 36)
@@ -372,15 +400,12 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(RefreshButton)
-                                    .addGap(301, 301, 301)
-                                    .addComponent(Search_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(664, 664, 664))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jButton4)
                                     .addGap(55, 55, 55)
                                     .addComponent(PO_name1)
-                                    .addGap(0, 0, Short.MAX_VALUE))))
+                                    .addGap(0, 37, Short.MAX_VALUE))))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGap(15, 15, 15)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -395,7 +420,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                                 .addComponent(Item_Code_TextField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(PR_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(PO_ID_TextField, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(SupplierID_ComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGap(134, 134, 134)
@@ -408,13 +433,17 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(Modify_Quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(SupplierID_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))))
-                            .addGap(15, 15, 15)))
-                    .addGap(37, 37, 37)))
+                            .addGap(52, 52, 52)))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(427, Short.MAX_VALUE)
+                .addGap(77, 77, 77)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SearchButton)
+                    .addComponent(StatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
                 .addComponent(Approve)
                 .addGap(45, 45, 45))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -428,10 +457,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                             .addComponent(PO_name1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(RefreshButton)
-                        .addComponent(Search_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(SearchButton))
+                    .addComponent(RefreshButton)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -462,7 +488,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                     .addGap(18, 18, 18)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(Supplier)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(SupplierID_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(SupplierID_edit))
                     .addGap(21, 21, 21)))
         );
@@ -471,7 +497,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGap(0, 815, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -493,40 +519,51 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
 
     private void RefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshButtonActionPerformed
         loadTableData();
+        JOptionPane.showMessageDialog(this, "Refresh successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_RefreshButtonActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-        String searchText = Search_TextField.getText().trim();
-        tableModel.setRowCount(0);
-        boolean found = false;
+    String searchText = SearchTextField.getText().trim().toLowerCase();
+    tableModel.setRowCount(0); // Clear table
 
-        for (PurchaseOrder po : poList) {
-            if (po.getPoID().contains(searchText)) {
-                tableModel.addRow(new Object[]{
-                    po.getPoID(),
-                    po.getPrID(),
-                    po.getItemCode(),
-                    po.getQuantity(),
-                    po.getSupplierID(),
-                    po.getPurchaseManagerID(),
-                    po.getDate(),
-                    po.getStatus()
-                });
-                found = true;
-            }
+    // ✅ Read from the text file
+    List<String[]> rawList = FileReaderUtil.readFile("purchase_orders.txt");
+
+    boolean found = false;
+
+    for (String[] line : rawList) {
+        // Search by PO ID, PR ID, Item Code, or Supplier ID
+        if (line[0].toLowerCase().contains(searchText) || 
+            line[1].toLowerCase().contains(searchText) || 
+            line[2].toLowerCase().contains(searchText) || 
+            line[4].toLowerCase().contains(searchText)) {
+
+            tableModel.addRow(new Object[] {
+                line[0], // PO ID
+                line[1], // PR ID
+                line[2], // Item Code
+                line[3], // Quantity
+                line[4], // Supplier ID
+                line[5], // PM ID
+                line[6], // Date
+                line[7]  // Status
+            });
+            found = true;
         }
-        if (!found){
-            JOptionPane.showMessageDialog(this, "No records found for ID: " + searchText, "Search Result", JOptionPane.INFORMATION_MESSAGE);
-        }
+    }
+
+    if (!found) {
+        JOptionPane.showMessageDialog(this, "No matching record found for: " + searchText, "Search Result", JOptionPane.INFORMATION_MESSAGE);
+    }
     }//GEN-LAST:event_SearchButtonActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void SupplierID_ComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupplierID_ComboBoxActionPerformed
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow >= 0) {
             String supplierID = jTable2.getValueAt(selectedRow, 4).toString();
-            jComboBox1.setSelectedItem(supplierID);
+            SupplierID_ComboBox.setSelectedItem(supplierID);
         }
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_SupplierID_ComboBoxActionPerformed
 
     private void Quantity_TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Quantity_TextFieldActionPerformed
         // TODO add your handling code here:
@@ -552,7 +589,14 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             return;
         }
 
-        String newQuantity = JOptionPane.showInputDialog(this, "Enter new quantity:", "Edit Quantity", JOptionPane.PLAIN_MESSAGE);
+        String status = String.valueOf(jTable2.getValueAt(selectedRow, 7)).trim();
+        if (!status.equalsIgnoreCase("Pending")) {
+            JOptionPane.showMessageDialog(this, "Quantity can only be edited when status is 'Pending'.", "Action Not Allowed", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String currentQuantity = String.valueOf(jTable2.getValueAt(selectedRow, 3));
+        String newQuantity = JOptionPane.showInputDialog(this, "Enter new quantity:", currentQuantity);
 
         if (newQuantity == null || newQuantity.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Quantity cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
@@ -566,42 +610,24 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Quantity cannot be negative.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-            // 📝 更新到 JTable 和 内存对象
-            tableModel.setValueAt(quantity, selectedRow, 3); // 🔄 更新到列 3 (Quantity)
-            PurchaseOrder selectedPO = poList.get(selectedRow);
-            selectedPO.setQuantity(quantity);
-
-            // 🔄 更新 TextField 的显示
+            
+            jTable2.setValueAt(String.valueOf(quantity), selectedRow, 3);
             Quantity_TextField.setText(String.valueOf(quantity));
 
-            // 🔄 修复 Supplier ID ComboBox 显示问题
-            jComboBox1.removeAllItems();
-            jComboBox1.addItem(selectedPO.getSupplierID());
-            jComboBox1.setSelectedItem(selectedPO.getSupplierID());
-
-            // 🔄 把数据转换成 List<String[]> 格式
-            List<String[]> lines = new ArrayList<>();
-            for (PurchaseOrder po : poList) {
-                lines.add(new String[]{
-                    po.getPoID(),
-                    po.getPrID(),
-                    po.getItemCode(),
-                    String.valueOf(po.getQuantity()),
-                    po.getSupplierID(),
-                    po.getPurchaseManagerID(),
-                    po.getDate(),
-                    po.getStatus()
-                });
+            String[] po = new String[8];
+            for (int i = 0; i < 8; i++) {
+                po[i] = String.valueOf(jTable2.getValueAt(selectedRow, i));
+            }
+            if (selectedRow < poList.size()) {
+                poList.set(selectedRow, po);
             }
 
-            // ✍️ 使用 FileWriterUtil 写入文件
-            FileWriterUtil.writeFile("purchase_orders.txt", lines);
+            savePurchaseOrders();
 
-            JOptionPane.showMessageDialog(this, "Quantity updated successfully.", "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Quantity updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid number format. Please enter a valid quantity.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_Modify_QuantityActionPerformed
 
@@ -612,29 +638,46 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             return;
         }
 
-        PurchaseOrder po = poList.get(selectedRow);
-        List<String> suppliers = getSuppliersFromPR(po.getPrID());
-        if (suppliers.size() > 1) {
-            String selectedSupplier = (String) JOptionPane.showInputDialog(this, "Select a supplier:", "Edit Supplier",
-                    JOptionPane.QUESTION_MESSAGE, null, suppliers.toArray(), suppliers.get(0));
-            if (selectedSupplier != null) {
-                // ✅ 更新对象和表格数据
-                po.setSupplierID(selectedSupplier);
-                tableModel.setValueAt(selectedSupplier, selectedRow, 4);
-                savePurchaseOrders();
+        String[] po = new String[8];
+        for (int i = 0; i < 8; i++) {
+            po[i] = String.valueOf(jTable2.getValueAt(selectedRow, i));
+        }
 
-                // 🔄 **同步更新到 ComboBox**
-                jComboBox1.removeAllItems();
-                for (String supplier : suppliers) {
-                    jComboBox1.addItem(supplier);
-                }
-                jComboBox1.setSelectedItem(selectedSupplier); // 设置默认选中项
+        List<String> suppliers = getSuppliersFromPR(po[1]);
 
-                // ✅ 提示成功
-                JOptionPane.showMessageDialog(this, "Supplier updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
+        if (suppliers.size() <= 1) {
             JOptionPane.showMessageDialog(this, "Only one supplier available. Cannot edit.", "Edit Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        SupplierID_ComboBox.setEnabled(true);
+
+        String selectedSupplier = (String) JOptionPane.showInputDialog(
+            this,
+            "Select a supplier:",
+            "Edit Supplier",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            suppliers.toArray(),
+            po[4]
+        );
+
+        if (selectedSupplier != null) {
+            po[4] = selectedSupplier;
+            tableModel.setValueAt(selectedSupplier, selectedRow, 4);
+
+            SupplierID_ComboBox.removeAllItems();
+            for (String s : suppliers) {
+                SupplierID_ComboBox.addItem(s);
+            }
+            SupplierID_ComboBox.setSelectedItem(selectedSupplier);
+            SupplierID_ComboBox.setEnabled(false);
+
+            savePurchaseOrders();
+
+            JOptionPane.showMessageDialog(this, "Supplier updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            SupplierID_ComboBox.setEnabled(false);
         }
     }//GEN-LAST:event_SupplierID_editActionPerformed
 
@@ -657,17 +700,62 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             return;
         }
 
-        PurchaseOrder po = poList.get(selectedRow);
-        if (!po.getStatus().equalsIgnoreCase("Pending")) {
+        String[] po = poList.get(selectedRow);
+
+        if (!po[7].equalsIgnoreCase("Pending")) { // Status is at index 7
             JOptionPane.showMessageDialog(this, "Only Pending orders can be approved.", "Approve Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        po.setStatus("Approved");
+        // ✅ Update status
+        po[7] = "Approved";
         tableModel.setValueAt("Approved", selectedRow, 7);
         savePurchaseOrders();
+
         JOptionPane.showMessageDialog(this, "Purchase Order approved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_ApproveActionPerformed
+
+    private void StatusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StatusBoxActionPerformed
+    String selectedStatus = (String) StatusBox.getSelectedItem();
+    tableModel.setRowCount(0); // Clear table
+
+    List<String[]> rawList = FileReaderUtil.readFile("purchase_orders.txt");
+
+    boolean found = false;
+
+    for (String[] line : rawList) {
+        String status = line[7];
+
+        if (selectedStatus.equals("All") || status.equalsIgnoreCase(selectedStatus)) {
+            tableModel.addRow(new Object[] {
+                line[0], // PO ID
+                line[1], // PR ID
+                line[2], // Item Code
+                line[3], // Quantity
+                line[4], // Supplier ID
+                line[5], // PM ID
+                line[6], // Date
+                line[7]  // Status
+            });
+            found = true;
+        }
+    }
+
+    if (!found) {
+        JOptionPane.showMessageDialog(this,
+            "No purchase orders found with status: " + selectedStatus,
+            "No Records Found",
+            JOptionPane.INFORMATION_MESSAGE);
+
+        tableModel.setRowCount(0);
+        for (String[] line : rawList) {
+            tableModel.addRow(new Object[] {
+                line[0], line[1], line[2], line[3],
+                line[4], line[5], line[6], line[7]
+            });
+        }
+    }
+    }//GEN-LAST:event_StatusBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -720,12 +808,13 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     private javax.swing.JTextField Quantity_TextField;
     private javax.swing.JButton RefreshButton;
     private javax.swing.JButton SearchButton;
-    private javax.swing.JTextField Search_TextField;
+    private javax.swing.JTextField SearchTextField;
+    private javax.swing.JComboBox<String> StatusBox;
     private javax.swing.JTextField Status_TextField;
     private javax.swing.JLabel Supplier;
+    private javax.swing.JComboBox<String> SupplierID_ComboBox;
     private javax.swing.JButton SupplierID_edit;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable2;

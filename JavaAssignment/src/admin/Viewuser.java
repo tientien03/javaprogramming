@@ -13,8 +13,8 @@ import java.util.*;
 public class Viewuser extends User {
 
     public Viewuser(String userID, String username, String password, String fullName, String email, String phoneNumber, String role, String status) {
-    super(userID, username, password, role, fullName, email, phoneNumber, status);
-}
+        super(userID, username, password, role, fullName, email, phoneNumber, status);
+    }
 
     public String displayInfo() {
         return getUserID() + " - " + getFullName() + " - " + getRole();

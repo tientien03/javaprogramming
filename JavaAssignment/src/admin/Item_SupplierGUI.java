@@ -5,10 +5,8 @@
 package admin;
 
 import main.FileReaderUtil;
-import inventoryManager.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import java.awt.*;
 import java.util.List;
 
 public class Item_SupplierGUI extends javax.swing.JFrame {
@@ -50,6 +48,7 @@ public class Item_SupplierGUI extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 2, 24)); // NOI18N
         jLabel1.setText("SUPPLIER");
@@ -245,11 +244,13 @@ public class Item_SupplierGUI extends javax.swing.JFrame {
     private void itembuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itembuttonActionPerformed
         // TODO add your handling code here:
         new ItemGUI().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_itembuttonActionPerformed
 
     private void supplierbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierbuttonActionPerformed
         // TODO add your handling code here:
         new SupplierGUI().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_supplierbuttonActionPerformed
 
     private void searchItemFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchItemFieldActionPerformed

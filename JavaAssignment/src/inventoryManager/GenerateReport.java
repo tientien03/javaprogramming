@@ -4,13 +4,7 @@
  */
 package inventoryManager;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import salesManager.Item;
-import salesManager.Supplier;
-
+import java.io.*;
 import javax.swing.JOptionPane;
 import java.util.List;
 
@@ -47,6 +41,7 @@ public class GenerateReport extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Title.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         Title.setText("Stock Report");
@@ -189,7 +184,7 @@ public class GenerateReport extends javax.swing.JFrame {
 
         int low = 0, in = 0, over = 0;
 
-        List<salesManager.Supplier> supplierList = salesManager.Supplier.loadSupplierFromFile("suppliers.txt");
+        List<salesManager.Supplier> supplierList = salesManager.Supplier.loadSupplierFromFile("supplier.txt");
         List<salesManager.Item> itemList = salesManager.Item.loadItemFromFile("item.txt", supplierList);
 
         for (salesManager.Item item : itemList) {

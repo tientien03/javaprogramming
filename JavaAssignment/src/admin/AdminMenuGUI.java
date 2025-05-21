@@ -34,6 +34,7 @@ public class AdminMenuGUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jLabel1.setText("Administrator Main Menu");
@@ -139,18 +140,22 @@ public class AdminMenuGUI extends javax.swing.JFrame {
 
     private void userbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userbuttonActionPerformed
         new ViewuserGUI().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_userbuttonActionPerformed
 
     private void inventory_supplierbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inventory_supplierbuttonActionPerformed
         new admin.Item_SupplierGUI().setVisible(true); 
+        this.dispose();
     }//GEN-LAST:event_inventory_supplierbuttonActionPerformed
 
     private void po_prbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_po_prbuttonActionPerformed
         new requisition_ordersGUI().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_po_prbuttonActionPerformed
 
     private void viewreportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewreportActionPerformed
         new admin.ViewReports().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_viewreportActionPerformed
 
     private void logoutbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutbuttonActionPerformed

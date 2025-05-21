@@ -4,13 +4,14 @@
  */
 package financeManager;
 
-import inventoryManager.*;
+import PurchaseManager.PurchaseOrder;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableCellRenderer;
-import PurchaseManager.PurchaseOrder;
-import main.*;
+import main.FileReaderUtil;
+
 
 
 /**
@@ -19,15 +20,28 @@ import main.*;
  */
 public class ViewPOs extends javax.swing.JFrame {
 
+    private List<PurchaseOrder> purchaseOrders;
+
     /**
      * Creates new form ViewPOs
      */
     public ViewPOs() {
         initComponents();
-        ((javax.swing.table.DefaultTableCellRenderer) POTable.getTableHeader().getDefaultRenderer())
+        ((DefaultTableCellRenderer) POTable.getTableHeader().getDefaultRenderer())
             .setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         centerTableText();
         POTable.setRowHeight(30);
+       
+        DefaultTableModel model = new DefaultTableModel(new Object[][]{}, 
+            new String[]{"PO ID", "PR ID", "ITEM CODE", "QUANTITY", "SUPPLIER ID", "PURCHASE MANAGER", "DATE", "STATUS"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;  // All cells are non-editable
+            }
+        };
+        POTable.setModel(model);
+        
+        purchaseOrders = new ArrayList<>();
         loadPurchaseOrders();
         setLocationRelativeTo(null);
         getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
@@ -143,16 +157,19 @@ public class ViewPOs extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(CloseButton)
                     .addComponent(Title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(SearchButton)
-                                .addComponent(Filter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(SearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(RefreshButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(SearchButton)
+                                    .addComponent(Filter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(RefreshButton)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(SearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE))
         );
@@ -162,7 +179,8 @@ public class ViewPOs extends javax.swing.JFrame {
 
     private void RefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshButtonActionPerformed
         loadPurchaseOrders();
-        JOptionPane.showMessageDialog(this, "Purchase Orders refreshed successfully!", "Information", JOptionPane.INFORMATION_MESSAGE);// TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Purchase Orders refreshed successfully!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        SearchTF.setText("");// TODO add your handling code here:
     }//GEN-LAST:event_RefreshButtonActionPerformed
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
@@ -172,15 +190,31 @@ public class ViewPOs extends javax.swing.JFrame {
     }//GEN-LAST:event_CloseButtonActionPerformed
 
     private void SearchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchTFActionPerformed
-        searchPurchaseOrder();// TODO add your handling code here:
+        String keyword = SearchTF.getText().trim();
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a keyword to search.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        searchPurchaseOrder(keyword);// TODO add your handling code here:
     }//GEN-LAST:event_SearchTFActionPerformed
 
     private void FilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FilterActionPerformed
-        loadPurchaseOrders();// TODO add your handling code here:
+        String status = Filter.getSelectedItem().toString();
+        if (status.equals("All")) {
+            loadPurchaseOrders();
+        } else {
+            filterPurchaseOrder(status);
+        }// TODO add your handling code here:
     }//GEN-LAST:event_FilterActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-        searchPurchaseOrder();// TODO add your handling code here:
+        String keyword = SearchTF.getText().trim();
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter PO ID, PR ID or ITEM CODE to search.", "Warning", JOptionPane.WARNING_MESSAGE);
+            loadPurchaseOrders();
+            return;
+        }
+        searchPurchaseOrder(keyword);// TODO add your handling code here:
     }//GEN-LAST:event_SearchButtonActionPerformed
                                       
 
@@ -210,7 +244,6 @@ public class ViewPOs extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ViewPOs.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -222,65 +255,91 @@ public class ViewPOs extends javax.swing.JFrame {
     
     private void centerTableText() {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(Title.CENTER);
-
-        // Apply to each column
+        centerRenderer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         for (int i = 0; i < POTable.getColumnCount(); i++) {
             POTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
     
     private void loadPurchaseOrders() {
-        DefaultTableModel model = (DefaultTableModel) POTable.getModel();
-        model.setRowCount(0);  // Clear table
+        try {
+            List<String[]> data = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
+            purchaseOrders.clear();
+            DefaultTableModel model = (DefaultTableModel) POTable.getModel();
+            model.setRowCount(0);
 
-        String selectedStatus = Filter.getSelectedItem().toString();
-
-        List<String[]> rawData = FileReaderUtil.readFile("purchase_orders.txt");
-
-        for (String[] parts : rawData) {
-            if (parts.length == 8) {
-                PurchaseOrder po = new PurchaseOrder(
-                    parts[0], parts[1], parts[2], Integer.parseInt(parts[3]),
-                    parts[4], parts[5], parts[6], parts[7]
-                );
-
-                if (selectedStatus.equals("All") || po.getStatus().equalsIgnoreCase(selectedStatus)) {
-                    model.addRow(new Object[] {
-                        po.getPoID(), po.getPrID(), po.getItemCode(), po.getQuantity(),
-                        po.getSupplierID(), po.getPurchaseManagerID(), po.getDate(), po.getStatus()
-                    });
-                }
+            for (String[] line : data) {
+                // Directly load data into the table
+                model.addRow(new Object[]{
+                    line[0],
+                    line[1], 
+                    line[2],  
+                    line[3],  
+                    line[4],
+                    line[5],
+                    line[6],
+                    line[7]  
+                });
+                centerTableText();
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading Purchase Orders: " + e.getMessage());
         }
     }
 
-    private void searchPurchaseOrder() {
-        String searchText = SearchTF.getText().trim().toLowerCase();
-        DefaultTableModel model = (DefaultTableModel) POTable.getModel();
+
+    private void searchPurchaseOrder(String keyword) {
         boolean found = false;
+        int rowCount = POTable.getRowCount();
         
-        if(searchText.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Please insert PO ID or Item Code!", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }   
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String poId = model.getValueAt(i, 0).toString().toLowerCase();  // PO ID
-            String itemCode = model.getValueAt(i, 2).toString().toLowerCase();  // Item Code
-
-            if (poId.equalsIgnoreCase(searchText) || itemCode.equalsIgnoreCase(searchText)) {
-                POTable.setRowSelectionInterval(i, i);  // Highlight the row
-                POTable.scrollRectToVisible(POTable.getCellRect(i, 0, true));  // Scroll to row
+        for (int i = 0; i < rowCount; i++) {
+            if (POTable.getValueAt(i, 0).equals(keyword) || 
+                POTable.getValueAt(i, 1).equals(keyword) || 
+                POTable.getValueAt(i, 2).equals(keyword) || 
+                POTable.getValueAt(i, 4).equals(keyword)) {
+                POTable.setRowSelectionInterval(i, i);
+                POTable.scrollRectToVisible(POTable.getCellRect(i, 0, true));
                 found = true;
-                break;
             }
         }
 
         if (!found) {
-            JOptionPane.showMessageDialog(this, "Purchase Order not found!", "Search", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Purchase Order not found!");
+            loadPurchaseOrders();
+            SearchTF.setText("");
         }
     }
+        
+    private void filterPurchaseOrder(String status) {
+        boolean found = false;
+        DefaultTableModel model = (DefaultTableModel) POTable.getModel();
+        model.setRowCount(0);
+        String searchKeyword = SearchTF.getText().trim();
+
+        for (String[] line : FileReaderUtil.readFileAsArrays("purchase_orders.txt")) {
+            boolean statusMatch = line[7].equalsIgnoreCase(status);
+            boolean searchMatch = searchKeyword.isEmpty() || 
+                                  line[0].equals(searchKeyword) || 
+                                  line[1].equals(searchKeyword) || 
+                                  line[2].equals(searchKeyword) || 
+                                  line[4].equals(searchKeyword);
+
+            if (statusMatch && searchMatch) {
+                model.addRow(new Object[]{line[0], line[1], line[2], line[3],
+                                          line[4], line[5], line[6], line[7]});
+                found = true;
+            }
+        }
+
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "No Purchase Orders found with status: " + status);
+            model.setRowCount(0); 
+            loadPurchaseOrders();
+            SearchTF.setText("");
+        }
+    }
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseButton;

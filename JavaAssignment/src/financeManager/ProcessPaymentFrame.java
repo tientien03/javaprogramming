@@ -346,6 +346,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
     private void Refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Refresh_ButtonActionPerformed
         loadUpdatedPurchaseOrders();
         loadProcessPaymentTable();
+        JOptionPane.showMessageDialog(this, "Refresh successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_Refresh_ButtonActionPerformed
 
     private void Search_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Search_ButtonActionPerformed

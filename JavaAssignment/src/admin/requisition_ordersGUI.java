@@ -57,6 +57,7 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 45)); // NOI18N
         jLabel1.setText("Requisition & Order");
@@ -246,12 +247,13 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         new admin.PR(userID).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        
         // TODO add your handling code here:
         new PO(userID).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void refreshPRButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPRButton5ActionPerformed

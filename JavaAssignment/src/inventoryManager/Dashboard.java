@@ -43,6 +43,7 @@ public class Dashboard extends javax.swing.JFrame {
         LogoutButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Title.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         Title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

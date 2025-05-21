@@ -1,12 +1,11 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package admin;
 
 import PurchaseManager.*;
-import main.FileWriterUtil;
-import main.FileReaderUtil;
+import main.*;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class PO extends javax.swing.JFrame {
     public PO(String userID) {
         this.userID = userID;
         initComponents();
-        setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         
         getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
         
@@ -116,6 +115,11 @@ public class PO extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(PO.this, "No suppliers available for this requisition.");
                     return;
                 }
+
+//                Supplier selectedSupplier = selectedPR.getSupplierIds().get(0);
+//                List<Supplier> selectedSuppliers = new ArrayList<>();
+//                supplierList.add(selectedSupplier);
+
                 // Get the list of supplier IDs from the PR
                 List<String> supplierIDs = selectedPR.getSupplierIds();
 
@@ -271,8 +275,11 @@ public class PO extends javax.swing.JFrame {
 
                     newSupplierList.add(foundSupplier);
                 }
+
+                // Load Suppliers, Items, and Requisitions
                 List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
                 List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+
                 // Load all PO lines
                 List<String[]> rawLines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
                 List<PurchaseOrder> poList = new ArrayList<>();
@@ -285,7 +292,20 @@ public class PO extends javax.swing.JFrame {
 
                 for (PurchaseOrder po : poList) {
                     if (po.getPoID().equalsIgnoreCase(poID)) {
-                        po.setQuantity(Integer.parseInt(newQuantity));
+                        int updatedQty;
+                        try {
+                            updatedQty = Integer.parseInt(newQuantity);
+                            if (updatedQty < 0) {
+                                JOptionPane.showMessageDialog(null, "❌ Quantity cannot be negative.");
+                                return;
+                            }
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "❌ Please enter a valid number for quantity.");
+                            return;
+                        }
+
+                        // Update PO
+                        po.setQuantity(updatedQty);
                         po.setSuppliers(newSupplierList);   // ✅ Update suppliers in PO
                         found = true;
                         break;
@@ -324,6 +344,7 @@ public class PO extends javax.swing.JFrame {
         jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 String poID = textFieldPOID.getText().trim();  // Get PO ID
+                
 
                 if (poID.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "⚠️ Please select a Purchase Order to delete.");
@@ -443,11 +464,14 @@ public class PO extends javax.swing.JFrame {
     
     private void loadPurchaseOrders() {
         tableModel.setRowCount(0);  // Clear existing rows
+        
         // Load the required lists for matching
         List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
         List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+
         List<String []> lines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
+        
         for (String[] parts : lines) {
             String line = String.join(",", parts);
             
@@ -456,6 +480,14 @@ public class PO extends javax.swing.JFrame {
                 // Combine the supplier IDs
                 List<String> suppliers = po.getSupplierIds();
                 String supplierIDs = String.join(";", suppliers);
+//                String supplierIDs = String.join(";", po.getSupplierIds());
+            
+//                // 🔄 Combine the supplier IDs
+//                String supplierIDs = suppliers.stream()
+//                                          .map(Supplier::getSupplierId)
+//                                          .reduce((s1, s2) -> s1 + ";" + s2)
+//                                          .orElse("");
+            
                 tableModel.addRow(new Object[]{
                     po.getPoID(),
                     po.getPurchaseRequisition().getPrId(),
@@ -512,6 +544,7 @@ public class PO extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jButtonGenerate.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jButtonGenerate.setText("Generate");
