@@ -24,6 +24,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     public PurchaseRequisitionGUI(String username) {
         initComponents();
         this.currentUsername = username;
+        status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Pending", "Updated" }));
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         txtDate.setText(java.time.LocalDate.now().toString());
@@ -38,21 +39,20 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         }
         txtRaisedBy.setText(userId + " - " + name);
-        txtRaisedBy.setEditable(false); 
-        
+        txtRaisedBy.setEditable(false);
         supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         itemList = Item.loadItemFromFile("item.txt",supplierList);
         PRList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
-        
-        DefaultTableModel pr = (DefaultTableModel) PRTable.getModel();
-        pr.setRowCount(0);
-        
+                
         ComboItem.removeAllItems();
         ComboItem.addItem("-- Select Item --");
         for(Item item : itemList){
             ComboItem.addItem(item.getItemID() + " - " + item.getItemName());
         }
         makeTableReadOnly();
+        
+        status.setSelectedItem("All");
+        statusActionPerformed(null); 
     }
 
     /**
@@ -80,12 +80,12 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         txtDate = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtRaisedBy = new javax.swing.JTextField();
-        viewAllBtn = new javax.swing.JButton();
         addPrBtn = new javax.swing.JButton();
         removeBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         saveBtn = new javax.swing.JButton();
         menuBtn = new javax.swing.JButton();
+        status = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -150,13 +150,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
         txtRaisedBy.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
 
-        viewAllBtn.setText("VIEW ALL");
-        viewAllBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewAllBtnActionPerformed(evt);
-            }
-        });
-
         addPrBtn.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         addPrBtn.setText("ADD PR");
         addPrBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -198,6 +191,14 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         });
 
+        status.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        status.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -215,7 +216,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(viewAllBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
@@ -254,38 +255,41 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(viewAllBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(ComboItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(txtquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(txtRaisedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(addPrBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(editBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(removeBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(saveBtn)))
-                .addGap(26, 26, 26))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(ComboItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(txtquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(txtRaisedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(addPrBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(editBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(removeBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(saveBtn)))
+                        .addGap(26, 26, 26))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -302,25 +306,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void viewAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewAllBtnActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        model.setRowCount(0);
-        for (PurchaseRequisition pr : PRList) {
-            if(pr.getStatus().equalsIgnoreCase("Pending")){
-                Object[] row = {
-                    pr.getPrId(),
-                    String.format(pr.getItem().getItemID() + " - " + pr.getItem().getItemName()),
-                    pr.getQuantity(),
-                    pr.getRequiredDate(),
-                    String.join(" | ", pr.getSupplierIds()),
-                    pr.getRaisedBy()
-                };
-                model.addRow(row);
-            }   
-        }
-    }//GEN-LAST:event_viewAllBtnActionPerformed
-
     private void addPrBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPrBtnActionPerformed
         // TODO add your handling code here:
         try {
@@ -334,6 +319,31 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Please fill in all fields.");
                 return; // stop the method here
             }
+            String requiredDate = txtDate.getText().trim();
+            boolean exactMatch = false; boolean similarItem = false;
+            for (PurchaseRequisition existing : PRList) {
+                if (existing.getItem().getItemID().equalsIgnoreCase(itemId) && existing.getStatus().equals("Pending")) {
+                    if (existing.getRequiredDate().equalsIgnoreCase(requiredDate)) {
+                        exactMatch = true;
+                        break;
+                    } else {
+                        similarItem = true;
+                    }
+                }
+            }
+
+            if (exactMatch) {
+                JOptionPane.showMessageDialog(this, "A PR with the same item and date already exists.");
+                return;
+            }
+
+            if (similarItem) {
+                int confirm = JOptionPane.showConfirmDialog(this,
+                "Same item with different date exists and still requesting.\nProceed?",
+                "Confirm", JOptionPane.YES_NO_OPTION);
+                if (confirm != JOptionPane.YES_OPTION) return;
+            }
+            
             for (Item i : itemList){
                 if (i.getItemID().equalsIgnoreCase(itemId)){
                     selectedItem = i;
@@ -353,7 +363,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 }
             }
             int quantity = Integer.parseInt(txtquantity.getText().trim());
-            String requiredDate = txtDate.getText().trim();
             String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
 
             PurchaseRequisition newPr = new PurchaseRequisition(
@@ -362,7 +371,8 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             PRList.add(newPr);
             savePrToFile();
             JOptionPane.showMessageDialog(this, "PR Added Successfully.");
-            viewAllBtnActionPerformed(null);  // refresh table
+            status.setSelectedItem("Pending");
+            statusActionPerformed(null);  // refresh table
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Invalid input: " + e.getMessage());
         }
@@ -373,14 +383,33 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         int selectedRow = PRTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a PR to remove.");
+            JOptionPane.showMessageDialog(this, "Please select a PR to Remove.");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to delete the selected PR?","Confirm Deletion",JOptionPane.YES_NO_OPTION);
+        // Get PR ID from the selected row
+        String selectedPrId = PRTable.getValueAt(selectedRow, 0).toString();
+        // Find the PR in PRList by ID
+        int matchedIndex=-1;
+        for (int i = 0; i < PRList.size(); i++) {
+            if (PRList.get(i).getPrId().equalsIgnoreCase(selectedPrId)) {
+                matchedIndex = i; // Store the correct index
+                break;
+            }
+        }
+        if (matchedIndex == -1) {
+            JOptionPane.showMessageDialog(this, "Selected PR not found.");
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(this,
+        "Are you sure you want to delete PR ID: " + selectedPrId + "?",
+        "Confirm Deletion",
+        JOptionPane.YES_NO_OPTION
+        );
         if (confirm == JOptionPane.YES_OPTION) {
-            PRList.remove(selectedRow);
+            PRList.remove(matchedIndex);
             savePrToFile();
-            viewAllBtnActionPerformed(null);
+            status.setSelectedItem("Pending");
+            statusActionPerformed(null);
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
@@ -408,12 +437,17 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Selected PR not found.");
             return;
         }
+        //updated pr not allow to edit.
+        if (pr.getStatus().equalsIgnoreCase("Updated")) {
+            JOptionPane.showMessageDialog(this, "Updated PRs cannot be edited.");
+            return;
+        }
         ComboItem.setSelectedItem(pr.getItem().getItemID() + " - " + pr.getItem().getItemName());
         txtquantity.setText(String.valueOf(pr.getQuantity()));
         txtDate.setText(pr.getRequiredDate());
+        
         String raisedById = pr.getRaisedBy();
         String raisedByName = "UNKNOWN";
-
         // Look up name from user.txt
         List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
         for (String[] user : users) {
@@ -434,7 +468,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             // Update the PR fields
             pr.setQuantity(Integer.parseInt(txtquantity.getText().trim()));
             pr.setRequiredDate(txtDate.getText().trim());
-            pr.setRaisedBy(txtRaisedBy.getText().trim());
+            pr.setRaisedBy(txtRaisedBy.getText().split(" - ")[0].trim());
 
             // (Optional) If item selection also changes:
             String selectedItem = ComboItem.getSelectedItem().toString();
@@ -455,14 +489,14 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     break;
                 }
             }
-
             // Reset edit state
             isEditing = false;
             editingRowIndex = -1;
         }
         savePrToFile();
         clearInput();
-        viewAllBtnActionPerformed(null);
+        status.setSelectedItem("Pending");
+        statusActionPerformed(null);
         JOptionPane.showMessageDialog(this, "All PRs saved successfully.");
     }//GEN-LAST:event_saveBtnActionPerformed
 
@@ -487,7 +521,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             txtquantity.setText("");
             txtDate.setText(java.time.LocalDate.now().toString());
         }
-                
     }//GEN-LAST:event_StockTableMouseClicked
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
@@ -497,6 +530,32 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         menu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_menuBtnActionPerformed
+
+    private void statusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
+        model.setRowCount(0);
+        String selectedStatus = status.getSelectedItem().toString();
+        for (PurchaseRequisition pr : PRList) {
+            if (selectedStatus.equalsIgnoreCase("All") || pr.getStatus().equalsIgnoreCase(selectedStatus)) {
+                Object[] row = {
+                    pr.getPrId(),
+                    pr.getItem().getItemID() + " - " + pr.getItem().getItemName(),
+                    pr.getQuantity(),
+                    pr.getRequiredDate(),
+                    String.join(" | ", pr.getSupplierIds()),
+                    pr.getRaisedBy()
+                };
+                model.addRow(row);
+            }
+        }
+        if (selectedStatus.equalsIgnoreCase("Updated")) {
+            editBtn.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "Editing is not allowed for updated PRs.");
+        } else {
+            editBtn.setEnabled(true);
+        }
+    }//GEN-LAST:event_statusActionPerformed
 
     private String generateNextPrId(){
         int max = 0;
@@ -623,9 +682,9 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     private javax.swing.JButton menuBtn;
     private javax.swing.JButton removeBtn;
     private javax.swing.JButton saveBtn;
+    private javax.swing.JComboBox<String> status;
     private javax.swing.JTextField txtDate;
     private javax.swing.JTextField txtRaisedBy;
     private javax.swing.JTextField txtquantity;
-    private javax.swing.JButton viewAllBtn;
     // End of variables declaration//GEN-END:variables
 }
