@@ -52,7 +52,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jLabel1.setText("SALES MANAGER MENU");
 
-        supplierbtn.setBackground(new java.awt.Color(204, 204, 204));
+        supplierbtn.setBackground(new java.awt.Color(255, 255, 204));
         supplierbtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         supplierbtn.setText("SUPPLIER MANAGEMENT");
         supplierbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -61,7 +61,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
-        itemBtn.setBackground(new java.awt.Color(204, 204, 204));
+        itemBtn.setBackground(new java.awt.Color(255, 255, 204));
         itemBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         itemBtn.setText("ITEM MANAGEMENT");
         itemBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -70,7 +70,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
-        salesEntryBtn.setBackground(new java.awt.Color(204, 204, 204));
+        salesEntryBtn.setBackground(new java.awt.Color(255, 255, 204));
         salesEntryBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         salesEntryBtn.setText("DAILY SALES ENTRY");
         salesEntryBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -79,7 +79,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
-        prBtn.setBackground(new java.awt.Color(204, 204, 204));
+        prBtn.setBackground(new java.awt.Color(255, 255, 204));
         prBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         prBtn.setText("PURCHASE REQUISITION");
         prBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -88,7 +88,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
-        poBtn.setBackground(new java.awt.Color(204, 204, 204));
+        poBtn.setBackground(new java.awt.Color(255, 255, 204));
         poBtn.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         poBtn.setText("VIEW PURCHASE ORDER");
         poBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -97,7 +97,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             }
         });
 
-        poBtn1.setBackground(new java.awt.Color(255, 51, 51));
+        poBtn1.setBackground(new java.awt.Color(255, 102, 102));
         poBtn1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         poBtn1.setText("LOG OUT");
         poBtn1.addActionListener(new java.awt.event.ActionListener() {
@@ -138,14 +138,13 @@ public class SalesManagerMenu extends javax.swing.JFrame {
                 .addGap(219, 219, 219)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(dateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(itemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(salesEntryBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(supplierbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(prBtn)
-                        .addComponent(poBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(poBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(userlabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(itemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(salesEntryBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(supplierbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(prBtn)
+                    .addComponent(poBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(poBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userlabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(

@@ -42,6 +42,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        menuBtn2 = new javax.swing.JButton();
         txtSupplierEmail = new javax.swing.JTextField();
         txtSupplierPhoneNo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -54,7 +55,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         txtSearch = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         SearchBtn = new javax.swing.JButton();
-        BackToMenuBtn = new java.awt.Button();
         addbtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -62,6 +62,16 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         resetBtn = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         txtSupplierId = new javax.swing.JTextField();
+        menuBtn3 = new javax.swing.JButton();
+
+        menuBtn2.setBackground(new java.awt.Color(255, 204, 204));
+        menuBtn2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        menuBtn2.setText("MENU");
+        menuBtn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuBtn2ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -121,14 +131,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
             }
         });
 
-        BackToMenuBtn.setBackground(new java.awt.Color(255, 255, 255));
-        BackToMenuBtn.setLabel("MENU");
-        BackToMenuBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackToMenuBtnActionPerformed(evt);
-            }
-        });
-
         addbtn.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         addbtn.setText("ADD");
         addbtn.addActionListener(new java.awt.event.ActionListener() {
@@ -175,6 +177,15 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
 
         txtSupplierId.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
 
+        menuBtn3.setBackground(new java.awt.Color(255, 204, 204));
+        menuBtn3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        menuBtn3.setText("MENU");
+        menuBtn3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuBtn3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -207,8 +218,8 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
                                         .addComponent(txtSupplierEmail, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(txtSupplierName))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(180, 180, 180)
+                                .addComponent(menuBtn3)
+                                .addGap(148, 148, 148)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -227,10 +238,10 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(menuBtn3))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -292,14 +303,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Supplier not found.");
         }  
     }//GEN-LAST:event_SearchBtnActionPerformed
-
-    private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
-        // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
-        menu.setLocationRelativeTo(null); //center the window
-        menu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_BackToMenuBtnActionPerformed
 
     private void addbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addbtnActionPerformed
         // TODO add your handling code here:
@@ -473,6 +476,22 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void menuBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtn2ActionPerformed
+        // TODO add your handling code here:
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        menu.setLocationRelativeTo(null); //center the window
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuBtn2ActionPerformed
+
+    private void menuBtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtn3ActionPerformed
+        // TODO add your handling code here:
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        menu.setLocationRelativeTo(null); //center the window
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuBtn3ActionPerformed
+
     private void loadSuppliersToTable(){
         DefaultTableModel model = (DefaultTableModel) SupplierTable.getModel();
         model.setRowCount(0);
@@ -596,7 +615,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button BackToMenuBtn;
     private javax.swing.JButton SearchBtn;
     private javax.swing.JTable SupplierTable;
     private javax.swing.JButton addbtn;
@@ -610,6 +628,10 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton menuBtn;
+    private javax.swing.JButton menuBtn1;
+    private javax.swing.JButton menuBtn2;
+    private javax.swing.JButton menuBtn3;
     private javax.swing.JButton resetBtn;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtSupplierEmail;

@@ -107,6 +107,7 @@ public class ViewPOs extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(POTable);
 
+        CloseButton.setBackground(new java.awt.Color(255, 204, 204));
         CloseButton.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         CloseButton.setText("Menu");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {

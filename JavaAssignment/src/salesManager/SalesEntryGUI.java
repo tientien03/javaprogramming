@@ -185,6 +185,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
         txtDateField.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         txtDateField.setText("jTextField1");
 
+        menuBtn.setBackground(new java.awt.Color(255, 204, 204));
         menuBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         menuBtn.setText("MENU");
         menuBtn.addActionListener(new java.awt.event.ActionListener() {

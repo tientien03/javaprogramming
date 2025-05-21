@@ -89,7 +89,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
 
                 List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
                 List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
                 PurchaseRequisition selectedPR = null;
                 for (PurchaseRequisition pr : prList) {
@@ -169,7 +169,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 for (PurchaseRequisition pr : prList) {
                     updatedPRStrings.add(pr.toString().split(","));
                 }
-                FileWriterUtil.writeFile("purchase_requisitions.txt", updatedPRStrings);
+                FileWriterUtil.writeFile("purchase_requisition.txt", updatedPRStrings);
         
                 String message = "✅ Purchase Order generated successfully!\n\n"
                     + "PO ID: " + poID + "\n"
@@ -287,7 +287,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 // Load Suppliers, Items, and Requisitions
 //                List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
                 List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
                 // Load all PO lines
                 List<String[]> rawLines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
@@ -383,7 +383,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
 
                 List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
                 List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+                List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
                 List<String[]> rawLines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
                 List<PurchaseOrder> poList = new ArrayList<>();
@@ -418,13 +418,6 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 FileWriterUtil.writeFile("purchase_orders.txt", updatedLines);
                     
                 if (!prIDToUpdate.isEmpty()) {
-                    // Load Supplier and Item lists first
-//                    List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
-//                    List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-//
-//                    // Load PRs using the class
-//                    List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
-
                     for (PurchaseRequisition pr : prList) {
                         if (pr.getPrId().equalsIgnoreCase(prIDToUpdate)) {
                             pr.setStatus("Pending");
@@ -437,7 +430,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                     for (PurchaseRequisition pr : prList) {
                         updatedPRLines.add(pr.toString().split(","));
                     }
-                    FileWriterUtil.writeFile("purchase_requisitions.txt", updatedPRLines);
+                    FileWriterUtil.writeFile("purchase_requisition.txt", updatedPRLines);
                 }
                     
                 JOptionPane.showMessageDialog(null, "Purchase Order deleted successfully!");
@@ -471,7 +464,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
 
         List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
         requisitionTableModel.setRowCount(0);  // Clear table
 
@@ -496,7 +489,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
         // Load the required lists for matching
         List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
-        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisitions.txt", itemList, supplierList);
+        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
         List<String []> lines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
         

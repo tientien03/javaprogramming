@@ -48,7 +48,6 @@ public class ItemManagement extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        BackToMenuBtn = new java.awt.Button();
         txtSalesPrice = new javax.swing.JTextField();
         txtItemPrice = new javax.swing.JTextField();
         txtItemName = new javax.swing.JTextField();
@@ -61,6 +60,7 @@ public class ItemManagement extends javax.swing.JFrame {
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         resetBtn = new javax.swing.JButton();
+        menuBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -105,14 +105,6 @@ public class ItemManagement extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         jLabel6.setText("Sales Price");
-
-        BackToMenuBtn.setBackground(new java.awt.Color(255, 255, 255));
-        BackToMenuBtn.setLabel("MENU");
-        BackToMenuBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackToMenuBtnActionPerformed(evt);
-            }
-        });
 
         txtSalesPrice.setFont(new java.awt.Font("Times New Roman", 0, 17)); // NOI18N
         txtSalesPrice.setDisabledTextColor(new java.awt.Color(255, 255, 255));
@@ -186,6 +178,15 @@ public class ItemManagement extends javax.swing.JFrame {
             }
         });
 
+        menuBtn.setBackground(new java.awt.Color(255, 204, 204));
+        menuBtn.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        menuBtn.setText("MENU");
+        menuBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuBtnActionPerformed(evt);
+            }
+        });
+
         jDesktopPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -193,7 +194,6 @@ public class ItemManagement extends javax.swing.JFrame {
         jDesktopPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(jLabel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(BackToMenuBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtSalesPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtItemPrice, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(txtItemName, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -206,6 +206,7 @@ public class ItemManagement extends javax.swing.JFrame {
         jDesktopPane1.setLayer(editBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(deleteBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(resetBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(menuBtn, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -222,8 +223,8 @@ public class ItemManagement extends javax.swing.JFrame {
                         .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
                     .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                            .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(183, 183, 183)
+                            .addComponent(menuBtn)
+                            .addGap(151, 151, 151)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 749, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jDesktopPane1Layout.createSequentialGroup()
@@ -256,9 +257,9 @@ public class ItemManagement extends javax.swing.JFrame {
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(BackToMenuBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(menuBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -289,7 +290,7 @@ public class ItemManagement extends javax.swing.JFrame {
                     .addComponent(deleteBtn))
                 .addGap(16, 16, 16)
                 .addComponent(resetBtn)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -307,14 +308,6 @@ public class ItemManagement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
        
-    private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
-        // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
-        menu.setLocationRelativeTo(null); //center the window
-        menu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_BackToMenuBtnActionPerformed
-
     private void ItemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemTableMouseClicked
         //TODO add your handling code here:
         int selectedRow = ItemTable.getSelectedRow();
@@ -570,6 +563,14 @@ public class ItemManagement extends javax.swing.JFrame {
         clearInput();
         setEnabled();
     }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
+        // TODO add your handling code here:
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        menu.setLocationRelativeTo(null); //center the window
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuBtnActionPerformed
  
     private void makeTableReadOnly(){
         DefaultTableModel model = new DefaultTableModel(
@@ -683,7 +684,6 @@ public class ItemManagement extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button BackToMenuBtn;
     private javax.swing.JTable ItemTable;
     private javax.swing.JButton addBtn;
     private javax.swing.JButton deleteBtn;
@@ -696,6 +696,7 @@ public class ItemManagement extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton menuBtn;
     private javax.swing.JButton resetBtn;
     private javax.swing.JButton saveBtn;
     private javax.swing.JButton searchBtn;

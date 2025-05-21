@@ -295,9 +295,7 @@ public class SupplierGUI extends javax.swing.JFrame {
 
     private void BackToMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackToMenuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
-        menu.setLocationRelativeTo(null); //center the window
-        menu.setVisible(true);
+        new admin.Item_SupplierGUI().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BackToMenuBtnActionPerformed
 
