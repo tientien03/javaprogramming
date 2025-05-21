@@ -392,8 +392,16 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         }
         // Get PR ID from the selected row
         String selectedPrId = PRTable.getValueAt(selectedRow, 0).toString();
-        // Find the PR in PRList by ID
-        int matchedIndex=-1;
+        String currentStatus = PRTable.getValueAt(selectedRow, 6).toString(); // Assuming column 6 is "Status"
+
+        // Disallow deletion if status is not "Pending"
+        if (!currentStatus.equalsIgnoreCase("Pending")) {
+            JOptionPane.showMessageDialog(this, "Only PRs with 'Pending' status can be deleted.");
+            return;
+        }
+
+         // Find the PR in PRList by ID
+        int matchedIndex = -1;
         for (int i = 0; i < PRList.size(); i++) {
             if (PRList.get(i).getPrId().equalsIgnoreCase(selectedPrId)) {
                 matchedIndex = i; // Store the correct index
@@ -426,7 +434,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         }
         // Get PR ID from the selected row
         String selectedPrId = PRTable.getValueAt(selectedRow, 0).toString();
-
         // Find the PR in PRList by ID
         PurchaseRequisition pr = null;
         for (int i = 0; i < PRList.size(); i++) {
@@ -461,7 +468,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             }
         }
         txtRaisedBy.setText(raisedById + " - " + raisedByName);
-        editingRowIndex = selectedRow;
         isEditing = true;
     }//GEN-LAST:event_editBtnActionPerformed
 
@@ -554,12 +560,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 model.addRow(row);
             }
             colorizeRows();
-        }
-        if (selectedStatus.equalsIgnoreCase("Updated")) {
-            editBtn.setEnabled(false);
-            JOptionPane.showMessageDialog(this, "Editing is not allowed for updated PRs.");
-        } else {
-            editBtn.setEnabled(true);
         }
     }//GEN-LAST:event_statusActionPerformed
 

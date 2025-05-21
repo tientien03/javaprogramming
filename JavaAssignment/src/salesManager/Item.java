@@ -27,22 +27,17 @@ public class Item{
         this.salesPrice = salesPrice;
         this.stock = stock;
     }
-
+    //getter and setter
     public String getItemID() {return ItemID;}
     public void setItemID(String ItemID) {this.ItemID = ItemID;}
-
     public String getItemName() {return ItemName;}
     public void setItemName(String ItemName) {this.ItemName = ItemName;}
-
     public double getPrice() {return price;}
     public void setPrice(double price) {this.price = price;}
-
     public int getStock() {return stock;}
     public void setStock(int stock) {this.stock = stock;}
-
     public double getSalesPrice() { return salesPrice;}
     public void setSalesPrice(double salesPrice) { this.salesPrice = salesPrice;}
-
     public List<Supplier> getSupplier() {return supplier;}
     public void setSupplier(List<Supplier> supplier) {this.supplier = supplier;}
     
@@ -101,5 +96,4 @@ public class Item{
         }
         return data;
     }
-    
 }

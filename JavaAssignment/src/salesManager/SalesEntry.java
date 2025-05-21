@@ -16,15 +16,12 @@ public class SalesEntry {
     private String Salesdate;
     private Item item;
     private int quantity;
-
     public SalesEntry(String SalesID, String Salesdate, Item item, int quantity) {
         this.SalesID = SalesID;
         this.Salesdate = Salesdate;
         this.item = item;
         this.quantity = quantity;
     }
-
-    
 
     public String getSalesID() {
         return SalesID;

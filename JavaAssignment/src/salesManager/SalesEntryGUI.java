@@ -418,7 +418,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
             String input = comboItemId.getSelectedItem() != null ? comboItemId.getSelectedItem().toString() : "";
             String quantityText = txtQuantity.getText().trim();
-            if(input.isEmpty()||input.equalsIgnoreCase("-- Selected Item --")){
+            if(input.isEmpty()||input.equalsIgnoreCase("-- Select Item --")){
                 lblItemError.setText("Please select a valid item.");
                 return;
             } 
@@ -472,7 +472,19 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();      
             //found whether item already add to cart
             String priceLabel = String.format("%.2f", unitPrice);
-            priceLabel += String.format(" (-%.0f%%)", discountRate);
+            if (discountRate > 0){
+                priceLabel += String.format(" (-%.0f%%)", discountRate);
+                System.out.println("Calculating discounted total:");
+                System.out.println("Unit Price : RM" + String.format("%.2f", unitPrice));
+                System.out.println("Quantity   : " + quantity);
+                System.out.println("Discount   : " + discountRate + "%");
+                System.out.println("Total      : RM" + String.format("%.2f", total));
+            }else{
+                System.out.println("Calculating total:");
+                System.out.println("Unit Price : RM" + String.format("%.2f", unitPrice));
+                System.out.println("Quantity   : " + quantity);
+                System.out.println("Total      : RM" + String.format("%.2f", total));
+            }
             for (int i = 0; i<model.getRowCount();i++){
                 if (i == editingRowIndex && isEditing) {
                     String currentQty = model.getValueAt(i, 3).toString();
@@ -662,7 +674,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
     }
     
     private void clearInput(){
-        comboItemId.setSelectedItem("-- Selected Item --");
+        comboItemId.setSelectedItem("-- Select Item --");
         txtQuantity.setText("");    
         txtDiscountRate.setText("");
         enabledis.setSelected(false);
@@ -671,36 +683,10 @@ public class SalesEntryGUI extends javax.swing.JFrame {
 
     
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SalesEntryGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SalesEntryGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SalesEntryGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SalesEntryGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SalesEntryGUI().setVisible(true);
+                
             }
         });
     }
