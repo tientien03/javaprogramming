@@ -4,7 +4,11 @@
  */
 package inventoryManager;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
 import javax.swing.JOptionPane;
 import java.util.List;
 
@@ -62,8 +66,9 @@ public class GenerateReport extends javax.swing.JFrame {
             }
         });
 
+        CloseButton.setBackground(new java.awt.Color(255, 204, 204));
         CloseButton.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        CloseButton.setText("Menu");
+        CloseButton.setText("MENU");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CloseButtonActionPerformed(evt);
@@ -83,9 +88,9 @@ public class GenerateReport extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
+                        .addGap(30, 30, 30)
                         .addComponent(CloseButton)
-                        .addGap(165, 165, 165)
+                        .addGap(158, 158, 158)
                         .addComponent(Title))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(48, 48, 48)
@@ -102,11 +107,11 @@ public class GenerateReport extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(CloseButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
-                        .addComponent(Title)))
+                        .addComponent(Title))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(CloseButton)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)

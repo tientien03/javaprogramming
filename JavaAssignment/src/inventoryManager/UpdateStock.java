@@ -88,8 +88,9 @@ public class UpdateStock extends javax.swing.JFrame {
             }
         });
 
+        CloseButton.setBackground(new java.awt.Color(255, 204, 204));
         CloseButton.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        CloseButton.setText("Menu");
+        CloseButton.setText("MENU");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CloseButtonActionPerformed(evt);
@@ -105,7 +106,7 @@ public class UpdateStock extends javax.swing.JFrame {
         });
 
         searchTF.setColumns(15);
-        searchTF.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        searchTF.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         searchTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchTFActionPerformed(evt);
@@ -131,8 +132,8 @@ public class UpdateStock extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap(49, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -142,11 +143,11 @@ public class UpdateStock extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(SearchButton))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 705, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(UpdateButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
                         .addComponent(CloseButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(Title)
@@ -156,10 +157,13 @@ public class UpdateStock extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(CloseButton)
-                    .addComponent(Title))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(Title))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(CloseButton)))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -169,7 +173,7 @@ public class UpdateStock extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(UpdateButton)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -211,7 +215,7 @@ public class UpdateStock extends javax.swing.JFrame {
         for (String[] row : approvedPOs) {
             model.addRow(new Object[]{ row[0], row[2], row[3], row[4], row[6] });
         }
-
+        searchTF.setText("");
         JOptionPane.showMessageDialog(this, "Approved Purchase Orders loaded successfully!", "Refresh", JOptionPane.INFORMATION_MESSAGE);// TODO add your handling code here:
     }//GEN-LAST:event_RefreshButtonActionPerformed
 
@@ -244,6 +248,7 @@ public class UpdateStock extends javax.swing.JFrame {
 
         if (!found) {
             JOptionPane.showMessageDialog(this, "Purchase Order not found!", "Search", JOptionPane.INFORMATION_MESSAGE);
+            searchTF.setText("");
         }// TODO add your handling code here:
     }//GEN-LAST:event_SearchButtonActionPerformed
 

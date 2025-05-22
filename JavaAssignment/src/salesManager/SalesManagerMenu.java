@@ -24,7 +24,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
             setCurrentTime();
             for(String[] user : users){
                 if(user[1].equalsIgnoreCase(username)){
-                    userlabel.setText(user[3].toUpperCase());
+                    userlabel.setText(user[4].toUpperCase());
                     break;
                 }
             }
@@ -209,7 +209,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
 
     private void prBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prBtnActionPerformed
         // TODO add your handling code here:
-        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI(UserClassification.getCurrentUsername());
+        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI(UserClassification.getCurrentUser().getUserName());
         PRForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_prBtnActionPerformed

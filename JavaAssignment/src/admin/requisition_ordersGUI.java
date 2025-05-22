@@ -55,9 +55,9 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
         jButton9 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        Filter = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 45)); // NOI18N
         jLabel1.setText("Requisition & Order");
@@ -165,6 +165,14 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Times New Roman", 2, 20)); // NOI18N
         jLabel3.setText("PURCHASE ORDER");
 
+        Filter.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        Filter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Updated", "Approved", "Pending" }));
+        Filter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FilterActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -173,33 +181,37 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(125, 125, 125)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchPOField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchPOButton3)
-                        .addGap(82, 82, 82)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton9)
-                        .addGap(18, 18, 18)
-                        .addComponent(refreshPOButton8))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchPRField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchPRButton2)
-                        .addGap(61, 61, 61)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
-                        .addComponent(jButton4)
-                        .addGap(18, 18, 18)
-                        .addComponent(refreshPRButton5)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(searchPOField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(searchPOButton3)
+                                .addGap(82, 82, 82)
+                                .addComponent(jLabel3)
+                                .addGap(36, 36, 36)
+                                .addComponent(jButton9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refreshPOButton8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Filter, 0, 1, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(125, 125, 125)
+                                .addComponent(jLabel1)
+                                .addGap(0, 180, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(searchPRField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(searchPRButton2)
+                                .addGap(44, 44, 44)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton4)
+                                .addGap(18, 18, 18)
+                                .addComponent(refreshPRButton5)))
+                        .addGap(6, 6, 6))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,12 +235,14 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(searchPOField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(searchPOButton3)
-                            .addComponent(refreshPOButton8)
-                            .addComponent(jButton9))
-                        .addGap(7, 7, 7))
+                            .addComponent(searchPOButton3))
+                        .addGap(8, 8, 8))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jButton9)
+                            .addComponent(refreshPOButton8)
+                            .addComponent(Filter, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(11, 11, 11))
@@ -246,14 +260,13 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        new admin.PR(userID).setVisible(true);
-        this.dispose();
+        new admin.PR(UserClassification.getCurrentUser().getUserName()).setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        
         // TODO add your handling code here:
         new PO(userID).setVisible(true);
-        this.dispose();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void refreshPRButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPRButton5ActionPerformed
@@ -281,6 +294,15 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         searchPO();
     }//GEN-LAST:event_searchPOButton3ActionPerformed
+
+    private void FilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FilterActionPerformed
+        String status = Filter.getSelectedItem().toString();
+        if (status.equals("All")) {
+            loadPO();
+        } else {
+            filterPurchaseOrder(status);
+        }// TODO add your handling code here:
+    }//GEN-LAST:event_FilterActionPerformed
 
     private void PRTableFormat() {
     DefaultTableModel model = new DefaultTableModel(
@@ -374,6 +396,35 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + keyword));
         }
     }
+    
+    private void filterPurchaseOrder(String status) {
+        boolean found = false;
+        DefaultTableModel model = (DefaultTableModel) poTable.getModel();
+        model.setRowCount(0);
+        String searchKeyword = searchPOField.getText().trim();
+
+        for (String[] line : FileReaderUtil.readFileAsArrays("purchase_orders.txt")) {
+            boolean statusMatch = line[7].equalsIgnoreCase(status);
+            boolean searchMatch = searchKeyword.isEmpty() || 
+                                  line[0].equals(searchKeyword) || 
+                                  line[1].equals(searchKeyword) || 
+                                  line[2].equals(searchKeyword) || 
+                                  line[4].equals(searchKeyword);
+
+            if (statusMatch && searchMatch) {
+                model.addRow(new Object[]{line[0], line[1], line[2], line[3],
+                                          line[4], line[5], line[6], line[7]});
+                found = true;
+            }
+        }
+
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "No Purchase Orders found with status: " + status);
+            model.setRowCount(0); 
+            loadPO();
+            searchPOField.setText("");
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -411,6 +462,7 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Filter;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton9;

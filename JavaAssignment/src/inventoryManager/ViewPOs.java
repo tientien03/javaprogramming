@@ -109,8 +109,9 @@ public class ViewPOs extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(POTable);
 
+        CloseButton.setBackground(new java.awt.Color(255, 204, 204));
         CloseButton.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        CloseButton.setText("Menu");
+        CloseButton.setText("MENU");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CloseButtonActionPerformed(evt);
@@ -118,7 +119,7 @@ public class ViewPOs extends javax.swing.JFrame {
         });
 
         Filter.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        Filter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Updated", "Approved", "Pending" }));
+        Filter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Paid", "Updated", "Approved", "Pending" }));
         Filter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 FilterActionPerformed(evt);

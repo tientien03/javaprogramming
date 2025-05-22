@@ -115,8 +115,9 @@ public class StockAlerts extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(ItemTable);
 
+        CloseButton.setBackground(new java.awt.Color(255, 204, 204));
         CloseButton.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        CloseButton.setText("Menu");
+        CloseButton.setText("MENU");
         CloseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CloseButtonActionPerformed(evt);
@@ -130,9 +131,9 @@ public class StockAlerts extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
+                        .addGap(30, 30, 30)
                         .addComponent(CloseButton)
-                        .addGap(165, 165, 165)
+                        .addGap(171, 171, 171)
                         .addComponent(Title))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(53, 53, 53)
@@ -153,13 +154,13 @@ public class StockAlerts extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(CloseButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(34, Short.MAX_VALUE)
                         .addComponent(Title)
-                        .addGap(18, 18, 18)))
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(CloseButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SearchItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SearchButton)
@@ -194,7 +195,7 @@ public class StockAlerts extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
             model.setRowCount(0);
 
-            List<Supplier> supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+            List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
             List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
 
             for (Item item : itemList) {
@@ -279,7 +280,7 @@ public class StockAlerts extends javax.swing.JFrame {
             return;
         }
 
-        List<Supplier> supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+        List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
         
         boolean found = false;
@@ -321,6 +322,7 @@ public class StockAlerts extends javax.swing.JFrame {
         
         if (!found) {
             JOptionPane.showMessageDialog(this, "Item not found!", "Search", JOptionPane.INFORMATION_MESSAGE);
+            SearchItem.setText("");
             loadAllItems();
         }
     }
@@ -354,7 +356,7 @@ public class StockAlerts extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) ItemTable.getModel();
         model.setRowCount(0);
 
-        List<Supplier> supplierList = Supplier.loadSupplierFromFile("suppliers.txt");
+        List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
         List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
 
         for (Item item : itemList) {

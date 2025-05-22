@@ -56,10 +56,6 @@ public class Supplier {
         this.SupplierEmail = SupplierEmail;
     }
 
-    public String toString() {
-        return SupplierId + "," + SupplierName + "," + SupplierPhoneNo + "," + SupplierEmail;
-    }
-    
     public static List<Supplier> loadSupplierFromFile(String filename){
         List<Supplier> supplierList = new ArrayList<>();
         List<String[]> supplierData = FileReaderUtil.readFile(filename);

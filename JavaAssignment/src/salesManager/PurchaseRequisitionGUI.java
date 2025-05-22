@@ -7,11 +7,11 @@ package salesManager;
 import admin.UserClassification;
 import java.awt.Color;
 import java.awt.Component;
-import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.table.*;
+import main.FileWriterUtil;
 
 /**
  *
@@ -37,7 +37,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         for (String[] user : users) {
             if (user.length >= 8 && user[1].equalsIgnoreCase(username)) {
                 userId = user[0];  // ID is in column 0
-                name = user[3];
+                name = user[4];
                 break;
             }
         }
@@ -315,7 +315,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         try {
             String prId = generateNextPrId();
             String itemId = ComboItem.getSelectedItem().toString().split("-")[0].trim();
-            Item selectedItem = null;
+            
             if (itemId.isEmpty() ||
                 txtquantity.getText().isEmpty()||
                 txtDate.getText().isEmpty() ||
@@ -347,12 +347,16 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) return;
             }
+            int quantity = Integer.parseInt(txtquantity.getText().trim());
+            String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
             
+            Item selectedItem = null;
             for (Item i : itemList){
                 if (i.getItemID().equalsIgnoreCase(itemId)){
                     selectedItem = i;
                 }
             }
+
             if(selectedItem == null){
                 JOptionPane.showMessageDialog(this,"Item not found.");
                 return;
@@ -366,14 +370,9 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     }
                 }
             }
-            int quantity = Integer.parseInt(txtquantity.getText().trim());
-            String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
-
-            PurchaseRequisition newPr = new PurchaseRequisition(
-                prId, selectedItem,matchedSuppliers, quantity, requiredDate, raisedBy,"Pending"
-            );
+            PurchaseRequisition newPr = new PurchaseRequisition(prId, selectedItem,matchedSuppliers,quantity, requiredDate, raisedBy,"Pending");
             PRList.add(newPr);
-            savePrToFile();
+            FileWriterUtil.writeFile("purchase_requisition.txt",PurchaseRequisition.convertToStringArrayList(PRList));
             JOptionPane.showMessageDialog(this, "PR Added Successfully.");
             status.setSelectedItem("Pending");
             statusActionPerformed(null);  // refresh table
@@ -419,7 +418,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         );
         if (confirm == JOptionPane.YES_OPTION) {
             PRList.remove(matchedIndex);
-            savePrToFile();
+            FileWriterUtil.writeFile("purchase_requisition.txt",PurchaseRequisition.convertToStringArrayList(PRList));
             status.setSelectedItem("Pending");
             statusActionPerformed(null);
         }
@@ -503,7 +502,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             isEditing = false;
             editingRowIndex = -1;
         }
-        savePrToFile();
+        FileWriterUtil.writeFile("purchase_requisition.txt",PurchaseRequisition.convertToStringArrayList(PRList));
         clearInput();
         status.setSelectedItem("Pending");
         statusActionPerformed(null);
@@ -535,7 +534,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
@@ -593,18 +592,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
             max = Math.max(max, Integer.parseInt(id));
         }
         return String.format("PR%03d", max + 1);
-    }
-    
-    private void savePrToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("purchase_requisition.txt"))) {
-            for (PurchaseRequisition pr : PRList) {
-                writer.write(pr.toString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return;
     }
     
     private ArrayList<Item> getLowStockItems(List<Item> itemList) {
@@ -687,7 +674,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseRequisitionGUI(UserClassification.getCurrentUsername()).setVisible(true);
+                new PurchaseRequisitionGUI(UserClassification.getCurrentUser().getUserName()).setVisible(true);
             }
         });
     }

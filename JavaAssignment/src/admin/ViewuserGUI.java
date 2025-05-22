@@ -10,11 +10,11 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 public class ViewuserGUI extends javax.swing.JFrame {
-    private Viewuser selectedUser = null;
-    List<Viewuser> userList = new ArrayList<>();
+    private User selectedUser = null;
+    List<User> userList = new ArrayList<>();
     private DefaultTableModel tableModel;
     private int adminCounter = 1, pmCounter = 1, smCounter = 1, imCounter = 1, fmCounter = 1;
-    
+   
     public ViewuserGUI() {
         initComponents();
         getContentPane().setBackground(new java.awt.Color(0xC5E1EF));
@@ -379,7 +379,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
         
         boolean found = false;
 
-        for (Viewuser user : userList) {
+        for (User user : userList) {
             if (user.getUserID().equalsIgnoreCase(searchID)) {
                 idfield.setText(user.getUserID());
                 namefield.setText(user.getUserName());           
@@ -479,7 +479,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
 
         boolean userFound = false;
   
-        for (Viewuser user : userList) {
+        for (User user : userList) {
             if (user.getUserID().equals(userID)) {
                
                 idfield.setText(user.getUserID());
@@ -513,7 +513,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
     int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this user?", "Delete Confirmation", JOptionPane.YES_NO_OPTION);
     if (option == JOptionPane.YES_OPTION) {
         userList.remove(selectedUser);
-        Viewuser.saveToFile(userList, "user.txt");
+        User.saveToFile(userList, "user.txt");
         JOptionPane.showMessageDialog(this, "User deleted successfully.");
     }
         clearInput();
@@ -538,10 +538,9 @@ public class ViewuserGUI extends javax.swing.JFrame {
     }
 
     boolean isNewUser = true;
-    for (Viewuser user : userList) {
+    for (User user : userList) {
         if (user.getUserID().equals(idfield.getText())) {
             isNewUser = false;
-            
             user.setUserName(namefield.getText());
             user.setPassword(passwordfield.getText());
             user.setFullName(fullnamefield.getText());
@@ -556,14 +555,14 @@ public class ViewuserGUI extends javax.swing.JFrame {
     }
 
     if(isNewUser){
-        Viewuser newUser = new Viewuser(
+        User newUser = new User(
             idfield.getText(),              // User ID
             namefield.getText(),            // Username
             passwordfield.getText(),        // Password
+            rolebox.getSelectedItem().toString(),  // Role
             fullnamefield.getText(),        // Full Name
             gmailfield.getText(),           // Email
             phonefield.getText(),           // Phone Number
-            rolebox.getSelectedItem().toString(),  // Role
             statusbox.getSelectedItem().toString() // Status
         );
 
@@ -571,7 +570,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "✅ New user added successfully!");
     } 
 
-    Viewuser.saveToFile(userList, "user.txt");
+    User.saveToFile(userList, "user.txt");
     loadUserData();
     clearInput();
     idfield.setEditable(true); 
@@ -663,9 +662,6 @@ public class ViewuserGUI extends javax.swing.JFrame {
         return password.toString();
     }
     
- 
-
-
     private void loadUserData() {
         userList.clear();
         List<String[]> dataList = FileReaderUtil.readFileAsArrays("user.txt");
@@ -675,7 +671,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
 
         for (String[] user : dataList) {
             if (user.length == 8) {
-                Viewuser newUser = new Viewuser(
+                User newUser = new User(
                     user[0],
                     user[1],
                     user[2],
@@ -690,10 +686,10 @@ public class ViewuserGUI extends javax.swing.JFrame {
                     user[0], // UserID
                     user[1], // Username
                     user[2], // Password
-                    user[3], // Role (INCORRECT)
-                    user[4], // Full Name (INCORRECT)
-                    user[5], // Email (INCORRECT)
-                    user[6], // Phone Number (INCORRECT)
+                    user[4], // Full Name
+                    user[5], // Gmail
+                    user[6], // Phone
+                    user[3], // Role
                     user[7]  // Status
                 };
                 model.addRow(rowData);
@@ -701,7 +697,7 @@ public class ViewuserGUI extends javax.swing.JFrame {
         }
         
         System.out.println("-----userList Content-----");
-        for(Viewuser user : userList){
+        for(User user : userList){
             System.out.println(user.getUserID() + " - " + user.getUserName());
         }
     }

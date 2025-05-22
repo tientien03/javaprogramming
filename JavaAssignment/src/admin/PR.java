@@ -7,11 +7,11 @@ package admin;
 import salesManager.*;
 import java.awt.Color;
 import java.awt.Component;
-import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.table.*;
+import main.FileWriterUtil;
 
 /**
  *
@@ -37,7 +37,7 @@ public class PR extends javax.swing.JFrame {
         for (String[] user : users) {
             if (user.length >= 8 && user[1].equalsIgnoreCase(username)) {
                 userId = user[0];  // ID is in column 0
-                name = user[3];
+                name = user[4];
                 break;
             }
         }
@@ -315,7 +315,7 @@ public class PR extends javax.swing.JFrame {
         try {
             String prId = generateNextPrId();
             String itemId = ComboItem.getSelectedItem().toString().split("-")[0].trim();
-            Item selectedItem = null;
+            
             if (itemId.isEmpty() ||
                 txtquantity.getText().isEmpty()||
                 txtDate.getText().isEmpty() ||
@@ -347,12 +347,16 @@ public class PR extends javax.swing.JFrame {
                 "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) return;
             }
+            int quantity = Integer.parseInt(txtquantity.getText().trim());
+            String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
             
+            Item selectedItem = null;
             for (Item i : itemList){
                 if (i.getItemID().equalsIgnoreCase(itemId)){
                     selectedItem = i;
                 }
             }
+
             if(selectedItem == null){
                 JOptionPane.showMessageDialog(this,"Item not found.");
                 return;
@@ -366,14 +370,9 @@ public class PR extends javax.swing.JFrame {
                     }
                 }
             }
-            int quantity = Integer.parseInt(txtquantity.getText().trim());
-            String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
-
-            PurchaseRequisition newPr = new PurchaseRequisition(
-                prId, selectedItem,matchedSuppliers, quantity, requiredDate, raisedBy,"Pending"
-            );
+            PurchaseRequisition newPr = new PurchaseRequisition(prId, selectedItem,matchedSuppliers,quantity, requiredDate, raisedBy,"Pending");
             PRList.add(newPr);
-            savePrToFile();
+            FileWriterUtil.writeFile("purchase_requisition.txt",PurchaseRequisition.convertToStringArrayList(PRList));
             JOptionPane.showMessageDialog(this, "PR Added Successfully.");
             status.setSelectedItem("Pending");
             statusActionPerformed(null);  // refresh table
@@ -392,8 +391,16 @@ public class PR extends javax.swing.JFrame {
         }
         // Get PR ID from the selected row
         String selectedPrId = PRTable.getValueAt(selectedRow, 0).toString();
-        // Find the PR in PRList by ID
-        int matchedIndex=-1;
+        String currentStatus = PRTable.getValueAt(selectedRow, 6).toString(); // Assuming column 6 is "Status"
+
+        // Disallow deletion if status is not "Pending"
+        if (!currentStatus.equalsIgnoreCase("Pending")) {
+            JOptionPane.showMessageDialog(this, "Only PRs with 'Pending' status can be deleted.");
+            return;
+        }
+
+         // Find the PR in PRList by ID
+        int matchedIndex = -1;
         for (int i = 0; i < PRList.size(); i++) {
             if (PRList.get(i).getPrId().equalsIgnoreCase(selectedPrId)) {
                 matchedIndex = i; // Store the correct index
@@ -411,7 +418,7 @@ public class PR extends javax.swing.JFrame {
         );
         if (confirm == JOptionPane.YES_OPTION) {
             PRList.remove(matchedIndex);
-            savePrToFile();
+            FileWriterUtil.writeFile("purchase_requisition.txt",PurchaseRequisition.convertToStringArrayList(PRList));
             status.setSelectedItem("Pending");
             statusActionPerformed(null);
         }
@@ -426,7 +433,6 @@ public class PR extends javax.swing.JFrame {
         }
         // Get PR ID from the selected row
         String selectedPrId = PRTable.getValueAt(selectedRow, 0).toString();
-
         // Find the PR in PRList by ID
         PurchaseRequisition pr = null;
         for (int i = 0; i < PRList.size(); i++) {
@@ -461,7 +467,6 @@ public class PR extends javax.swing.JFrame {
             }
         }
         txtRaisedBy.setText(raisedById + " - " + raisedByName);
-        editingRowIndex = selectedRow;
         isEditing = true;
     }//GEN-LAST:event_editBtnActionPerformed
 
@@ -497,7 +502,7 @@ public class PR extends javax.swing.JFrame {
             isEditing = false;
             editingRowIndex = -1;
         }
-        savePrToFile();
+        FileWriterUtil.writeFile("purchase_requisition.txt",PurchaseRequisition.convertToStringArrayList(PRList));
         clearInput();
         status.setSelectedItem("Pending");
         statusActionPerformed(null);
@@ -553,12 +558,6 @@ public class PR extends javax.swing.JFrame {
             }
             colorizeRows();
         }
-        if (selectedStatus.equalsIgnoreCase("Updated")) {
-            editBtn.setEnabled(false);
-            JOptionPane.showMessageDialog(this, "Editing is not allowed for updated PRs.");
-        } else {
-            editBtn.setEnabled(true);
-        }
     }//GEN-LAST:event_statusActionPerformed
 
     private void colorizeRows() {
@@ -591,18 +590,6 @@ public class PR extends javax.swing.JFrame {
             max = Math.max(max, Integer.parseInt(id));
         }
         return String.format("PR%03d", max + 1);
-    }
-    
-    private void savePrToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("purchase_requisition.txt"))) {
-            for (PurchaseRequisition pr : PRList) {
-                writer.write(pr.toString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return;
     }
     
     private ArrayList<Item> getLowStockItems(List<Item> itemList) {
@@ -685,7 +672,7 @@ public class PR extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PR(UserClassification.getCurrentUsername()).setVisible(true);
+                new PR(UserClassification.getCurrentUser().getUserName()).setVisible(true);
             }
         });
     }

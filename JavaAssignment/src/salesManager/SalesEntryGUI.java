@@ -470,25 +470,16 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             }
             double total = unitPrice*quantity;
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();      
-            //found whether item already add to cart
+            
             String priceLabel = String.format("%.2f", unitPrice);
             if (discountRate > 0){
                 priceLabel += String.format(" (-%.0f%%)", discountRate);
-                System.out.println("Calculating discounted total:");
-                System.out.println("Unit Price : RM" + String.format("%.2f", unitPrice));
-                System.out.println("Quantity   : " + quantity);
-                System.out.println("Discount   : " + discountRate + "%");
-                System.out.println("Total      : RM" + String.format("%.2f", total));
-            }else{
-                System.out.println("Calculating total:");
-                System.out.println("Unit Price : RM" + String.format("%.2f", unitPrice));
-                System.out.println("Quantity   : " + quantity);
-                System.out.println("Total      : RM" + String.format("%.2f", total));
             }
             for (int i = 0; i<model.getRowCount();i++){
                 if (i == editingRowIndex && isEditing) {
                     String currentQty = model.getValueAt(i, 3).toString();
                     String currentPrice = model.getValueAt(i, 2).toString();
+                    //check any changes made (edit purpose)
                     if (currentQty.equals(String.valueOf(quantity)) && currentPrice.equals(priceLabel)) {
                         JOptionPane.showMessageDialog(this, "No changes detected in the selected entry.");
                         clearInput();
@@ -497,6 +488,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     model.removeRow(editingRowIndex);
                     continue;
                 }
+                //found whether item already add to cart
                 String itemIdInTable = model.getValueAt(i, 0).toString();
                 if(itemIdInTable.equalsIgnoreCase(selectedId) && (!isEditing || i != editingRowIndex)){
                     JOptionPane.showMessageDialog(this,"This item is already added to the sales.","Duplicate Item",JOptionPane.WARNING_MESSAGE);
@@ -531,15 +523,16 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No sales to save", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            //add back stock first (for edit purpose)
+            //add back stock if sales record existed (for edit purpose)
             for (SalesEntry entry : salesEntryList) {
                 if (entry.getSalesdate().equals(formattedDate)) {
                     Item item = entry.getItem();
                     item.setStock(item.getStock() + entry.getQuantity());
                 }
             }
+            //remove sales record (for edit purpose)
             salesEntryList.removeIf(entry -> entry.getSalesdate().equals(formattedDate));
-            //deduct stock
+            //save sales record into file
             for (int i = 0; i < model.getRowCount(); i++) {
                 String itemId = model.getValueAt(i, 0).toString();
                 int quantity = Integer.parseInt(model.getValueAt(i, 3).toString());
@@ -566,11 +559,23 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     SalesEntry entry;
                     if (discountRate > 0.0) {
                         entry = new DiscountedSalesEntry(salesId, formattedDate, selectedItem, quantity, discountRate);
+                        System.out.println("Calculating discounted total:");
+                        System.out.println("Item : " +  selectedItem.getItemName());
+                        System.out.println("Unit Price : RM" + String.format("%.2f", selectedItem.getSalesPrice()));
+                        System.out.println("Quantity   : " + quantity);
+                        System.out.println("Discount   : " + discountRate + "%");
+                        System.out.println("Total      : RM" + String.format("%.2f", entry.getTotal()));
+
                     } else {
                         entry = new SalesEntry(salesId, formattedDate, selectedItem, quantity);
+                        System.out.println("Calculating total:");
+                        System.out.println("Item : " +  selectedItem.getItemName());
+                        System.out.println("Unit Price : RM" + String.format("%.2f", selectedItem.getSalesPrice()));
+                        System.out.println("Quantity   : " + quantity);
+                        System.out.println("Total      : RM" + String.format("%.2f", entry.getTotal()));
                     }
                     salesEntryList.add(entry);
-                }
+                                    }
             }
             FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
             FileWriterUtil.writeFile("sales_entry.txt",SalesEntry.convertToStringArrayList(salesEntryList));
@@ -584,7 +589,7 @@ public class SalesEntryGUI extends javax.swing.JFrame {
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();

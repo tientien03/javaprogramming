@@ -478,7 +478,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
 
     private void menuBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtn2ActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
@@ -486,7 +486,7 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
 
     private void menuBtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtn3ActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUsername());
+        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
