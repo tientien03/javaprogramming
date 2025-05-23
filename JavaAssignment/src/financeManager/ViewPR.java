@@ -9,7 +9,7 @@ import main.FileReaderUtil;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
-import PurchaseManager.*;
+import salesManager.*;
 
 /**
  *
@@ -17,7 +17,7 @@ import PurchaseManager.*;
  */
 public class ViewPR extends javax.swing.JFrame {
 
-    private ArrayList<PurchaseOrder> poList;
+    private ArrayList<PurchaseRequisition> poList;
     private DefaultTableModel tableModel;
     
     public ViewPR() {

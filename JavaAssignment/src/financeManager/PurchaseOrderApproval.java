@@ -11,7 +11,6 @@ import java.util.List;
 import main.FileReaderUtil;
 import main.FileWriterUtil;
 import PurchaseManager.*;
-import java.nio.file.DirectoryStream.Filter;
 import java.util.Arrays;
 import salesManager.*;
 
@@ -22,127 +21,96 @@ import salesManager.*;
  */
 public class PurchaseOrderApproval extends javax.swing.JFrame {
     
-    private List<String[]> poList;
+    private List<PurchaseOrder> poList = new ArrayList<>();
     private DefaultTableModel tableModel;
-    /**
-     * Creates new form PurchaseOrderApproval
-     */
+
     public PurchaseOrderApproval() {
-        initComponents();
+        initComponents(); 
+        tableModel = (DefaultTableModel) POTable.getModel();
         setLocationRelativeTo(null);
-        loadTableData();
-        setupListeners();
         setVisible(true);
+        loadPurchaseOrders();
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
-    }
-    
+        POTable.setDefaultEditor(Object.class, null);        
+        POTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = POTable.getSelectedRow();
+            if (selectedRow != -1) {
+                PurchaseOrder po = poList.get(selectedRow);
 
-    private void loadTableData() {
-        poList = new ArrayList<>();
-        tableModel = new DefaultTableModel(new String[]{
-            "PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"
-        }, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        jTable2.setModel(tableModel);
+                PO_ID_TextField.setText(po.getPoID());
+                PR_ID_TextField.setText(po.getPurchaseRequisition().getPrId());
+                Item_Code_TextField.setText(po.getItem().getItemID());
+                Quantity_TextField.setText(String.valueOf(po.getQuantity()));
 
-        try {
-            List<String[]> rawData = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
-            for (String[] parts : rawData) {
-                if (parts.length == 8) {
-                    String poID = parts[0];
-                    String prID = parts[1];
-                    String itemCode = parts[2];
-                    int quantity = Integer.parseInt(parts[3]);
-                    String supplierIDs = parts[4];
-                    String pmID = parts[5];
-                    String date = parts[6];
-                    String status = parts[7];
-
-                    tableModel.addRow(new Object[]{
-                        poID, prID, itemCode, quantity, supplierIDs, pmID, date, status
-                    });
-                }
-            }
-            tableModel.fireTableDataChanged();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error reading purchase orders: " + e.getMessage(),
-                    "Read Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-    private void setupListeners() {
-        jTable2.getSelectionModel().addListSelectionListener(e -> {
-            int selectedRow = jTable2.getSelectedRow();
-            if (selectedRow >= 0 && jTable2.getRowCount() > selectedRow) {
-
-                String[] po = new String[8];
-                for (int i = 0; i < 8; i++) {
-                    po[i] = String.valueOf(jTable2.getValueAt(selectedRow, i));
-                }
-
-                PO_ID_TextField.setText(po[0]);
-                PR_ID_TextField.setText(po[1]);
-                Item_Code_TextField.setText(po[2]);
-                Quantity_TextField.setText(po[3]);
-                PM_ID_TextField.setText(po[5]);
-                Date_TextField.setText(po[6]);
-                Status_TextField.setText(po[7]);
-
-             
                 SupplierID_ComboBox.removeAllItems();
-                List<String> suppliers = getSuppliersFromPR(po[1]); // PR ID
-                for (String supplier : suppliers) {
-                    SupplierID_ComboBox.addItem(supplier);
+                for (String sid : po.getSupplierIds()) {
+                    SupplierID_ComboBox.addItem(sid);
                 }
+                SupplierID_ComboBox.setSelectedItem(po.getSupplierIds().get(0));
+                
+                PM_ID_TextField.setText(po.getPurchaseManagerID());
+                Status_TextField.setText(po.getStatus());
+                Date_TextField.setText(po.getDate());
 
-                if (suppliers.contains(po[4])) {
-                    SupplierID_ComboBox.setSelectedItem(po[4]);
-                } else if (SupplierID_ComboBox.getItemCount() > 0) {
-                    SupplierID_ComboBox.setSelectedIndex(0);
-                }
-
-                String status = po[7].trim();
-                boolean isPending = status.equalsIgnoreCase("Pending");
-
-                Approve.setEnabled(isPending);
-                Quantity_TextField.setEnabled(false); 
-                SupplierID_ComboBox.setEnabled(false);
-                Modify_Quantity.setEnabled(isPending);
-
-                SupplierID_edit.setEnabled(isPending && suppliers.size() > 1);
             }
         });
     }
 
+    private void loadPurchaseOrders() {
+        tableModel.setRowCount(0);  // Clear existing rows
+        
+        // Load the required lists for matching
+        List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
+        List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
+        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
-
-
-    private void savePurchaseOrders() {
-        try {
-            poList.clear();
+        List<String []> lines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
+        
+        for (String[] parts : lines) {
+            String line = String.join(",", parts);
             
-            int rowCount = tableModel.getRowCount();
-            for (int i = 0; i < rowCount; i++) {
-                String[] row = new String[8];
-                for (int j = 0; j < 8; j++) {
-                    row[j] = String.valueOf(tableModel.getValueAt(i, j));
-                }
-                poList.add(row);
-            }
+            PurchaseOrder po = PurchaseOrder.fromString(line, prList, supplierList);
+            if (po != null) {
+                poList.add(po);
+                List<String> suppliers = po.getSupplierIds();
+                String supplierIDs = String.join(";", suppliers);
 
-            FileWriterUtil.writeFile("purchase_orders.txt", poList);
-            JOptionPane.showMessageDialog(this, "Data saved successfully!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(),
-                    "Save Error", JOptionPane.ERROR_MESSAGE);
+            
+                tableModel.addRow(new Object[]{
+                    po.getPoID(),
+                    po.getPurchaseRequisition().getPrId(),
+                    po.getItem().getItemID(),
+                    po.getQuantity(),
+                    String.join(";", po.getSupplierIds()),
+                    po.getPurchaseManagerID(),
+                    po.getDate(),
+                    po.getStatus()
+                });
+            }
         }
     }
 
+    public void savePurchaseOrders(List<PurchaseOrder> poList) {
+        List<String[]> data = new ArrayList<>();
+
+        for (PurchaseOrder po : poList) {
+            String[] row = new String[]{
+                po.getPoID(),
+                po.getPurchaseRequisition().getPrId(),
+                po.getItem().getItemID(),
+                String.valueOf(po.getQuantity()),
+                String.join(";", po.getSupplierIds()),
+                po.getPurchaseManagerID(),
+                po.getDate(),
+                po.getStatus()
+            };
+            data.add(row);
+        }
+
+        FileWriterUtil.writeFile("purchase_orders.txt", data);
+        JOptionPane.showMessageDialog(this, "Purchase orders saved successfully!");
+    }
+    
     private List<String> getSuppliersFromPR(String prId) {
         List<String> suppliers = new ArrayList<>();
 
@@ -164,8 +132,6 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     }
 
 
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -182,12 +148,12 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         SearchTextField = new javax.swing.JTextField();
         SearchButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        POTable = new javax.swing.JTable();
         PO_ID = new javax.swing.JLabel();
         PR_ID = new javax.swing.JLabel();
         ItemCode_Label = new javax.swing.JLabel();
         Quantity = new javax.swing.JLabel();
-        Supplier = new javax.swing.JLabel();
+        SupplierLabel = new javax.swing.JLabel();
         SupplierID_ComboBox = new javax.swing.JComboBox<>();
         Quantity_TextField = new javax.swing.JTextField();
         Item_Code_TextField = new javax.swing.JTextField();
@@ -200,8 +166,12 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         PM_ID_TextField = new javax.swing.JTextField();
         Approve = new javax.swing.JButton();
         StatusBox = new javax.swing.JComboBox<>();
+        PO_ID1 = new javax.swing.JLabel();
+        StatusLabel = new javax.swing.JLabel();
+        StatusLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jButton4.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jButton4.setText("Menu");
@@ -233,18 +203,18 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             }
         });
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        POTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "PO ID", "PR ID", "Item", "Quantity", "Supplier ID", "PM ID", "Status", "Date"
             }
         ));
-        jScrollPane4.setViewportView(jTable2);
+        jScrollPane4.setViewportView(POTable);
 
         PO_ID.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         PO_ID.setText("PO ID:");
@@ -258,8 +228,8 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         Quantity.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         Quantity.setText("Quantity:");
 
-        Supplier.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        Supplier.setText("Supplier ID:");
+        SupplierLabel.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        SupplierLabel.setText("Supplier ID:");
 
         SupplierID_ComboBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         SupplierID_ComboBox.setEnabled(false);
@@ -372,12 +342,21 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             }
         });
 
+        PO_ID1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        PO_ID1.setText("PM ID:");
+
+        StatusLabel.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        StatusLabel.setText("Date:");
+
+        StatusLabel1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        StatusLabel1.setText("Status:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(372, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(Approve, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -388,7 +367,13 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                         .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(StatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54))))
+                        .addGap(54, 54, 54))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(PO_ID1)
+                            .addComponent(StatusLabel)
+                            .addComponent(StatusLabel1))
+                        .addGap(300, 300, 300))))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(36, 36, 36)
@@ -405,12 +390,12 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                                     .addComponent(jButton4)
                                     .addGap(55, 55, 55)
                                     .addComponent(PO_name1)
-                                    .addGap(0, 37, Short.MAX_VALUE))))
+                                    .addGap(0, 0, Short.MAX_VALUE))))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGap(15, 15, 15)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(Quantity)
-                                .addComponent(Supplier)
+                                .addComponent(SupplierLabel)
                                 .addComponent(PR_ID)
                                 .addComponent(PO_ID)
                                 .addComponent(ItemCode_Label))
@@ -443,7 +428,13 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                     .addComponent(SearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SearchButton)
                     .addComponent(StatusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                .addComponent(PO_ID1)
+                .addGap(27, 27, 27)
+                .addComponent(StatusLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(StatusLabel)
+                .addGap(44, 44, 44)
                 .addComponent(Approve)
                 .addGap(45, 45, 45))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -487,7 +478,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                             .addComponent(Quantity)))
                     .addGap(18, 18, 18)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(Supplier)
+                        .addComponent(SupplierLabel)
                         .addComponent(SupplierID_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(SupplierID_edit))
                     .addGap(21, 21, 21)))
@@ -497,9 +488,11 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 815, Short.MAX_VALUE)
+            .addGap(0, 801, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 801, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -518,49 +511,49 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void RefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshButtonActionPerformed
-        loadTableData();
+        loadPurchaseOrders();
         JOptionPane.showMessageDialog(this, "Refresh successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_RefreshButtonActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
-    String searchText = SearchTextField.getText().trim().toLowerCase();
-    tableModel.setRowCount(0); // Clear table
+        String searchText = SearchTextField.getText().trim().toLowerCase();
+        tableModel.setRowCount(0); // Clear table
 
-    // ✅ Read from the text file
-    List<String[]> rawList = FileReaderUtil.readFile("purchase_orders.txt");
+        // ✅ Read from the text file
+        List<String[]> rawList = FileReaderUtil.readFile("purchase_orders.txt");
 
-    boolean found = false;
+        boolean found = false;
 
-    for (String[] line : rawList) {
-        // Search by PO ID, PR ID, Item Code, or Supplier ID
-        if (line[0].toLowerCase().contains(searchText) || 
-            line[1].toLowerCase().contains(searchText) || 
-            line[2].toLowerCase().contains(searchText) || 
-            line[4].toLowerCase().contains(searchText)) {
+        for (String[] line : rawList) {
+            // Search by PO ID, PR ID, Item Code, or Supplier ID
+            if (line[0].toLowerCase().contains(searchText) || 
+                line[1].toLowerCase().contains(searchText) || 
+                line[2].toLowerCase().contains(searchText) || 
+                line[4].toLowerCase().contains(searchText)) {
 
-            tableModel.addRow(new Object[] {
-                line[0], // PO ID
-                line[1], // PR ID
-                line[2], // Item Code
-                line[3], // Quantity
-                line[4], // Supplier ID
-                line[5], // PM ID
-                line[6], // Date
-                line[7]  // Status
-            });
-            found = true;
+                tableModel.addRow(new Object[] {
+                    line[0], // PO ID
+                    line[1], // PR ID
+                    line[2], // Item Code
+                    line[3], // Quantity
+                    line[4], // Supplier ID
+                    line[5], // PM ID
+                    line[6], // Date
+                    line[7]  // Status
+                });
+                found = true;
+            }
         }
-    }
 
-    if (!found) {
-        JOptionPane.showMessageDialog(this, "No matching record found for: " + searchText, "Search Result", JOptionPane.INFORMATION_MESSAGE);
-    }
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "No matching record found for: " + searchText, "Search Result", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_SearchButtonActionPerformed
 
     private void SupplierID_ComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupplierID_ComboBoxActionPerformed
-        int selectedRow = jTable2.getSelectedRow();
+        int selectedRow = POTable.getSelectedRow();
         if (selectedRow >= 0) {
-            String supplierID = jTable2.getValueAt(selectedRow, 4).toString();
+            String supplierID = POTable.getValueAt(selectedRow, 4).toString();
             SupplierID_ComboBox.setSelectedItem(supplierID);
         }
     }//GEN-LAST:event_SupplierID_ComboBoxActionPerformed
@@ -582,20 +575,20 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     }//GEN-LAST:event_PO_ID_TextFieldActionPerformed
 
     private void Modify_QuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Modify_QuantityActionPerformed
-        int selectedRow = jTable2.getSelectedRow();
+         int selectedRow = POTable.getSelectedRow();
 
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a row to edit the quantity.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String status = String.valueOf(jTable2.getValueAt(selectedRow, 7)).trim();
+        String status = String.valueOf(POTable.getValueAt(selectedRow, 7)).trim();
         if (!status.equalsIgnoreCase("Pending")) {
             JOptionPane.showMessageDialog(this, "Quantity can only be edited when status is 'Pending'.", "Action Not Allowed", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String currentQuantity = String.valueOf(jTable2.getValueAt(selectedRow, 3));
+        String currentQuantity = String.valueOf(POTable.getValueAt(selectedRow, 3));
         String newQuantity = JOptionPane.showInputDialog(this, "Enter new quantity:", currentQuantity);
 
         if (newQuantity == null || newQuantity.trim().isEmpty()) {
@@ -611,18 +604,16 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                 return;
             }
             
-            jTable2.setValueAt(String.valueOf(quantity), selectedRow, 3);
+            POTable.setValueAt(String.valueOf(quantity), selectedRow, 3);
             Quantity_TextField.setText(String.valueOf(quantity));
 
             String[] po = new String[8];
             for (int i = 0; i < 8; i++) {
-                po[i] = String.valueOf(jTable2.getValueAt(selectedRow, i));
-            }
-            if (selectedRow < poList.size()) {
-                poList.set(selectedRow, po);
+                po[i] = String.valueOf(POTable.getValueAt(selectedRow, i));
             }
 
-            savePurchaseOrders();
+            savePurchaseOrders(poList);
+
 
             JOptionPane.showMessageDialog(this, "Quantity updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
@@ -632,7 +623,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     }//GEN-LAST:event_Modify_QuantityActionPerformed
 
     private void SupplierID_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupplierID_editActionPerformed
-        int selectedRow = jTable2.getSelectedRow();
+        int selectedRow = POTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a row to edit the supplier.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
             return;
@@ -640,7 +631,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
 
         String[] po = new String[8];
         for (int i = 0; i < 8; i++) {
-            po[i] = String.valueOf(jTable2.getValueAt(selectedRow, i));
+            po[i] = String.valueOf(POTable.getValueAt(selectedRow, i));
         }
 
         List<String> suppliers = getSuppliersFromPR(po[1]);
@@ -673,7 +664,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
             SupplierID_ComboBox.setSelectedItem(selectedSupplier);
             SupplierID_ComboBox.setEnabled(false);
 
-            savePurchaseOrders();
+            savePurchaseOrders(poList);
 
             JOptionPane.showMessageDialog(this, "Supplier updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -694,67 +685,78 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     }//GEN-LAST:event_PM_ID_TextFieldActionPerformed
 
     private void ApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApproveActionPerformed
-        int selectedRow = jTable2.getSelectedRow();
+
+        int selectedRow = POTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a row to approve.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String[] po = poList.get(selectedRow);
+        String selectedPOID = POTable.getValueAt(selectedRow, 0).toString().trim();
 
-        if (!po[7].equalsIgnoreCase("Pending")) { // Status is at index 7
+        PurchaseOrder po = poList.stream()
+            .filter(p -> p.getPoID().equalsIgnoreCase(selectedPOID))
+            .findFirst()
+            .orElse(null);
+
+        if (po == null) {
+            JOptionPane.showMessageDialog(this, "PO not found in current list.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!po.getStatus().equalsIgnoreCase("Pending")) {
             JOptionPane.showMessageDialog(this, "Only Pending orders can be approved.", "Approve Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // ✅ Update status
-        po[7] = "Approved";
-        tableModel.setValueAt("Approved", selectedRow, 7);
-        savePurchaseOrders();
+        po.setStatus("Approved");
+        tableModel.setValueAt("Approved", selectedRow, 7); // Update table view
+        savePurchaseOrders(poList); // Save to file
 
         JOptionPane.showMessageDialog(this, "Purchase Order approved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_ApproveActionPerformed
 
     private void StatusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StatusBoxActionPerformed
-    String selectedStatus = (String) StatusBox.getSelectedItem();
-    tableModel.setRowCount(0); // Clear table
+        String selectedStatus = (String) StatusBox.getSelectedItem();
+        tableModel.setRowCount(0); // Clear table
 
-    List<String[]> rawList = FileReaderUtil.readFile("purchase_orders.txt");
+        List<String[]> rawList = FileReaderUtil.readFile("purchase_orders.txt");
 
-    boolean found = false;
+        boolean found = false;
 
-    for (String[] line : rawList) {
-        String status = line[7];
-
-        if (selectedStatus.equals("All") || status.equalsIgnoreCase(selectedStatus)) {
-            tableModel.addRow(new Object[] {
-                line[0], // PO ID
-                line[1], // PR ID
-                line[2], // Item Code
-                line[3], // Quantity
-                line[4], // Supplier ID
-                line[5], // PM ID
-                line[6], // Date
-                line[7]  // Status
-            });
-            found = true;
-        }
-    }
-
-    if (!found) {
-        JOptionPane.showMessageDialog(this,
-            "No purchase orders found with status: " + selectedStatus,
-            "No Records Found",
-            JOptionPane.INFORMATION_MESSAGE);
-
-        tableModel.setRowCount(0);
         for (String[] line : rawList) {
-            tableModel.addRow(new Object[] {
-                line[0], line[1], line[2], line[3],
-                line[4], line[5], line[6], line[7]
-            });
+            String status = line[7];
+
+            if (selectedStatus.equals("All") || status.equalsIgnoreCase(selectedStatus)) {
+                tableModel.addRow(new Object[] {
+                    line[0], // PO ID
+                    line[1], // PR ID
+                    line[2], // Item Code
+                    line[3], // Quantity
+                    line[4], // Supplier ID
+                    line[5], // PM ID
+                    line[6], // Date
+                    line[7]  // Status
+                });
+                found = true;
+            }
         }
-    }
+
+        if (!found) {
+            JOptionPane.showMessageDialog(this,
+                "No purchase orders found with status: " + selectedStatus,
+                "No Records Found",
+                JOptionPane.INFORMATION_MESSAGE);
+
+            tableModel.setRowCount(0);
+            for (String[] line : rawList) {
+                tableModel.addRow(new Object[] {
+                    line[0], line[1], line[2], line[3],
+                    line[4], line[5], line[6], line[7]
+                });
+            }
+        }
     }//GEN-LAST:event_StatusBoxActionPerformed
 
     /**
@@ -799,7 +801,9 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     private javax.swing.JTextField Item_Code_TextField;
     private javax.swing.JButton Modify_Quantity;
     private javax.swing.JTextField PM_ID_TextField;
+    private javax.swing.JTable POTable;
     private javax.swing.JLabel PO_ID;
+    private javax.swing.JLabel PO_ID1;
     private javax.swing.JTextField PO_ID_TextField;
     private javax.swing.JLabel PO_name1;
     private javax.swing.JLabel PR_ID;
@@ -810,13 +814,14 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
     private javax.swing.JButton SearchButton;
     private javax.swing.JTextField SearchTextField;
     private javax.swing.JComboBox<String> StatusBox;
+    private javax.swing.JLabel StatusLabel;
+    private javax.swing.JLabel StatusLabel1;
     private javax.swing.JTextField Status_TextField;
-    private javax.swing.JLabel Supplier;
     private javax.swing.JComboBox<String> SupplierID_ComboBox;
     private javax.swing.JButton SupplierID_edit;
+    private javax.swing.JLabel SupplierLabel;
     private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }

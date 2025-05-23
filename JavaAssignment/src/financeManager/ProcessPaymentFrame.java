@@ -4,20 +4,42 @@
  */
 package financeManager;
 
+import java.util.ArrayList;
 import main.FileReaderUtil;
 import main.FileWriterUtil;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import PurchaseManager.*;
+import java.util.Arrays;
+import salesManager.*;
 /**
  *
  * @author HP
  */
 public class ProcessPaymentFrame extends javax.swing.JFrame {
-
-
+    private List<PurchaseOrder> poList = new ArrayList<>();    
+    private DefaultTableModel inventoryTableModel;
+    private DefaultTableModel paymentTableModel;
+    private DefaultTableModel tableModel;
     public ProcessPaymentFrame() {
         initComponents();
+        inventoryTableModel = new DefaultTableModel(
+            new String[]{"PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"}, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        paymentTableModel = new DefaultTableModel(
+            new String[]{"PO ID", "PR ID", "Item Code", "Quantity", "Unit Price", "Total Price", "Supplier ID", "PM ID", "Date", "Status"}, 0) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        InventoryTable.setModel(inventoryTableModel);
+        paymentTable.setModel(paymentTableModel);
+
         loadUpdatedPurchaseOrders();
         loadProcessPaymentTable();
         setupListeners();
@@ -27,65 +49,59 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
 
 
     private void loadUpdatedPurchaseOrders() {
-        DefaultTableModel model = new DefaultTableModel(
-            new String[]{
-                "PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Date", "Status"},0){
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        poList.clear();
+        inventoryTableModel.setRowCount(0);
 
-        List<String[]> data = FileReaderUtil.readFile("purchase_orders.txt");
-        for (String[] po : data) {
-            if (po.length >= 8) {
-                model.addRow(po);
-            }
-        }
+        List<Supplier> supplierList = Supplier.loadSupplierFromFile("supplier.txt");
+        List<Item> itemList = Item.loadItemFromFile("item.txt", supplierList);
+        List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
+        List<String[]> lines = FileReaderUtil.readFileAsArrays("purchase_orders.txt");
 
-        jTable1.setModel(model);
-    }
-
-
-    private void loadProcessPaymentTable() {
-        DefaultTableModel model = new DefaultTableModel(
-            new String[]{
-                "PO ID", "PR ID", "Item Code", "Quantity", "Unit Price", "Total Price", "Supplier ID", "PM ID", "Date", "Status"},0){
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        List<String[]> data = FileReaderUtil.readFile("purchase_orders.txt");
-
-        for (String[] po : data) {
-            if (po.length >= 8 && po[7].trim().equalsIgnoreCase("Updated")) {
-                String itemCode = po[2];
-                String supplierID = po[4];
-                String unitPrice = getUnitPrice(itemCode, supplierID);
-                int qty = Integer.parseInt(po[3]);
-                double totalPrice = qty * Double.parseDouble(unitPrice);
-
-                model.addRow(new Object[]{
-                    po[0], // PO ID
-                    po[1], // PR ID
-                    itemCode, // Item Code
-                    po[3], // Quantity
-                    unitPrice,
-                    String.format("%.2f", totalPrice),
-                    supplierID,
-                    po[5], // PM ID
-                    po[6], // Date
-                    po[7]  // Status
+        for (String[] parts : lines) {
+            String line = String.join(",", parts);
+            PurchaseOrder po = PurchaseOrder.fromString(line, prList, supplierList);
+            if (po != null) {
+                poList.add(po);  // ✅ always add to poList
+                inventoryTableModel.addRow(new Object[]{
+                    po.getPoID(),
+                    po.getPurchaseRequisition().getPrId(),
+                    po.getItem().getItemID(),
+                    po.getQuantity(),
+                    String.join(";", po.getSupplierIds()),
+                    po.getPurchaseManagerID(),
+                    po.getDate(),
+                    po.getStatus()
                 });
             }
         }
-
-        paymentTable.setModel(model);
     }
 
+    private void loadProcessPaymentTable() {
+        paymentTableModel.setRowCount(0); 
 
+        for (PurchaseOrder po : poList) {
+            if (!po.getStatus().equalsIgnoreCase("Updated")) continue;
+
+            String itemCode = po.getItem().getItemID();
+            String supplierID = po.getSupplierIds().get(0);
+            int qty = po.getQuantity();
+            double unitPrice = Double.parseDouble(getUnitPrice(itemCode, supplierID));
+            double totalPrice = qty * unitPrice;
+
+            paymentTableModel.addRow(new Object[]{
+                po.getPoID(),
+                po.getPurchaseRequisition().getPrId(),
+                itemCode,
+                qty,
+                String.format("%.2f", unitPrice),
+                String.format("%.2f", totalPrice),
+                supplierID,
+                po.getPurchaseManagerID(),
+                po.getDate(),
+                po.getStatus()
+            });
+        }
+    }
 
 
     private String getUnitPrice(String itemCode, String supplierID) {
@@ -94,15 +110,15 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
             if (item.length >= 4 &&
                 item[0].equalsIgnoreCase(itemCode) &&
                 item[2].contains(supplierID)) {
-                return item[3]; // supplier price
+                return item[3];
             }
         }
         return "0.00"; 
     }
 
     private void setupListeners() {
-        jTable1.getSelectionModel().addListSelectionListener(e -> {
-            int row = jTable1.getSelectedRow();
+        InventoryTable.getSelectionModel().addListSelectionListener(e -> {
+            int row = InventoryTable.getSelectedRow();
             if (row >= 0) {
             }
         });
@@ -117,38 +133,72 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
 
         String selectedPOID = paymentTable.getValueAt(selectedRow, 0).toString();
 
-        List<String[]> poData = FileReaderUtil.readFile("purchase_orders.txt");
-        List<String[]> updatedPOData = new java.util.ArrayList<>();
-        String[] paymentEntry = null;
 
-        for (String[] po : poData) {
-            if (po.length >= 8 && po[0].equalsIgnoreCase(selectedPOID) && po[7].equalsIgnoreCase("Updated")) {
-                String unitPrice = getUnitPrice(po[2], po[4]);
-                int qty = Integer.parseInt(po[3]);
-                double totalPrice = qty * Double.parseDouble(unitPrice);
+        PurchaseOrder matchedPO = poList.stream()
+            .filter(po -> po.getPoID().equalsIgnoreCase(selectedPOID)
+                       && po.getStatus().equalsIgnoreCase("Updated"))
+            .findFirst()
+            .orElse(null);
 
-                paymentEntry = new String[] {
-                    po[0], po[1], po[2], po[3], unitPrice,
-                    String.format("%.2f", totalPrice), po[4], po[5], po[6], "Paid"
-                };
-
-                po[7] = "Paid";
-            }
-            updatedPOData.add(po);
+        if (matchedPO == null) {
+            JOptionPane.showMessageDialog(this, "No matching 'Updated' PO found to process.");
+            return;
         }
 
-        if (paymentEntry != null) {
-            FileWriterUtil.appendToFile("payments.txt", String.join(",", paymentEntry));
-            FileWriterUtil.writeFile("purchase_orders.txt", updatedPOData);
+        String itemCode = matchedPO.getItem().getItemID();
+        String supplierID = matchedPO.getSupplierIds().get(0); // Assuming only one for payment
+        int quantity = matchedPO.getQuantity();
+        double unitPrice = Double.parseDouble(getUnitPrice(itemCode, supplierID));
+        double totalPrice = unitPrice * quantity;
 
-            JOptionPane.showMessageDialog(this, "Payment processed successfully for " + selectedPOID);
-            loadUpdatedPurchaseOrders();
-            loadProcessPaymentTable();
-        } else {
-            JOptionPane.showMessageDialog(this, "No matching PO found to process.");
-        }
+        // Save to payments.txt
+        String[] paymentEntry = new String[] {
+            matchedPO.getPoID(),
+            matchedPO.getPurchaseRequisition().getPrId(),
+            itemCode,
+            String.valueOf(quantity),
+            String.format("%.2f", unitPrice),
+            String.format("%.2f", totalPrice),
+            supplierID,
+            matchedPO.getPurchaseManagerID(),
+            matchedPO.getDate(),
+            "Paid"
+        };
+
+        FileWriterUtil.appendToFile("payments.txt", String.join(",", paymentEntry));
+
+
+        matchedPO.setStatus("Paid");
+
+        // Save all POs back to file
+        savePurchaseOrders(poList);
+
+        JOptionPane.showMessageDialog(this, "Payment processed successfully for " + matchedPO.getPoID());
+
+        loadUpdatedPurchaseOrders();  
+        loadProcessPaymentTable(); 
     }
 
+    public void savePurchaseOrders(List<PurchaseOrder> poList) {
+        List<String[]> data = new ArrayList<>();
+
+        for (PurchaseOrder po : poList) {
+            String[] row = new String[]{
+                po.getPoID(),
+                po.getPurchaseRequisition().getPrId(),
+                po.getItem().getItemID(),
+                String.valueOf(po.getQuantity()),
+                String.join(";", po.getSupplierIds()),
+                po.getPurchaseManagerID(),
+                po.getDate(),
+                po.getStatus()
+            };
+            data.add(row);
+        }
+
+        FileWriterUtil.writeFile("purchase_orders.txt", data);
+        JOptionPane.showMessageDialog(this, "Purchase orders saved successfully!");
+    }
  
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,7 +215,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
         Refresh_Button = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        InventoryTable = new javax.swing.JTable();
         statusComboBox = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         Search_Button = new javax.swing.JButton();
@@ -200,7 +250,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel2.setText("Inventory Updated Table");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        InventoryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -211,7 +261,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
                 "PO ID", "PR ID", "Item Code", "Quantity", "Supplier ID", "PM ID", "Status", "Date"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(InventoryTable);
 
         statusComboBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         statusComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Approved", "Updated", "Pending" }));
@@ -370,12 +420,13 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
                     
                 });
             }
+            
         }
     }//GEN-LAST:event_Search_ButtonActionPerformed
 
     private void statusComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusComboBoxActionPerformed
         String selectedStatus = statusComboBox.getSelectedItem().toString();
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) InventoryTable.getModel();
         model.setRowCount(0);
         
         List<String[]> data = FileReaderUtil.readFile("purchase_orders.txt");
@@ -425,6 +476,7 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable InventoryTable;
     private javax.swing.JButton ProcessPayment_Button;
     private javax.swing.JButton Refresh_Button;
     private javax.swing.JButton Search_Button;
@@ -435,7 +487,6 @@ public class ProcessPaymentFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton menuButton;
     private javax.swing.JTable paymentTable;
     private javax.swing.JTextField searchField;

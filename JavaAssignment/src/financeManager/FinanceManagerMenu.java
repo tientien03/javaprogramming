@@ -4,6 +4,8 @@
  */
 package financeManager;
 
+import admin.LoginGUI;
+
 /**
  *
  * @author HP
@@ -181,6 +183,8 @@ public class FinanceManagerMenu extends javax.swing.JFrame {
 
     private void ViewPR_Button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPR_Button2ActionPerformed
         // TODO add your handling code here:
+        dispose(); 
+        new LoginGUI().setVisible(true);
     }//GEN-LAST:event_ViewPR_Button2ActionPerformed
 
     /**
