@@ -42,7 +42,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        menuBtn2 = new javax.swing.JButton();
         txtSupplierEmail = new javax.swing.JTextField();
         txtSupplierPhoneNo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -63,15 +62,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         txtSupplierId = new javax.swing.JTextField();
         menuBtn3 = new javax.swing.JButton();
-
-        menuBtn2.setBackground(new java.awt.Color(255, 204, 204));
-        menuBtn2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        menuBtn2.setText("MENU");
-        menuBtn2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuBtn2ActionPerformed(evt);
-            }
-        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -476,17 +466,9 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void menuBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtn2ActionPerformed
-        // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
-        menu.setLocationRelativeTo(null); //center the window
-        menu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_menuBtn2ActionPerformed
-
     private void menuBtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtn3ActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
+        SalesManagerMenu menu = new SalesManagerMenu();
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
@@ -628,9 +610,6 @@ public class SupplierManagementGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JButton menuBtn;
-    private javax.swing.JButton menuBtn1;
-    private javax.swing.JButton menuBtn2;
     private javax.swing.JButton menuBtn3;
     private javax.swing.JButton resetBtn;
     private javax.swing.JTextField txtSearch;

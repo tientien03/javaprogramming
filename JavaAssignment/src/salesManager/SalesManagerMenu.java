@@ -9,26 +9,18 @@ import admin.LoginGUI;
 import admin.UserClassification;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import main.FileReaderUtil;
 
 /**
  *
  * @author User
  */
 public class SalesManagerMenu extends javax.swing.JFrame {
-        public SalesManagerMenu(String username) {
+        public SalesManagerMenu() {
             initComponents();
             jDesktopPane1.setBackground(new java.awt.Color(0xc5e1ef));
             setLocationRelativeTo(null);
-            List<String[]> users = FileReaderUtil.readFileAsArrays("user.txt");
+            userlabel.setText(UserClassification.getCurrentUser().getFullName().toUpperCase());
             setCurrentTime();
-            for(String[] user : users){
-                if(user[1].equalsIgnoreCase(username)){
-                    userlabel.setText(user[4].toUpperCase());
-                    break;
-                }
-            }
-
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -209,7 +201,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
 
     private void prBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prBtnActionPerformed
         // TODO add your handling code here:
-        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI(UserClassification.getCurrentUser().getUserName());
+        PurchaseRequisitionGUI PRForm = new PurchaseRequisitionGUI();
         PRForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_prBtnActionPerformed
@@ -236,7 +228,7 @@ public class SalesManagerMenu extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run(){
-                new SalesManagerMenu("sales_user").setVisible(true);
+                new SalesManagerMenu().setVisible(true);
             }
         });
     }

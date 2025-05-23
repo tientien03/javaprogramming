@@ -274,7 +274,7 @@ public class ItemManagement extends javax.swing.JFrame {
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
+        SalesManagerMenu menu = new SalesManagerMenu();
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();

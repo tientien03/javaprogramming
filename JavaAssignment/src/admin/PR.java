@@ -5,6 +5,7 @@
 package admin;
 
 import salesManager.*;
+import admin.UserClassification;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.*;
@@ -33,14 +34,8 @@ public class PR extends javax.swing.JFrame {
         txtDate.setText(java.time.LocalDate.now().toString());
         String userId = "UNKNOWN";
         String name = "UNKNOWN";
-        List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
-        for (String[] user : users) {
-            if (user.length >= 8 && user[1].equalsIgnoreCase(username)) {
-                userId = user[0];  // ID is in column 0
-                name = user[4];
-                break;
-            }
-        }
+        userId = UserClassification.getCurrentUser().getUserID();
+        name = UserClassification.getCurrentUser().getFullName();
         txtRaisedBy.setText(userId + " - " + name);
         txtRaisedBy.setEditable(false);
         supplierList = Supplier.loadSupplierFromFile("supplier.txt");
@@ -462,7 +457,7 @@ public class PR extends javax.swing.JFrame {
         List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
         for (String[] user : users) {
             if (user.length >= 4 && user[0].equalsIgnoreCase(raisedById)) {
-                raisedByName = user[3];  // assuming name is in column 3
+                raisedByName = user[4];  // assuming name is in column 3
                 break;
             }
         }

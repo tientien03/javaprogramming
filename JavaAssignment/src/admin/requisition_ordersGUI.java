@@ -264,9 +264,8 @@ public class requisition_ordersGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        
         // TODO add your handling code here:
-        new PO(userID).setVisible(true);
+        new PO().setVisible(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void refreshPRButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshPRButton5ActionPerformed

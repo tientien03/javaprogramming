@@ -1,10 +1,11 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package admin;
 
 import PurchaseManager.*;
+import admin.UserClassification;
 import main.*;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -16,11 +17,10 @@ public class PO extends javax.swing.JFrame {
     private javax.swing.table.DefaultTableModel requisitionTableModel; 
     private javax.swing.table.DefaultTableModel tableModel;
     
-    public PO(String userID) {
-        this.userID = userID;
+    public PO() {
+        String userID = UserClassification.getCurrentUser().getUserID();
         initComponents();
         this.setLocationRelativeTo(null);
-        
         getContentPane().setBackground(new java.awt.Color(0xc5e1ef));
         
         //PR table
@@ -149,7 +149,7 @@ public class PO extends javax.swing.JFrame {
                     selectedPR.getItem(),
                     selectedPR.getQuantity(),
                     selectedSuppliers,
-                    getUserID(),
+                    userID,
                     java.time.LocalDate.now().toString(),
                     "Pending"
                 );
@@ -176,7 +176,7 @@ public class PO extends javax.swing.JFrame {
                     + "Item Code: " + selectedPR.getItem().getItemID() + "\n"
                     + "Quantity: " + selectedPR.getQuantity() + "\n"
                     + "Supplier ID: " + String.join(";", selectedPR.getSupplierIds()) + "\n"
-                    + "Purchase Manager ID: " + getUserID() + "\n"
+                    + "Purchase Manager ID: " + userID + "\n"
                     + "Date: " + java.time.LocalDate.now().toString() + "\n"
                     + "Status: Pending";
         
@@ -262,7 +262,6 @@ public class PO extends javax.swing.JFrame {
                 List<Supplier> newSupplierList = new ArrayList<>();
                 for (String id : supplierIDs) {
                     String trimmedID = id.trim();
-    
                     Supplier foundSupplier = supplierList.stream()
                             .filter(s -> s.getSupplierId().equalsIgnoreCase(trimmedID))
                             .findFirst()
@@ -303,7 +302,6 @@ public class PO extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(null, "❌ Please enter a valid number for quantity.");
                             return;
                         }
-
                         // Update PO
                         po.setQuantity(updatedQty);
                         po.setSuppliers(newSupplierList);   // ✅ Update suppliers in PO
@@ -423,9 +421,9 @@ public class PO extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
     
-    private String getUserID() {
-        return userID;  // Hardcoded Purchase Manager ID
-    }
+//    private String getUserID() {
+//        return userID;  // Hardcoded Purchase Manager ID
+//    }
     
     private void clearFields() {
         textFieldPOID.setText("");
@@ -446,7 +444,6 @@ public class PO extends javax.swing.JFrame {
         List<PurchaseRequisition> prList = PurchaseRequisition.loadPRFromFile("purchase_requisition.txt", itemList, supplierList);
 
         requisitionTableModel.setRowCount(0);  // Clear table
-
         for (PurchaseRequisition pr : prList) {
             if ("Pending".equalsIgnoreCase(pr.getStatus())) {
                 requisitionTableModel.addRow(new Object[]{

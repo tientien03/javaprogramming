@@ -23,24 +23,16 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     List<PurchaseRequisition> PRList = new ArrayList<>();
     int editingRowIndex = 0;
     boolean isEditing = false;
-    private String currentUsername;
-    public PurchaseRequisitionGUI(String username) {
+    public PurchaseRequisitionGUI() {
         initComponents();
-        this.currentUsername = username;
         status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Pending", "Updated" }));
         jPanel1.setBackground(new java.awt.Color(0xc5e1ef));
         setLocationRelativeTo(null);
         txtDate.setText(java.time.LocalDate.now().toString());
         String userId = "UNKNOWN";
         String name = "UNKNOWN";
-        List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
-        for (String[] user : users) {
-            if (user.length >= 8 && user[1].equalsIgnoreCase(username)) {
-                userId = user[0];  // ID is in column 0
-                name = user[4];
-                break;
-            }
-        }
+        userId = UserClassification.getCurrentUser().getUserID();
+        name = UserClassification.getCurrentUser().getFullName();
         txtRaisedBy.setText(userId + " - " + name);
         txtRaisedBy.setEditable(false);
         supplierList = Supplier.loadSupplierFromFile("supplier.txt");
@@ -462,7 +454,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
         for (String[] user : users) {
             if (user.length >= 4 && user[0].equalsIgnoreCase(raisedById)) {
-                raisedByName = user[3];  // assuming name is in column 3
+                raisedByName = user[4];  // assuming name is in column 3
                 break;
             }
         }
@@ -534,7 +526,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
     private void menuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBtnActionPerformed
         // TODO add your handling code here:
-        SalesManagerMenu menu = new SalesManagerMenu(UserClassification.getCurrentUser().getUserName());
+        SalesManagerMenu menu = new SalesManagerMenu();
         menu.setLocationRelativeTo(null); //center the window
         menu.setVisible(true);
         this.dispose();
@@ -625,14 +617,8 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
         txtquantity.setText("");
         String userId = "UNKNOWN";
         String name = "UNKNOWN";
-        List<String[]> users = main.FileReaderUtil.readFileAsArrays("user.txt");
-        for (String[] user : users) {
-            if (user.length >= 8 && user[1].equalsIgnoreCase(currentUsername)) {
-                userId = user[0];
-                name = user[3];
-                break;
-            }
-        }
+        userId = UserClassification.getCurrentUser().getUserID();
+        name = UserClassification.getCurrentUser().getFullName();
         txtRaisedBy.setText(userId + " - " + name);
     }
     
@@ -674,7 +660,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseRequisitionGUI(UserClassification.getCurrentUser().getUserName()).setVisible(true);
+                new PurchaseRequisitionGUI();
             }
         });
     }

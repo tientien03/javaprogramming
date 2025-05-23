@@ -98,7 +98,7 @@ public class UserClassification{
                 new Menu().setVisible(true);
                 break;
             case "Sales Manager":
-                new SalesManagerMenu(currentUser.getUserName()).setVisible(true);
+                new SalesManagerMenu().setVisible(true);
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "❌ Invalid role: " + currentUser.getRole());

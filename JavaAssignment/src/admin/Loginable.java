@@ -11,6 +11,8 @@ package admin;
 public interface Loginable {
     boolean login(String username, String password);
     String getRole();
+    String getUserID();
     String getUserName();
+    String getFullName();
 }
 

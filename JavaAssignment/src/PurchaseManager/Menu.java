@@ -148,7 +148,7 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonSuppliersActionPerformed
 
     private void jButtonPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPOActionPerformed
-        PurchaseOrderMenu poMenu = new PurchaseOrderMenu("PM001"); // Open Purchase Order Menu
+        PurchaseOrderMenu poMenu = new PurchaseOrderMenu(); // Open Purchase Order Menu
         poMenu.setVisible(true);
         this.dispose();  // Optional: close the main menu
     }//GEN-LAST:event_jButtonPOActionPerformed
