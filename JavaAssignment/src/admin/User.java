@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import main.FileWriterUtil;
 
-public class User implements Loginable{
+public abstract class User implements Loginable{
     private String userID;
     private String userName;
     private String Password;
@@ -33,22 +33,27 @@ public class User implements Loginable{
     public boolean login(String username, String password){
         return this.userName.equalsIgnoreCase(username) && this.Password.equals(password);
     }
-    
     @Override
     public String getUserName() { 
         return userName;
     }
-    
     @Override
     public String getRole() {
         return Role;
     }
-        
-    public String getUserID() {return userID;}
+    @Override
+    public String getUserID() {
+        return userID;
+    }
+    @Override
+    public String getFullName() {
+        return FullName;
+    }
+    @Override
+    public abstract void routeMenu();
+    
     public String getPassword() {return Password;}
-    public String getFullName() {return FullName;}
     public String getEmail() {return Email;}
-    public String getPhoneNumber() {return PhoneNumber;}
     public String getStatus() {return Status;}
 
     public void setUserID(String userID) { this.userID = userID;}
@@ -57,7 +62,14 @@ public class User implements Loginable{
     public void setRole(String Role) {this.Role = Role; }
     public void setFullName(String FullName) {this.FullName = FullName;}
     public void setEmail(String Email) {this.Email = Email;}
-    public void setPhoneNumber(String PhoneNumber) {this.PhoneNumber = PhoneNumber;}
+    
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+    
+    public void setPhoneNumber(String PhoneNumber) {
+        this.PhoneNumber = PhoneNumber;
+    }
     public void setStatus(String Status) {this.Status = Status;}
     
     public String toFileString() {

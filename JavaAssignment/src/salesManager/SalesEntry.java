@@ -28,10 +28,6 @@ public class SalesEntry {
         return SalesID;
     }
 
-    public void setSalesID(String SalesID) {
-        this.SalesID = SalesID;
-    }
-
     public String getSalesdate() {
         return Salesdate;
     }

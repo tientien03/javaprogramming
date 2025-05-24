@@ -14,5 +14,6 @@ public interface Loginable {
     String getUserID();
     String getUserName();
     String getFullName();
+    void routeMenu();
 }
 

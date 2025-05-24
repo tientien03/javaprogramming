@@ -4,10 +4,14 @@
  */
 package admin;
 
+import PurchaseManager.PurchaseManager;
+import financeManager.FinanceManager;
+import inventoryManager.InventoryManager;
 import main.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import salesManager.SalesManager;
 
 public class ViewuserGUI extends javax.swing.JFrame {
     private User selectedUser = null;
@@ -553,23 +557,75 @@ public class ViewuserGUI extends javax.swing.JFrame {
             break;
         }
     }
+    
+    if (isNewUser) {
+        String role = rolebox.getSelectedItem().toString();
+        User newUser = null;
+        switch (role) {
+            case "Administrator":
+                newUser = new Admin(
+                    idfield.getText(),
+                    namefield.getText(),
+                    passwordfield.getText(),
+                    role,
+                    fullnamefield.getText(),
+                    gmailfield.getText(),
+                    phonefield.getText(),
+                    statusbox.getSelectedItem().toString()
+                );
+                break;
+            case "Finance Manager":
+                newUser = new FinanceManager(
+                    idfield.getText(),
+                    namefield.getText(),
+                    passwordfield.getText(),
+                    role,
+                    fullnamefield.getText(),
+                    gmailfield.getText(),
+                    phonefield.getText(),
+                    statusbox.getSelectedItem().toString()
+                ); 
+                break;
+            case "Inventory Manager":
+                newUser = new InventoryManager(idfield.getText(),
+                    namefield.getText(),
+                    passwordfield.getText(),
+                    role,
+                    fullnamefield.getText(),
+                    gmailfield.getText(),
+                    phonefield.getText(),
+                    statusbox.getSelectedItem().toString());
+                break;
+            case "Purchase Manager":
+                newUser = new PurchaseManager(idfield.getText(),
+                    namefield.getText(),
+                    passwordfield.getText(),
+                    role,
+                    fullnamefield.getText(),
+                    gmailfield.getText(),
+                    phonefield.getText(),
+                    statusbox.getSelectedItem().toString());
+            break;
+            case "Sales Manager":
+                newUser = new SalesManager(idfield.getText(),
+                    namefield.getText(),
+                    passwordfield.getText(),
+                    role,
+                    fullnamefield.getText(),
+                    gmailfield.getText(),
+                    phonefield.getText(),
+                    statusbox.getSelectedItem().toString());
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "❌ Invalid role selected.");
+                return;
+        }
 
-    if(isNewUser){
-        User newUser = new User(
-            idfield.getText(),              // User ID
-            namefield.getText(),            // Username
-            passwordfield.getText(),        // Password
-            rolebox.getSelectedItem().toString(),  // Role
-            fullnamefield.getText(),        // Full Name
-            gmailfield.getText(),           // Email
-            phonefield.getText(),           // Phone Number
-            statusbox.getSelectedItem().toString() // Status
-        );
-
-        userList.add(newUser);
-        JOptionPane.showMessageDialog(this, "✅ New user added successfully!");
-    } 
-
+        if (newUser != null) {
+            userList.add(newUser);
+            JOptionPane.showMessageDialog(this, "✅ New user added successfully!");
+        }
+    }
     User.saveToFile(userList, "user.txt");
     loadUserData();
     clearInput();
@@ -671,16 +727,28 @@ public class ViewuserGUI extends javax.swing.JFrame {
 
         for (String[] user : dataList) {
             if (user.length == 8) {
-                User newUser = new User(
-                    user[0],
-                    user[1],
-                    user[2],
-                    user[3],
-                    user[4],
-                    user[5],
-                    user[6],
-                    user[7]
-                );
+                String role = user[3];
+                User newUser = null;
+                switch (role) {
+                    case "Administrator":
+                        newUser = new Admin(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]);
+                        break;
+                case "Finance Manager":
+                    newUser = new FinanceManager(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]);
+                    break;
+                case "Inventory Manager":
+                    newUser = new InventoryManager(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]);
+                    break;
+                case "Purchase Manager":
+                    newUser = new PurchaseManager(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]);
+                    break;
+                case "Sales Manager":
+                    newUser = new SalesManager(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]);
+                    break;
+                default:
+                    System.out.println("⚠️ Unknown role: " + role);
+                    continue; // skip unknown roles
+                }
                 userList.add(newUser);
                 Object[] rowData = {
                     user[0], // UserID

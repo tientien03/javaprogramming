@@ -219,7 +219,7 @@ public class LoginGUI extends javax.swing.JFrame {
 
         if (isAuthenticated) {
             JOptionPane.showMessageDialog(this, "✅ Login successful as " + UserClassification.getCurrentUser().getRole());
-            UserClassification.routeToMenu(); 
+            UserClassification.getCurrentUser().routeMenu(); 
             this.dispose(); 
         } else {
             JOptionPane.showMessageDialog(this, "❌ Invalid username, password, or role.");

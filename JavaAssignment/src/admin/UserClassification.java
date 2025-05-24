@@ -6,11 +6,11 @@ package admin;
 
 import java.util.List;
 import main.FileReaderUtil;
-import financeManager.FinanceManagerMenu;
-import inventoryManager.Dashboard;
-import PurchaseManager.Menu;
-import salesManager.SalesManagerMenu;
+import PurchaseManager.PurchaseManager;
+import financeManager.FinanceManager;
+import inventoryManager.InventoryManager;
 import javax.swing.JOptionPane;
+import salesManager.SalesManager;
 
 public class UserClassification{
     
@@ -65,13 +65,30 @@ public class UserClassification{
                 String phone= user[6].trim(); // Administrator
                 String status = user[7].trim(); // Active
                 System.out.println("📝 Checking -> Role: " + fileRole + ", Username: " + fileUsername + ", Status: " + status);
-
-                if (fileUsername.equalsIgnoreCase(username) && filePassword.equals(password) && status.equalsIgnoreCase("Active")) {
+                if (!status.equalsIgnoreCase("Active")) continue;
+                switch (fileRole) {
+                    case "Administrator":
+                        currentUser = new Admin(userID, fileUsername, filePassword, fileRole, fullName, email, phone, status);
+                        break;
+                    case "Finance Manager":
+                        currentUser = new FinanceManager(userID, fileUsername, filePassword, fileRole, fullName, email, phone, status);
+                        break;
+                    case "Inventory Manager":
+                        currentUser = new InventoryManager(userID, fileUsername, filePassword, fileRole, fullName, email, phone, status);
+                        break;
+                    case "Purchase Manager":
+                        currentUser = new PurchaseManager(userID, fileUsername, filePassword, fileRole, fullName, email, phone, status);
+                        break;
+                    case "Sales Manager":
+                        currentUser = new SalesManager(userID, fileUsername, filePassword, fileRole, fullName, email, phone, status);
+                        break;
+                    default:
+                        System.out.println("❌ Unknown role: " + fileRole);
+                        continue;
+                }
+                if (currentUser.login(username, password)) {
                     System.out.println("✅ Authentication successful for: " + username);
-                    currentUser = new User(userID, fileUsername, filePassword, fileRole,fullName, email, phone, status);
-                    System.out.println(currentUser.getUserName());     // Interface method
-                    System.out.println(currentUser.getRole());         // Interface method
-                    return currentUser.login(username, password);
+                    return true;
                 }
             } else {
                 System.out.println("⚠️ Invalid user data format in users.txt.");
@@ -80,28 +97,5 @@ public class UserClassification{
 
         System.out.println("❌ Authentication failed for: " + username);
         return false;
-    }
-
-
- public static void routeToMenu() {
-        switch (currentUser.getRole()) {
-            case "Administrator":
-                new AdminMenuGUI().setVisible(true);
-                break;
-            case "Finance Manager":
-                new FinanceManagerMenu().setVisible(true);
-                break;
-            case "Inventory Manager":
-                new Dashboard().setVisible(true);
-                break;
-            case "Purchase Manager":
-                new Menu().setVisible(true);
-                break;
-            case "Sales Manager":
-                new SalesManagerMenu().setVisible(true);
-                break;
-            default:
-                JOptionPane.showMessageDialog(null, "❌ Invalid role: " + currentUser.getRole());
-        }
     }
 }
