@@ -4,8 +4,6 @@
  */
 package inventoryManager;
 
-import inventoryManager.Dashboard;
-
 public class InventoryManagerMain {
 
     public static void main(String[] args) {

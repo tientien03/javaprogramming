@@ -22,7 +22,6 @@ public class FileReaderUtil {
         }
         return data;
     }
-    
     //read the whole line
     public static List<String[]> readFile(String fileName) {
         List<String[]> data = new ArrayList<>();

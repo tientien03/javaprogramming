@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package financeManager;
-import java.io.*;
 import PurchaseManager.PurchaseOrder;
 import salesManager.Item;
 import salesManager.Supplier;
@@ -11,7 +10,6 @@ import salesManager.Supplier;
  *
  * @author HP
  */
-
 
 
 public class Payment {

@@ -4,7 +4,6 @@
  */
 package salesManager;
 
-import admin.UserClassification;
 import java.io.*;
 import java.util.*;
 import javax.swing.JOptionPane;
@@ -368,12 +367,29 @@ public class SalesEntryGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select an item to delete from the cart.");
             return;
         }
-
+        String selectedId = tableCart.getValueAt(selectedRow, 0).toString(); // assuming ID is column 0
+        String itemInput = tableCart.getValueAt(selectedRow, 1).toString();
+        String salesDate = txtDateField.getText().toString();
+        int quantity = Integer.parseInt(tableCart.getValueAt(selectedRow, 3).toString());
         int confirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to delete this item from the cart?","Confirm Delete",JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-        DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
-        model.removeRow(selectedRow);
+            DefaultTableModel model = (DefaultTableModel) tableCart.getModel();
+                model.removeRow(selectedRow);
+            }
+            for(SalesEntry entry: salesEntryList){
+                if(entry.getSalesdate().equalsIgnoreCase(salesDate) && entry.getItem().getItemID().equals(selectedId)){
+                    salesEntryList.remove(entry);
+                    break;
+                }
+            }
+            for(Item item : itemList){
+                if(item.getItemID().equalsIgnoreCase(selectedId)||item.getItemName().equalsIgnoreCase(itemInput)){
+                    item.setStock(item.getStock()+quantity);
+                    break;
+            }
         }
+        FileWriterUtil.writeFile("item.txt",Item.convertToStringArrayList(itemList));
+        FileWriterUtil.writeFile("sales_entry.txt",SalesEntry.convertToStringArrayList(salesEntryList));
         clearInput();
     }//GEN-LAST:event_deleteEntryActionPerformed
 
@@ -462,13 +478,12 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(this, "Enter a discount rate between 0 and 100.");
                         return;
                     }
-                    unitPrice = unitPrice * (1 - (discountRate / 100));
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(this, "Invalid discount rate.");
                     return;
                 }
             }
-            double total = unitPrice*quantity;
+            double total = unitPrice*(1 - (discountRate / 100))*quantity;
             DefaultTableModel model = (DefaultTableModel) tableCart.getModel();      
             
             String priceLabel = String.format("%.2f", unitPrice);
@@ -657,7 +672,6 @@ public class SalesEntryGUI extends javax.swing.JFrame {
                     } else {
                         DiscountedSalesEntry discounted = (DiscountedSalesEntry) entry;
                         double discountRate = discounted.getDiscountRate();
-                        unitPrice = unitPrice * (1 - discounted.getDiscountRate()/100);
                         priceLabel = String.format("%.2f (-%.0f%%)", unitPrice, discountRate);
                     }
                     model.addRow(new Object[] {

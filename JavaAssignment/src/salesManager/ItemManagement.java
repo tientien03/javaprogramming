@@ -217,7 +217,7 @@ public class ItemManagement extends javax.swing.JFrame {
                                         .addComponent(txtItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(layout.createSequentialGroup()
-                                            .addComponent(txtSupplierid, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtSupplierid)
                                             .addGap(18, 18, 18)
                                             .addComponent(selectSupplierbtn))))
                                 .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))

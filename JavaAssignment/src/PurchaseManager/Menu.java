@@ -51,30 +51,24 @@ public class Menu extends javax.swing.JFrame {
         setBackground(new java.awt.Color(102, 102, 102));
         setForeground(new java.awt.Color(102, 102, 102));
 
-        jButtonItems.setBackground(new java.awt.Color(204, 204, 204));
         jButtonItems.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jButtonItems.setText("Items");
-        jButtonItems.setBorder(new javax.swing.border.MatteBorder(null));
         jButtonItems.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonItemsActionPerformed(evt);
             }
         });
 
-        jButtonSuppliers.setBackground(new java.awt.Color(204, 204, 204));
         jButtonSuppliers.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jButtonSuppliers.setText("Suppliers");
-        jButtonSuppliers.setBorder(new javax.swing.border.MatteBorder(null));
         jButtonSuppliers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSuppliersActionPerformed(evt);
             }
         });
 
-        jButtonPO.setBackground(new java.awt.Color(204, 204, 204));
         jButtonPO.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jButtonPO.setText("Purchase Orders");
-        jButtonPO.setBorder(new javax.swing.border.MatteBorder(null));
         jButtonPO.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonPOActionPerformed(evt);
