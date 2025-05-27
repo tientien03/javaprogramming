@@ -339,6 +339,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                 "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirm != JOptionPane.YES_OPTION) return;
             }
+            
             int quantity = Integer.parseInt(txtquantity.getText().trim());
             String raisedBy = txtRaisedBy.getText().split(" - ")[0].trim();
             
@@ -361,6 +362,10 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                         break;
                     }
                 }
+            }
+            if (matchedSuppliers.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Cannot raise PR. No supplier is associated with the selected item.");
+                return;
             }
             PurchaseRequisition newPr = new PurchaseRequisition(prId, selectedItem,matchedSuppliers,quantity, requiredDate, raisedBy,"Pending");
             PRList.add(newPr);
@@ -517,7 +522,6 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     break;
                 }
             }
-
             // Optionally, clear or suggest values for other fields
             txtquantity.setText("");
             txtDate.setText(java.time.LocalDate.now().toString());
@@ -544,7 +548,7 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
                     pr.getItem().getItemID() + " - " + pr.getItem().getItemName(),
                     pr.getQuantity(),
                     pr.getRequiredDate(),
-                    String.join(" | ", pr.getSupplierIds()),
+                    pr.getItem().getSupplierids().isEmpty() ? "No Supplier" : String.join(",", pr.getItem().getSupplierids()),
                     pr.getRaisedBy(),
                     pr.getStatus()
                 };
@@ -602,11 +606,18 @@ public class PurchaseRequisitionGUI extends javax.swing.JFrame {
 
         List<Item> lowItems = getLowStockItems(itemList); // itemList must already be loaded
         for (Item item : lowItems) {
+            String supplierText;
+            if (item.getSupplierids() == null || item.getSupplierids().isEmpty()) {
+                supplierText = "No Supplier";
+            } else {
+                supplierText = String.join(";", item.getSupplierids());
+            }
+
             Object[] row = {
                 item.getItemID(),
                 item.getItemName(),
                 item.getStock(),
-                String.join(";",item.getSupplierids())
+                supplierText
             };
             model.addRow(row);
         }

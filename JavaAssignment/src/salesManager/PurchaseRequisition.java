@@ -102,14 +102,8 @@ public class PurchaseRequisition {
                         }
                     }
                 }
-                
-                if (matchedItem != null && !matchedSuppliers.isEmpty()) {
-                    PurchaseRequisition pr = new PurchaseRequisition(
-                        prId, matchedItem, matchedSuppliers, quantity, requiredDate, raisedBy, status
-                    );
-                    prList.add(pr);
-                }
-                
+                PurchaseRequisition pr = new PurchaseRequisition(prId, matchedItem, matchedSuppliers, quantity, requiredDate, raisedBy, status);
+                prList.add(pr);
             }
         }            
         return prList;

@@ -5,4 +5,3 @@ S004,HAPPY FRUITS SUPPLIER,011-9988776,happyfruits@suppliers.com
 S005,DAILY GROCERY DEPOT,016-5566778,dailygrocery@suppliers.com
 S006,ORGANIC HARVEST,018-6677889,organicharvest@suppliers.com
 S007,VEGEEXPRESS DELIVERY,014-1122334,vegeexpress@suppliers.com
-S008,SEN KEE TRADING,012-3456767,senkee@gmail.com
