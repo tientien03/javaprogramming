@@ -211,7 +211,7 @@ public class PurchaseOrderApproval extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "PO ID", "PR ID", "Item", "Quantity", "Supplier ID", "PM ID", "Status", "Date"
+                "PO ID", "PR ID", "Item", "Quantity", "Supplier ID", "PM ID", "Date", "Status"
             }
         ));
         jScrollPane4.setViewportView(POTable);

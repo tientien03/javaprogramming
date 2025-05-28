@@ -448,7 +448,7 @@ public class PurchaseOrderMenu extends javax.swing.JFrame {
                 requisitionTableModel.addRow(new Object[]{
                     pr.getPrId(),
                     pr.getItem().getItemID(),
-                    String.join(";", pr.getSupplierIds()),
+                    pr.getItem().getSupplierids().isEmpty() ? "No Supplier" : String.join(",", pr.getItem().getSupplierids()),
                     pr.getQuantity(),
                     pr.getRequiredDate(),
                     pr.getRaisedBy(),

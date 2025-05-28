@@ -1,22 +1,23 @@
 OWSB Inventory Stock Report
-Generated on: Wed May 21 14:31:12 MYT 2025
+Generated on: Tue May 27 12:37:52 MYT 2025
 
 ITEM ID    ITEM NAME       SUPPLIER ID          PRICE    STOCK   STATUS         
 --------------------------------------------------------------------------
 I001       Apple           S001                 3.50     10      Low Stock      
 I002       Banana          S003                 2.00     2       Low Stock      
 I003       Orange          S003;S004            4.00     100     Overstocked    
-I004       Watermelon      S003                 7.50     100     Overstocked    
-I005       Melon           S002                 7.50     94      Overstocked    
+I004       Watermelon      S003                 7.50     90      Overstocked    
+I005       Melon           S002;S003            7.50     100     Overstocked    
 I006       Strawberry      S002                 4.00     90      Overstocked    
-I007       Cabbage         S004;S006            5.00     95      Overstocked    
-I008       Lettuce         S001;S004            5.00     100     Overstocked    
-I009       Mango           S002                 5.00     100     Overstocked    
-I010       Chicken         S008                 5.00     0       Low Stock      
-I011       Beef            S007                 7.00     0       Low Stock      
+I007       Cabbage         S004;S006            5.00     85      Overstocked    
+I008       Lettuce         S001;S004;S005       5.00     100     Overstocked    
+I009       Mango           S002;S010            5.00     100     Overstocked    
+I010       Chicken         S008;S009            5.00     0       Low Stock      
+I011       Cucumber        S001;S002;S009       2.00     100     Overstocked    
+I012       Broccoli        S001;S002;S010       5.00     160     Overstocked    
 
 Summary:
-Total Items      : 11
-Low Stock Items  : 4
+Total Items      : 12
+Low Stock Items  : 3
 In Stock Items   : 0
-Overstocked Items: 7
+Overstocked Items: 9

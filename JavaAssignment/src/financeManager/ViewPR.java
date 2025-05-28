@@ -36,14 +36,14 @@ public class ViewPR extends javax.swing.JFrame {
 
         for (String[] parts : data) {
             if (parts.length == 7) {
+                if (parts[2].trim().isEmpty()) {
+                    parts[2] = "No Supplier";
+                }
                 model.addRow(parts);
             }
         }
         PR_Table.setModel(model);
     }
-
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.

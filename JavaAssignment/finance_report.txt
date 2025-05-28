@@ -1,5 +1,5 @@
 OWSB Finance Report
-Generated on: Sat May 17 17:34:58 MYT 2025
+Generated on: Tue May 27 12:33:48 MYT 2025
 
 Sale ID  Date         Item            Price    Qty   Discount  Revenue    Profit    
 -------------------------------------------------------------------------------
@@ -9,8 +9,14 @@ SE002    2025-05-02   Watermelon      10.00    6     0.00      60.00      15.00
 SE003    2025-05-04   Strawberry      5.50     10    0.00      55.00      15.00     
 SE003    2025-05-04   Cabbage         6.50     5     5.00      30.88      5.88      
 SE003    2025-05-04   Melon           9.50     6     5.00      54.15      9.15      
+SE004    2025-05-22   Melon           9.50     10    0.00      95.00      20.00     
+SE004    2025-05-22   Cabbage         6.50     10    10.00     58.50      8.50      
+SE005    2025-05-27   Watermelon      10.00    10    0.00      100.00     25.00     
+SE005    2025-05-27   Strawberry      5.50     10    10.00     49.50      9.50      
+SE006    2025-05-28   Watermelon      10.00    10    0.00      100.00     25.00     
+SE006    2025-05-28   Strawberry      5.50     10    10.00     49.50      9.50      
 
 Summary:
-Total Revenue: RM 283.03
-Total Cost:    RM 216.50
-Total Profit:  RM 66.53
+Total Revenue: RM 735.53
+Total Cost:    RM 571.50
+Total Profit:  RM 164.03
