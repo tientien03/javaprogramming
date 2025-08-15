@@ -14,7 +14,7 @@ public class FileWriterUtil {
             bw.write(line);
             bw.newLine();
         } catch (IOException e) {
-            System.out.println("❌ Error appending to file: " + e.getMessage());
+            System.out.println("❌Error appending to file: " + e.getMessage());
         }
     }
     
